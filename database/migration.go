@@ -1,9 +1,14 @@
 package database
 
-import "log"
+import (
+	"backend-dinakom/app/models"
+	"log"
+)
 
 func RunMigration() {
-	err := DB.AutoMigrate()
+	err := DB.AutoMigrate(
+		&models.User{},
+	)
 
 	if err != nil {
 		log.Fatal("Failed to run migration:", err)
