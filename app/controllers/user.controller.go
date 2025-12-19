@@ -53,7 +53,7 @@ func (ctrl *userController) GetAllUsers(c *fiber.Ctx) error {
 
 func (ctrl *userController) GetUserSession(c *fiber.Ctx) error {
 
-	userId := c.Get("user_id")
+	userId := c.Locals("user_id").(string)
 	if userId == "" {
 		return helpers.ErrorResponse(c, http.StatusUnauthorized, "user_id not found", nil)
 	}
