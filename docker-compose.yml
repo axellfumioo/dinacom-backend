@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: backend_dinacom_postgress
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: backend_dinacom
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend_dinacom_network
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend_dinacom_api
+    environment:
+      APP_NAME: "Backend Dinacom"
+      APP_ENV: production
+      APP_PORT: 8080
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: backend_dinacom
+      DB_SSL_MODE: disable
+      DB_TIMEZONE: Asia/Jakarta
+      JWT_SECRET: fsnfuishfiusuifuies
+      JWT_EXPIRE_HOURS: 24
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - backend_dinacom_network
+    restart: unless-stopped
+
+networks:
+  backend_dinacom_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

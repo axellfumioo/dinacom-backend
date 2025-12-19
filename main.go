@@ -4,6 +4,7 @@ import (
 	"backend-dinakom/app/middlewares"
 	"backend-dinakom/app/routes"
 	"backend-dinakom/configs"
+	"backend-dinakom/database"
 	"fmt"
 	"log"
 
@@ -12,6 +13,10 @@ import (
 
 func main() {
 	configs.LoadConfig()
+	
+	// Connect ke database
+	database.ConnectDatabase()
+	database.RunMigration()
 
 	app := fiber.New(fiber.Config{
 		AppName:      configs.AppConfig.App.Name,
