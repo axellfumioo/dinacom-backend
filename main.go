@@ -1,7 +1,8 @@
 package main
 
 import (
-	router "backend-dinakom/app/routes"
+	"backend-dinakom/app/middlewares"
+	"backend-dinakom/app/routes"
 	"backend-dinakom/configs"
 	"fmt"
 	"log"
@@ -12,7 +13,10 @@ import (
 func main() {
 	configs.LoadConfig()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		AppName:      configs.AppConfig.App.Name,
+		ErrorHandler: middlewares.ErrorMiddleware,
+	})
 	router.SetupRouter(app)
 
 	port := configs.AppConfig.App.Port
