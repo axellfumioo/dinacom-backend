@@ -1,14 +1,25 @@
 package router
 
 import (
-	"backend-dinakom/app/helpers"
+	"backend-dinakom/app/controllers"
+	"backend-dinakom/app/services"
+	"backend-dinakom/database"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func UserRoute(r fiber.Router) {
-	userRoute := r.Group("/users")
-	userRoute.Get("/", func(c *fiber.Ctx) error {
-		return helpers.SuccessResponse(c, "hello users", "ini data")
-	})
+	userService := services.NewUserService(database.GetDb())
+	userController := controllers.NewUserController(userService)
+
+	users := r.Group("/users")
+	users.Get("", userController.GetAllUsers)
+	users.Get("/session", userController.GetUserSession)
+	users.Get("/:id/get", userController.GetUserByID)
+	users.Post("", userController.CreateUser)
+	users.Put("/:id", userController.UpdateUser)
+	users.Delete("/:id", userController.DeleteUser)
+	users.Post("/change-password", userController.ChangePassword)
+	users.Get("/role", userController.GetUserByRoleName)
+	users.Get("/total", userController.GetTotalUsers)
 }
