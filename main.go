@@ -13,7 +13,7 @@ func main() {
 	configs.LoadConfig()
 
 	app := fiber.New()
-	router.Route(app)
+	router.SetupRouter(app)
 
 	port := configs.AppConfig.App.Port
 	log.Printf("Starting %s server on port %s", configs.AppConfig.App.Name, port)
