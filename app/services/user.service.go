@@ -53,7 +53,7 @@ func (s *userService) GetAllUsers(page, pageSize int) ([]response.UserResponse, 
 
 func (s *userService) GetUserSession(userId string) (*response.UserResponse, error) {
 	var existingUser models.User
-	if err := s.db.Preload("Role").First(&existingUser, "id = ?", userId).Error; err != nil {
+	if err := s.db.First(&existingUser, "user_id = ?", userId).Error; err != nil {
 		return nil, errors.New("user not registered")
 	}
 
@@ -116,7 +116,7 @@ func (s *userService) UpdateUser(userId string, req request.UpdateUserRequest) (
 	// Check if email already used by another user
 	if req.Email != "" && req.Email != user.Email {
 		var existingUser models.User
-		if err := s.db.Where("email = ? AND id != ?", req.Email, userId).First(&existingUser).Error; err == nil {
+		if err := s.db.Where("email = ? AND user_id != ?", req.Email, userId).First(&existingUser).Error; err == nil {
 			return nil, errors.New("email already used by another user")
 		}
 	}

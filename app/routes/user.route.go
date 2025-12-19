@@ -2,6 +2,7 @@ package router
 
 import (
 	"backend-dinakom/app/controllers"
+	"backend-dinakom/app/middlewares"
 	"backend-dinakom/app/services"
 	"backend-dinakom/database"
 
@@ -14,7 +15,7 @@ func UserRoute(r fiber.Router) {
 
 	users := r.Group("/users")
 	users.Get("", userController.GetAllUsers)
-	users.Get("/session", userController.GetUserSession)
+	users.Get("/session", middlewares.AuthMiddleware(), userController.GetUserSession)
 	users.Get("/:id/get", userController.GetUserByID)
 	users.Post("", userController.CreateUser)
 	users.Put("/:id", userController.UpdateUser)
