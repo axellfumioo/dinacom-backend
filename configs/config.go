@@ -12,6 +12,7 @@ type Config struct {
 	App      AppConfigType
 	Database DatabaseConfig
 	JWT      JWTConfig
+	Minio    MinioConfig
 }
 
 type AppConfigType struct {
@@ -35,6 +36,15 @@ type JWTConfig struct {
 	ExpireHours int
 }
 
+type MinioConfig struct {
+	BaseUrl   string
+	Bucket    string
+	UseSSL    bool
+	AccessKey string
+	SecretKey string
+	Endpoint  string
+}
+
 var AppConfig *Config
 
 func LoadConfig() {
@@ -43,33 +53,42 @@ func LoadConfig() {
 		log.Println("Warning: .env file not found, using environment variables")
 	}
 
-	expireHours, _ := strconv.Atoi(getEnv("JWT_EXPIRE_HOURS", "24"))
+	expireHours, _ := strconv.Atoi(GetEnv("JWT_EXPIRE_HOURS", "24"))
+	minioSSL, _ := strconv.ParseBool(GetEnv("MINIO_USE_SSL", "false"))
 
 	AppConfig = &Config{
 		App: AppConfigType{
-			Name: getEnv("APP_NAME", "Backend-Dinacom"),
-			Env:  getEnv("APP_ENV", "development"),
-			Port: getEnv("APP_PORT", "8080"),
+			Name: GetEnv("APP_NAME", "Backend-Dinacom"),
+			Env:  GetEnv("APP_ENV", "development"),
+			Port: GetEnv("APP_PORT", "8080"),
 		},
 		Database: DatabaseConfig{
-			Host:     getEnv("DB_HOST", "localhost"),
-			Port:     getEnv("DB_PORT", "5432"),
-			User:     getEnv("DB_USER", "postgres"),
-			Password: getEnv("DB_PASSWORD", "postgres"),
-			Name:     getEnv("DB_NAME", "test_crud_api"),
-			SSLMode:  getEnv("DB_SSL_MODE", "disable"),
-			Timezone: getEnv("DB_TIMEZONE", "Asia/Jakarta"),
+			Host:     GetEnv("DB_HOST", "localhost"),
+			Port:     GetEnv("DB_PORT", "5432"),
+			User:     GetEnv("DB_USER", "postgres"),
+			Password: GetEnv("DB_PASSWORD", "postgres"),
+			Name:     GetEnv("DB_NAME", "test_crud_api"),
+			SSLMode:  GetEnv("DB_SSL_MODE", "disable"),
+			Timezone: GetEnv("DB_TIMEZONE", "Asia/Jakarta"),
 		},
 		JWT: JWTConfig{
-			Secret:      getEnv("JWT_SECRET", "suifhs8fgsigsigfseuih"),
+			Secret:      GetEnv("JWT_SECRET", "suifhs8fgsigsigfseuih"),
 			ExpireHours: expireHours,
+		},
+		Minio: MinioConfig{
+			BaseUrl:   GetEnv("MINIO_BASE_URL", "http://localhost:9000"),
+			Endpoint:  GetEnv("MINIO_ENDPOINT", "localhost:9000"),
+			UseSSL:    minioSSL,
+			AccessKey: GetEnv("MINIO_ACCESS_KEY", "minioadmin"),
+			SecretKey: GetEnv("MINIO_SECRET_KEY", "minioadmin"),
+			Bucket:    GetEnv("MINIO_BUCKET", ""),
 		},
 	}
 
 	log.Println("Configuration loaded successfully")
 }
 
-func getEnv(key, defaultValue string) string {
+func GetEnv(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {
 		return defaultValue
