@@ -39,13 +39,18 @@ func (s *authService) Register(req request.RegisterRequest) (any, error) {
 		Email:    req.Email,
 		Password: &hashedPassword,
 		Role:     "USER",
+		Profile: models.UserProfile{
+			DateOfBirth: req.DateOfBirth,
+			Gender:      req.Gender,
+		},
 	}
 
 	if err := s.db.Create(&user).Error; err != nil {
 		return nil, errors.New("failed to create user")
 	}
 
-	return &user, nil
+	userResponse := helpers.ToUserResponse(&user)
+	return &userResponse, nil
 }
 
 func (s *authService) Login(req request.LoginRequest) (string, error) {

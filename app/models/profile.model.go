@@ -3,14 +3,19 @@ package models
 import "time"
 
 type UserProfile struct {
-	UserID        string    `gorm:"type:uuid;primaryKey" json:"user_id"`
-	DateOfBirth   time.Time `json:"date_of_birth" db:"date_of_birth"`
-	Gender        string    `json:"gender" db:"gender"`
-	HeightCM      float64   `json:"height_cm" db:"height_cm"`
-	WeightKG      float64   `json:"weight_kg" db:"weight_kg"`
-	ActivityLevel string    `json:"activity_level" db:"activity_level"`
+	ID            string    `gorm:"type:uuid;default:gen_random_uuid();primaryKey;"`
+	UserID        string    `gorm:"uniqueIndex;not null;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	DateOfBirth   time.Time `json:"date_of_birth"`
+	Gender        string    `json:"gender"`
+	HeightCM      *float64  `json:"height_cm"`
+	WeightKG      *float64  `json:"weight_kg"`
+	ActivityLevel *string   `json:"activity_level"`
 
-	User *User `gorm:"foreignKey:UserID;references:UserID;constraint:OnDelete:CASCADE;"`
+	User *User
 
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func (UserProfile) TableName() string {
+	return "user_profiles"
 }

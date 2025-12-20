@@ -10,7 +10,7 @@ type User struct {
 	PhoneNumber *string `gorm:"type:varchar(100);default:null" json:"phone_number"`
 	Role        string  `gorm:"type:varchar(20);default:'USER'" json:"role"`
 
-	Profile *UserProfile `gorm:"foreignKey:UserID;"`
+	Profile UserProfile `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
