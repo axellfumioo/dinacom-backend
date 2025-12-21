@@ -15,7 +15,8 @@ import (
 )
 
 type ProfileService interface {
-	UpdateAvatar(req request.UploadAvatarRequest) (*response.ProfileResponse, error)
+	UpdateProfile(userId string, req request.UpdateProfileRequest) (*response.ProfileResponse, error)
+	UploadAvatar(req request.UploadAvatarRequest) (*response.ProfileResponse, error)
 }
 
 type profileService struct {
@@ -27,7 +28,48 @@ func NewProfileService(db *gorm.DB, client *minio.Client) ProfileService {
 	return &profileService{db: db, client: client}
 }
 
-func (s *profileService) UpdateAvatar(req request.UploadAvatarRequest) (*response.ProfileResponse, error) {
+func (s *profileService) UpdateProfile(userId string, req request.UpdateProfileRequest) (*response.ProfileResponse, error) {
+	var existingProfile *models.UserProfile
+	if err := s.db.First(&existingProfile, "user_id", userId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("profile not found")
+		} else {
+			return nil, err
+		}
+	}
+
+	updates := map[string]interface{}{}
+
+	if req.DateOfBirth != nil {
+		updates["date_of_birth"] = &req.DateOfBirth
+	}
+
+	if req.Gender != nil {
+		updates["gender"] = &req.Gender
+	}
+
+	if req.WeightKG != nil {
+		updates["weight_kg"] = &req.WeightKG
+	}
+
+	if req.HeightCM != nil {
+		updates["height_cm"] = &req.HeightCM
+	}
+
+	if req.ActivityLevel != nil {
+		updates["activity_level"] = &req.ActivityLevel
+	}
+
+	if err := s.db.Model(&existingProfile).Updates(updates).Error; err != nil {
+		return nil, err
+	}
+
+	profileResponse := helpers.ToProfileResponse(existingProfile)
+
+	return &profileResponse, nil
+}
+
+func (s *profileService) UploadAvatar(req request.UploadAvatarRequest) (*response.ProfileResponse, error) {
 	var existingProfile *models.UserProfile
 	if err := s.db.First(&existingProfile, "user_id", req.UserID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {

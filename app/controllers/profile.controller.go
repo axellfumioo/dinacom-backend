@@ -9,6 +9,7 @@ import (
 )
 
 type ProfileController interface {
+	UpdateProfile(c *fiber.Ctx) error
 	UploadAvatar(c *fiber.Ctx) error
 }
 
@@ -20,6 +21,21 @@ func NewProfileController(profileService services.ProfileService) ProfileControl
 	return &profileController{profileService: profileService}
 }
 
+func (ctrl *profileController) UpdateProfile(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+
+	var req request.UpdateProfileRequest
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	profile, err := ctrl.profileService.UpdateProfile(userID, req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return helpers.SuccessResponse(c, "profile updated successfully", profile)
+}
+
 func (ctrl *profileController) UploadAvatar(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 
@@ -28,10 +44,13 @@ func (ctrl *profileController) UploadAvatar(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
-	avatar, err := ctrl.profileService.UpdateAvatar(request.UploadAvatarRequest{
+	avatar, err := ctrl.profileService.UploadAvatar(request.UploadAvatarRequest{
 		UserID: userID,
 		Avatar: file,
 	})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
 
 	return helpers.SuccessResponse(c, "avatar uploaded successfully", avatar)
 }
