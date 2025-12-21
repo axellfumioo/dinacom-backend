@@ -33,5 +33,5 @@ func (ctrl *profileController) UploadAvatar(c *fiber.Ctx) error {
 		Avatar: file,
 	})
 
-	return helpers.CreatedResponse(c, "avatar uploaded successfully", avatar)
+	return helpers.SuccessResponse(c, "avatar uploaded successfully", avatar)
 }
