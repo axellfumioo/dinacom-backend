@@ -39,7 +39,7 @@ func (s *authService) Register(req request.RegisterRequest) (any, error) {
 		Email:    req.Email,
 		Password: &hashedPassword,
 		Role:     "USER",
-		Profile: models.UserProfile{
+		Profile: &models.UserProfile{
 			DateOfBirth: req.DateOfBirth,
 			Gender:      req.Gender,
 		},

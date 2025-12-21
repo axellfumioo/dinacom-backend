@@ -6,12 +6,19 @@ import (
 )
 
 func ToUserResponse(user *models.User) response.UserResponse {
+	var profileResponse *response.ProfileResponse
+	if user.Profile != nil {
+		r := ToProfileResponse(user.Profile)
+		profileResponse = &r
+
+	}
 	return response.UserResponse{
 		UserID:      user.UserID,
 		FullName:    user.FullName,
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
 		Role:        user.Role,
+		Profile:     profileResponse,
 		CreatedAt:   user.CreatedAt,
 		UpdatedAt:   user.UpdatedAt,
 	}

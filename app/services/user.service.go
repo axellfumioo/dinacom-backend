@@ -53,7 +53,7 @@ func (s *userService) GetAllUsers(page, pageSize int) ([]response.UserResponse, 
 
 func (s *userService) GetUserSession(userId string) (*response.UserResponse, error) {
 	var existingUser models.User
-	if err := s.db.First(&existingUser, "user_id = ?", userId).Error; err != nil {
+	if err := s.db.Preload("Profile").First(&existingUser, "user_id = ?", userId).Error; err != nil {
 		return nil, errors.New("user not registered")
 	}
 
