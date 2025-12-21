@@ -12,7 +12,6 @@ type User struct {
 	RoleID *string
 	Role   *Role `gorm:"foreignKey:RoleID;references:ID"`
 
-	// 🔥 PENTING
 	Profile   *UserProfile `gorm:"foreignKey:UserID;references:ID" json:"profile"`
 	FoodScans []FoodScan   `gorm:"-" json:"food_scans"`
 

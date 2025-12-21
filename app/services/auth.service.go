@@ -23,46 +23,49 @@ func NewAuthService(db gorm.DB) AuthService {
 }
 
 func (s *authService) Register(req request.RegisterRequest) (any, error) {
-    var countUsers int64
-    s.db.Model(&models.User{}).Count(&countUsers)
+	var countUsers int64
+	s.db.Model(&models.User{}).Count(&countUsers)
 
-    // use value type, not pointer
-    var existingRole models.Role
-    roleName := "USER"
-    if countUsers < 3 {
-        roleName = "ADMIN"
-    }
-    if err := s.db.First(&existingRole, "role_name = ?", roleName).Error; err != nil {
-        return nil, err
-    }
+	// use value type, not pointer
+	var existingRole models.Role
+	roleName := "USER"
+	if countUsers < 3 {
+		roleName = "ADMIN"
+	}
+	if err := s.db.First(&existingRole, "role_name = ?", roleName).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("role not found")
+		}
+		return nil, err
+	}
 
-    var existingUser models.User
-    if err := s.db.First(&existingUser, "email = ?", req.Email).Error; err == nil {
-        return nil, errors.New("email is already registered")
-    }
+	var existingUser models.User
+	if err := s.db.First(&existingUser, "email = ?", req.Email).Error; err == nil {
+		return nil, errors.New("email is already registered")
+	}
 
-    hashedPassword, err := helpers.HashPassword(req.Password)
-    if err != nil {
-        return nil, err
-    }
+	hashedPassword, err := helpers.HashPassword(req.Password)
+	if err != nil {
+		return nil, err
+	}
 
-    user := &models.User{
-        FullName: req.Name,
-        Email:    req.Email,
-        Password: &hashedPassword,
-        RoleID:   &existingRole.ID, 
-        Profile: &models.UserProfile{
-            DateOfBirth: req.DateOfBirth,
-            Gender:      req.Gender,
-        },
-    }
+	user := &models.User{
+		FullName: req.Name,
+		Email:    req.Email,
+		Password: &hashedPassword,
+		RoleID:   &existingRole.ID,
+		Profile: &models.UserProfile{
+			DateOfBirth: req.DateOfBirth,
+			Gender:      req.Gender,
+		},
+	}
 
-    if err := s.db.Create(&user).Error; err != nil {
-        return nil, errors.New("failed to create user")
-    }
+	if err := s.db.Create(&user).Error; err != nil {
+		return nil, errors.New("failed to create user")
+	}
 
-    userResponse := helpers.ToUserResponse(user)
-    return &userResponse, nil
+	userResponse := helpers.ToUserResponse(user)
+	return &userResponse, nil
 }
 
 func (s *authService) Login(req request.LoginRequest) (string, error) {
