@@ -2,8 +2,8 @@ package services
 
 import (
 	"backend-dinakom/app/dto/request"
+	"backend-dinakom/app/helpers"
 	"backend-dinakom/configs"
-	"context"
 	"fmt"
 	"path/filepath"
 
@@ -27,30 +27,14 @@ func NewProfileService(db *gorm.DB, client *minio.Client) ProfileService {
 func (s *profileService) UpdateAvatar(req request.UploadAvatarRequest) (string, error) {
 	ext := filepath.Ext(req.Avatar.Filename)
 	object := fmt.Sprintf("avatars/%s%s", req.UserID, ext)
-	
+
 	baseUrl := configs.AppConfig.Minio.BaseUrl
 	bucket := configs.AppConfig.Minio.Bucket
 
-	src, err := req.Avatar.Open()
+	url, err := helpers.UploadFile(s.client, req.Avatar, baseUrl, bucket, object)
 	if err != nil {
-		return "", err
+		return "", nil
 	}
-	defer src.Close()
-
-	if _, err := s.client.PutObject(
-		context.Background(),
-		bucket,
-		object,
-		src,
-		req.Avatar.Size,
-		minio.PutObjectOptions{
-			ContentType: req.Avatar.Header.Get("Content-Type"),
-		},
-	); err != nil {
-		return "", err
-	}
-
-	url := fmt.Sprintf("%s/%s/%s", baseUrl, bucket, object)
 
 	return url, nil
 }

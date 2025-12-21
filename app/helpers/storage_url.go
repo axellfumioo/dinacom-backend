@@ -6,7 +6,7 @@ import (
 )
 
 func GenerateFileURL(bucket, object string) string {
-	baseURL := configs.GetEnv("STORAGE_PUBLIC_URL", "")
+	baseURL := configs.AppConfig.Minio.BaseUrl
 
 	return fmt.Sprintf(
 		"%s/%s/%s",
