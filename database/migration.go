@@ -8,8 +8,8 @@ import (
 func RunMigration() {
 	err := DB.AutoMigrate(
 		&models.User{},
-		// &models.UserProfile{},
-		// &models.Role{},
+		&models.UserProfile{},
+		&models.Role{},
 	)
 
 	if err != nil {

@@ -16,7 +16,7 @@ type UserService interface {
 	GetUserByID(userId string) (*response.UserResponse, error)
 	CreateUser(req request.CreateUserRequest) (*response.UserResponse, error)
 	UpdateUser(userId string, req request.UpdateUserRequest) (*response.UserResponse, error)
-	DeleteUser(userId string) error
+	DeleteUser(userID string) error
 	ChangePassword(userId string, req request.ChangePasswordRequest) error
 	GetUserByRoleName(roleName string) ([]response.UserResponse, error)
 	GetTotalUsers() (int64, error)
@@ -142,16 +142,15 @@ func (s *userService) UpdateUser(userId string, req request.UpdateUserRequest) (
 	return &userResponse, nil
 }
 
-func (s *userService) DeleteUser(userId string) error {
-	var user models.User
-	if err := s.db.First(&user, userId).Error; err != nil {
+func (s *userService) DeleteUser(userID string) error {
+	var user *models.User
+	if err := s.db.First(&user, "user_id = ?" , userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("user not found")
 		}
 		return errors.New("database error")
 	}
 
-	// Soft delete
 	if err := s.db.Delete(&user).Error; err != nil {
 		return errors.New("failed to delete user")
 	}

@@ -37,7 +37,7 @@ func (s *roleService) GetAllRoles() ([]response.RoleResponse, error) {
 }
 
 func (s *roleService) CreateRole(req request.CreateRoleRequest) (*response.RoleResponse, error) {
-	// Check if role exist
+	// Cek jika role ada
 	var existingRole models.Role
 	if err := s.db.Where("role_name = ?", req.Name).First(&existingRole).Error; err == nil {
 		return nil, errors.New("role with this name is already exist")

@@ -23,33 +23,46 @@ func NewAuthService(db gorm.DB) AuthService {
 }
 
 func (s *authService) Register(req request.RegisterRequest) (any, error) {
-	var existingUser *models.User
+    var countUsers int64
+    s.db.Model(&models.User{}).Count(&countUsers)
 
-	if err := s.db.First(&existingUser, "email = ?", req.Email).Error; err == nil {
-		return nil, errors.New("email is already registered")
-	}
+    // use value type, not pointer
+    var existingRole models.Role
+    roleName := "USER"
+    if countUsers < 3 {
+        roleName = "ADMIN"
+    }
+    if err := s.db.First(&existingRole, "role_name = ?", roleName).Error; err != nil {
+        return nil, err
+    }
 
-	hashedPassword, err := helpers.HashPassword(req.Password)
-	if err != nil {
-		return nil, err
-	}
+    var existingUser models.User
+    if err := s.db.First(&existingUser, "email = ?", req.Email).Error; err == nil {
+        return nil, errors.New("email is already registered")
+    }
 
-	user := models.User{
-		FullName: req.Name,
-		Email:    req.Email,
-		Password: &hashedPassword,
-		Profile: &models.UserProfile{
-			DateOfBirth: req.DateOfBirth,
-			Gender:      req.Gender,
-		},
-	}
+    hashedPassword, err := helpers.HashPassword(req.Password)
+    if err != nil {
+        return nil, err
+    }
 
-	if err := s.db.Create(&user).Error; err != nil {
-		return nil, errors.New("failed to create user")
-	}
+    user := &models.User{
+        FullName: req.Name,
+        Email:    req.Email,
+        Password: &hashedPassword,
+        RoleID:   &existingRole.ID, 
+        Profile: &models.UserProfile{
+            DateOfBirth: req.DateOfBirth,
+            Gender:      req.Gender,
+        },
+    }
 
-	userResponse := helpers.ToUserResponse(&user)
-	return &userResponse, nil
+    if err := s.db.Create(&user).Error; err != nil {
+        return nil, errors.New("failed to create user")
+    }
+
+    userResponse := helpers.ToUserResponse(user)
+    return &userResponse, nil
 }
 
 func (s *authService) Login(req request.LoginRequest) (string, error) {

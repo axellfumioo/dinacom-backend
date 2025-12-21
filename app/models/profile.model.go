@@ -4,7 +4,7 @@ import "time"
 
 type UserProfile struct {
 	ID            string    `gorm:"type:uuid;default:gen_random_uuid();primaryKey;"`
-	UserID        string    `gorm:"uniqueIndex;not null;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	UserID        string    `gorm:"uniqueIndex;foreignKey:UserID;references:UserID;not null;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Avatar        *string   `gorm:"type:varchar(500);" json:"avatar"`
 	DateOfBirth   time.Time `json:"date_of_birth"`
 	Gender        string    `json:"gender"`
