@@ -7,9 +7,9 @@ import (
 
 func RunMigration() {
 	err := DB.AutoMigrate(
-		&models.User{},
-		&models.UserProfile{},
 		&models.Role{},
+		&models.User{},
+
 	)
 
 	if err != nil {

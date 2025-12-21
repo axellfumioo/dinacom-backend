@@ -4,7 +4,6 @@ import "time"
 
 type UserProfile struct {
 	ID            string    `gorm:"type:uuid;default:gen_random_uuid();primaryKey;"`
-	UserID        string    `gorm:"uniqueIndex;foreignKey:UserID;references:UserID;not null;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Avatar        *string   `gorm:"type:varchar(500);" json:"avatar"`
 	DateOfBirth   time.Time `json:"date_of_birth"`
 	Gender        string    `json:"gender"`
@@ -12,8 +11,8 @@ type UserProfile struct {
 	WeightKG      *float64  `json:"weight_kg"`
 	ActivityLevel *string   `json:"activity_level"`
 
-	User *User
-
+	UserID    string    `gorm:"type:uuid;not null;uniqueIndex"`
+	User      *User     `gorm:"foreignKey:UserID;references:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

@@ -12,7 +12,7 @@ type User struct {
 	RoleID *string `json:"role_id"`
 	Role   *Role `gorm:"foreignKey:RoleID"` // relasi ke Role
 
-	Profile *UserProfile `gorm:"foreignKey:UserID;"`
+	Profile *UserProfile `gorm:"-"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
