@@ -9,7 +9,7 @@ type User struct {
 	FullName    string  `json:"full_name"`
 	PhoneNumber *string `gorm:"type:varchar(100);default:null" json:"phone_number"`
 
-	RoleID *uint `json:"role_id"`
+	RoleID *string `json:"role_id"`
 	Role   *Role `gorm:"foreignKey:RoleID"` // relasi ke Role
 
 	Profile *UserProfile `gorm:"foreignKey:UserID;"`

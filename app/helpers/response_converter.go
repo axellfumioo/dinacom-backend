@@ -60,3 +60,26 @@ func ToProfilesResponse(profiles []models.UserProfile) []response.ProfileRespons
 	}
 	return profilesResponse
 }
+
+func ToRoleResponse(role *models.Role) response.RoleResponse {
+	var usersResponse []response.UserResponse
+	if role.Users != nil {
+		r := ToUsersResponse(role.Users)
+		usersResponse = r
+	}
+	return response.RoleResponse{
+		RoleID:    role.ID,
+		RoleName:  role.RoleName,
+		Users:     &usersResponse,
+		UpdatedAt: role.UpdatedAt,
+		CreatedAt: role.CreatedAt,
+	}
+}
+
+func ToRolesResponse(roles []models.Role) []response.RoleResponse {
+	var rolesResponse []response.RoleResponse
+	for _, role := range roles {
+		rolesResponse = append(rolesResponse, ToRoleResponse(&role))
+	}
+	return rolesResponse
+}
