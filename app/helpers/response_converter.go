@@ -83,3 +83,28 @@ func ToRolesResponse(roles []models.Role) []response.RoleResponse {
 	}
 	return rolesResponse
 }
+
+func ToFoodScanResponse(fs *models.FoodScan) response.FoodScanResponse {
+	var userResponse response.UserResponse
+	if fs.User != nil {
+		r := ToUserResponse(fs.User)
+		userResponse = r
+	}
+	return response.FoodScanResponse{
+		ID:        fs.ID,
+		ImageURL:  fs.ImageURL,
+		Status:    fs.Status,
+		UserID:    fs.UserID,
+		User:      &userResponse,
+		CreatedAt: fs.CreatedAt,
+		UpdatedAt: fs.UpdatedAt,
+	}
+}
+
+func ToFoodScansResponse(foodScans []models.FoodScan) []response.FoodScanResponse {
+	var foodScansResponse []response.FoodScanResponse
+	for _, fs := range foodScans {
+		foodScansResponse = append(foodScansResponse, ToFoodScanResponse(&fs))
+	}
+	return foodScansResponse
+}
