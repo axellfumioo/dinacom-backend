@@ -24,3 +24,32 @@ func ToUsersResponse(users []models.User) []response.UserResponse {
 	}
 	return usersResponse
 }
+
+func ToProfileResponse(profile *models.UserProfile) response.ProfileResponse {
+	var userResponse *response.UserResponse
+	if profile.User != nil {
+		r := ToUserResponse(profile.User)
+		userResponse = &r
+	}
+
+	return response.ProfileResponse{
+		ID:            profile.ID,
+		UserID:        profile.UserID,
+		Avatar:        profile.Avatar,
+		Gender:        profile.Gender,
+		DateOfBirth:   profile.DateOfBirth,
+		HeightCM:      profile.HeightCM,
+		WeightKG:      profile.WeightKG,
+		ActivityLevel: profile.ActivityLevel,
+		User:          userResponse,
+		CreatedAt:     profile.CreatedAt,
+	}
+}
+
+func ToProfilesResponse(profiles []models.UserProfile) []response.ProfileResponse {
+	var profilesResponse []response.ProfileResponse
+	for _, profile := range profiles {
+		profilesResponse = append(profilesResponse, ToProfileResponse(&profile))
+	}
+	return profilesResponse
+}
