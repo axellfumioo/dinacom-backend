@@ -29,7 +29,7 @@ func NewFoodScanService(db *gorm.DB, client *minio.Client) FoodScanService {
 
 func (s *foodScanService) ScanFood(userID string, req request.ScanFoodRequest) (*response.FoodScanResponse, error) {
 	ext := filepath.Ext(req.Image.Filename)
-	object := fmt.Sprintf("ext/%s%s", userID, ext)
+	object := fmt.Sprintf("foodscans/%s%s", userID, ext)
 
 	baseUrl := configs.AppConfig.Minio.BaseUrl
 	bucket := configs.AppConfig.Minio.Bucket
@@ -39,14 +39,14 @@ func (s *foodScanService) ScanFood(userID string, req request.ScanFoodRequest) (
 		return nil, err
 	}
 
-	foodScan := models.FoodScan{
+	foodScan := &models.FoodScan{
 		ImageURL: url,
 		UserID:   userID,
 	}
-	if err := s.db.Create(foodScan).Error; err != nil {
+	if err := s.db.Create(&foodScan).Error; err != nil {
 		return nil, errors.New("create food scan error")
 	}
 
-	foodScanResponse := helpers.ToFoodScanResponse(&foodScan)
+	foodScanResponse := helpers.ToFoodScanResponse(foodScan)
 	return &foodScanResponse, nil
 }

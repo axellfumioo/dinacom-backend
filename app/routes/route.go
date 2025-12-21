@@ -17,4 +17,5 @@ func SetupRouter(app *fiber.App) {
 	AuthRoute(api)
 	ProfileRoute(api)
 	RoleRoute(api)
+	FoodScanRoute(api)
 }
