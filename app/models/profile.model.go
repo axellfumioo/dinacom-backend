@@ -12,7 +12,7 @@ type UserProfile struct {
 	ActivityLevel *string   `json:"activity_level"`
 
 	UserID    string    `gorm:"type:uuid;not null;uniqueIndex"`
-	User      *User     `gorm:"foreignKey:UserID;references:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	User      *User     `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	CreatedAt time.Time `json:"created_at"`
 }
 

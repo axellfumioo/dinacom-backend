@@ -3,19 +3,21 @@ package models
 import "time"
 
 type User struct {
-	UserID      string  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	Email       string  `gorm:"uniqueIndex;type:varchar(100);not null" json:"email"`
-	Password    *string `gorm:"type:varchar(100);default:null" json:"password"`
-	FullName    string  `json:"full_name"`
-	PhoneNumber *string `gorm:"type:varchar(100);default:null" json:"phone_number"`
+	ID          string  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	Email       string  `gorm:"uniqueIndex;type:varchar(100);not null"`
+	Password    *string `gorm:"type:varchar(100);default:null"`
+	FullName    string
+	PhoneNumber *string `gorm:"type:varchar(100);default:null"`
 
-	RoleID *string `json:"role_id"`
-	Role   *Role `gorm:"foreignKey:RoleID"` // relasi ke Role
+	RoleID *string
+	Role   *Role `gorm:"foreignKey:RoleID;references:ID"`
 
-	Profile *UserProfile `gorm:"-"`
+	// 🔥 PENTING
+	Profile   *UserProfile `gorm:"foreignKey:UserID;references:ID" json:"profile"`
+	FoodScans []FoodScan   `gorm:"-" json:"food_scans"`
 
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (User) TableName() string {

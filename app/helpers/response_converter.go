@@ -13,7 +13,7 @@ func ToUserResponse(user *models.User) response.UserResponse {
 
 	}
 	return response.UserResponse{
-		UserID:      user.UserID,
+		UserID:      user.ID,
 		FullName:    user.FullName,
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,

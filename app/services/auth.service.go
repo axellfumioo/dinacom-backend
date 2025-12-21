@@ -79,7 +79,7 @@ func (s *authService) Login(req request.LoginRequest) (string, error) {
 		return "", errors.New("incorrect password")
 	}
 
-	access_token, err := helpers.GenerateToken(existingUser.UserID, existingUser.Email, "USER")
+	access_token, err := helpers.GenerateToken(existingUser.ID, existingUser.Email, "USER")
 	if err != nil {
 		return "", errors.New("failed to generate token")
 	}

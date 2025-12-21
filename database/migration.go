@@ -9,7 +9,8 @@ func RunMigration() {
 	err := DB.AutoMigrate(
 		&models.Role{},
 		&models.User{},
-
+		&models.UserProfile{},
+		&models.FoodScan{},
 	)
 
 	if err != nil {

@@ -53,7 +53,7 @@ func (s *userService) GetAllUsers(page, pageSize int) ([]response.UserResponse, 
 
 func (s *userService) GetUserSession(userId string) (*response.UserResponse, error) {
 	var existingUser models.User
-	if err := s.db.Preload("Profile").First(&existingUser, "user_id = ?", userId).Error; err != nil {
+	if err := s.db.Preload("Profile").First(&existingUser, "id = ?", userId).Error; err != nil {
 		return nil, errors.New("user not registered")
 	}
 
@@ -103,9 +103,9 @@ func (s *userService) CreateUser(req request.CreateUserRequest) (*response.UserR
 	return &userResponse, nil
 }
 
-func (s *userService) UpdateUser(userId string, req request.UpdateUserRequest) (*response.UserResponse, error) {
+func (s *userService) UpdateUser(Id string, req request.UpdateUserRequest) (*response.UserResponse, error) {
 	var user models.User
-	if err := s.db.First(&user, userId).Error; err != nil {
+	if err := s.db.First(&user, Id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("user not found")
 		}
@@ -115,7 +115,7 @@ func (s *userService) UpdateUser(userId string, req request.UpdateUserRequest) (
 	// Check if email already used by another user
 	if req.Email != "" && req.Email != user.Email {
 		var existingUser models.User
-		if err := s.db.Where("email = ? AND user_id != ?", req.Email, userId).First(&existingUser).Error; err == nil {
+		if err := s.db.Where("email = ? AND id != ?", req.Email, Id).First(&existingUser).Error; err == nil {
 			return nil, errors.New("email already used by another user")
 		}
 	}
@@ -144,7 +144,7 @@ func (s *userService) UpdateUser(userId string, req request.UpdateUserRequest) (
 
 func (s *userService) DeleteUser(userID string) error {
 	var user *models.User
-	if err := s.db.First(&user, "user_id = ?" , userID).Error; err != nil {
+	if err := s.db.First(&user, "id = ?" , userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("user not found")
 		}
@@ -158,9 +158,9 @@ func (s *userService) DeleteUser(userID string) error {
 	return nil
 }
 
-func (s *userService) ChangePassword(userId string, req request.ChangePasswordRequest) error {
+func (s *userService) ChangePassword(Id string, req request.ChangePasswordRequest) error {
 	var user models.User
-	if err := s.db.First(&user, userId).Error; err != nil {
+	if err := s.db.First(&user, Id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("user not found")
 		}
@@ -188,7 +188,7 @@ func (s *userService) ChangePassword(userId string, req request.ChangePasswordRe
 
 func (s *userService) GetUserByRoleName(roleName string) ([]response.UserResponse, error) {
 	var users []models.User
-	if err := s.db.Joins("JOIN roles ON roles.id = users.role_id").Where("roles.name = ?", roleName).Find(&users).Error; err != nil {
+	if err := s.db.Joins("JOIN roles ON roles.id = users.role_id").Where("roles.role_name = ?", roleName).Find(&users).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("user not found")
 		}
