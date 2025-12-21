@@ -17,7 +17,7 @@ func ToUserResponse(user *models.User) response.UserResponse {
 		FullName:    user.FullName,
 		Email:       user.Email,
 		PhoneNumber: user.PhoneNumber,
-		Role:        user.Role,
+		Role:        nil,
 		Profile:     profileResponse,
 		CreatedAt:   user.CreatedAt,
 		UpdatedAt:   user.UpdatedAt,

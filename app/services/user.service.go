@@ -92,7 +92,6 @@ func (s *userService) CreateUser(req request.CreateUserRequest) (*response.UserR
 		FullName:    req.Name,
 		Email:       req.Email,
 		Password:    &hashedPassword,
-		Role:        req.Role,
 		PhoneNumber: &req.PhoneNumber,
 	}
 
@@ -131,9 +130,9 @@ func (s *userService) UpdateUser(userId string, req request.UpdateUserRequest) (
 	if req.PhoneNumber != "" {
 		user.PhoneNumber = &req.PhoneNumber
 	}
-	if req.Role != "" {
-		user.Role = req.Role
-	}
+	// if req.Role != "" {
+	// 	user.Role = req.Role
+	// }
 
 	if err := s.db.Save(&user).Error; err != nil {
 		return nil, errors.New("failed to update user")
