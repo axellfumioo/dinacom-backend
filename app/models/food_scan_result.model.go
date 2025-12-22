@@ -14,7 +14,7 @@ type FoodScanResult struct {
 	Protein     float64
 	Fat         float64
 	Carbs       float64
-	Ingredients []string `gorm:"type:json"` // optional
+	Ingredients pq.StringArray `gorm:"type:text[]"` // optional
 
 	FoodScanID string    `gorm:"type:uuid;not null;uniqueIndex;" json:"food_scan_id"`
 	FoodScan   *FoodScan `gorm:"foreignKey:FoodScanID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"food_scan"`
