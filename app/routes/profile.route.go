@@ -11,7 +11,7 @@ import (
 )
 
 func ProfileRoute(r fiber.Router) {
-	minioClient := configs.NewMinioClient()
+	minioClient := configs.MinioClient
 	profileService := services.NewProfileService(database.GetDb(), minioClient)
 	profileController := controllers.NewProfileController(profileService)
 

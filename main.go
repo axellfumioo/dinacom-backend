@@ -17,7 +17,10 @@ func main() {
 	// Connect ke database
 	database.ConnectDatabase()
 	database.RunMigration()
+
+	// Init Client
 	configs.InitQueueClient()
+	configs.InitMinioClient()
 
 	app := fiber.New(fiber.Config{
 		AppName:      configs.AppConfig.App.Name,
