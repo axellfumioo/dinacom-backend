@@ -39,7 +39,7 @@ func (s *foodScanService) GetAllFoodScans(page int, pageSize int) (*[]response.F
 
 	offset := (page - 1) * pageSize
 
-	if err := s.db.Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&foodScans).Error; err != nil {
+	if err := s.db.Preload("User").Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&foodScans).Error; err != nil {
 		return nil, 0, errors.New("failed to get foodScan history")
 	}
 
