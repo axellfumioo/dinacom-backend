@@ -1,6 +1,9 @@
 package router
 
 import (
+	"backend-dinakom/app/workers"
+	"backend-dinakom/database"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -18,4 +21,6 @@ func SetupRouter(app *fiber.App) {
 	ProfileRoute(api)
 	RoleRoute(api)
 	FoodScanRoute(api)
+
+	go workers.StartWorker(database.GetDb())
 }

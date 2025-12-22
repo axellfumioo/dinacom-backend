@@ -11,3 +11,11 @@ func NewAsynqServer() *asynq.Server {
 	)
 	return server
 }
+
+func NewAsynqClient() *asynq.Client {
+	client := asynq.NewClient(asynq.RedisClientOpt{
+		Addr: AppConfig.Redis.ADDRESS,
+	})
+
+	return client
+}

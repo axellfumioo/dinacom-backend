@@ -13,7 +13,7 @@ import (
 
 func main() {
 	configs.LoadConfig()
-	
+
 	// Connect ke database
 	database.ConnectDatabase()
 	database.RunMigration()
@@ -23,6 +23,8 @@ func main() {
 		ErrorHandler: middlewares.ErrorMiddleware,
 	})
 	router.SetupRouter(app)
+	redisclient := configs.NewAsynqClient()
+	defer redisclient.Close()
 
 	port := configs.AppConfig.App.Port
 	log.Printf("Starting %s server on port %s", configs.AppConfig.App.Name, port)
