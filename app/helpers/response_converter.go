@@ -108,3 +108,31 @@ func ToFoodScansResponse(foodScans []models.FoodScan) []response.FoodScanRespons
 	}
 	return foodScansResponse
 }
+
+func ToFoodScanResultResponse(fsResult *models.FoodScanResult) response.FoodScanResultResponse {
+	var foodScanResponse response.FoodScanResponse
+	if fsResult.FoodScan != nil {
+		r := ToFoodScanResponse(fsResult.FoodScan)
+		foodScanResponse = r
+	}
+	return response.FoodScanResultResponse{
+		ID:          fsResult.ID,
+		FoodNames:   fsResult.FoodNames,
+		Calories:    fsResult.Calories,
+		Protein:     fsResult.Protein,
+		Fat:         fsResult.Fat,
+		Carbs:       fsResult.Carbs,
+		Ingredients: fsResult.Ingredients,
+		FoodScanID:  fsResult.FoodScanID,
+		FoodScan:    &foodScanResponse,
+		CreatedAt:   fsResult.CreatedAt,
+	}
+}
+
+func ToFoodScanResultsResponse(foodScans []models.FoodScanResult) []response.FoodScanResultResponse {
+	var foodScanResultResponse []response.FoodScanResultResponse
+	for _, fsresult := range foodScans {
+		foodScanResultResponse = append(foodScanResultResponse, ToFoodScanResultResponse(&fsresult))
+	}
+	return foodScanResultResponse
+}
