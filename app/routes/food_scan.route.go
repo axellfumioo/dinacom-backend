@@ -19,4 +19,5 @@ func FoodScanRoute(r fiber.Router) {
 	foodScans := r.Group("foodscans")
 	foodScans.Use(middlewares.AuthMiddleware())
 	foodScans.Post("/scan", foodScanController.ScanFood)
+	foodScans.Get("/user", foodScanController.GetUserFoodScans)
 }

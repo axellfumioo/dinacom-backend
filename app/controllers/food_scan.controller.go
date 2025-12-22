@@ -9,6 +9,7 @@ import (
 )
 
 type FoodScanController interface {
+	GetUserFoodScans(c *fiber.Ctx) error
 	ScanFood(c *fiber.Ctx) error
 }
 
@@ -18,6 +19,16 @@ type foodScanController struct {
 
 func NewFoodScanController(foodScanService services.FoodScanService) FoodScanController {
 	return &foodScanController{foodScanService: foodScanService}
+}
+
+func (ctrl *foodScanController) GetUserFoodScans(c *fiber.Ctx) error {
+	userId := c.Locals("user_id").(string)
+
+	foodScans, err := ctrl.foodScanService.GetUserFoodScans(userId)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return helpers.SuccessResponse(c, "foodscans retrieved successfully", foodScans)
 }
 
 func (ctrl *foodScanController) ScanFood(c *fiber.Ctx) error {
