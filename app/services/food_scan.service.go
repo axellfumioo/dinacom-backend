@@ -15,7 +15,8 @@ import (
 )
 
 type FoodScanService interface {
-	GetUserFoodScans(oid string) (*[]response.FoodScanResponse, error)
+	GetAllFoodScans(page int, pageSize int) (*[]response.FoodScanResponse, int64, error)
+	GetUserFoodScans(id string) (*[]response.FoodScanResponse, error)
 	ScanFood(userID string, req request.ScanFoodRequest) (*response.FoodScanResponse, error)
 }
 
@@ -26,6 +27,24 @@ type foodScanService struct {
 
 func NewFoodScanService(db *gorm.DB, client *minio.Client) FoodScanService {
 	return &foodScanService{db: db, client: client}
+}
+
+func (s *foodScanService) GetAllFoodScans(page int, pageSize int) (*[]response.FoodScanResponse, int64, error) {
+	var foodScans []models.FoodScan
+	var totalRows int64
+
+	if err := s.db.Model(&models.FoodScan{}).Count(&totalRows).Error; err != nil {
+		return nil, 0, errors.New("foodscan history data not founds")
+	}
+
+	offset := (page - 1) * pageSize
+
+	if err := s.db.Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&foodScans).Error; err != nil {
+		return nil, 0, errors.New("failed to get foodScan history")
+	}
+
+	foodScansResponse := helpers.ToFoodScansResponse(foodScans)
+	return &foodScansResponse, totalRows, nil
 }
 
 func (s *foodScanService) GetUserFoodScans(id string) (*[]response.FoodScanResponse, error) {
@@ -43,7 +62,6 @@ func (s *foodScanService) GetUserFoodScans(id string) (*[]response.FoodScanRespo
 	}
 
 	foodScansSesponse := helpers.ToFoodScansResponse(foodScans)
-
 	return &foodScansSesponse, nil
 }
 
