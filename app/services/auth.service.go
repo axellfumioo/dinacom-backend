@@ -71,7 +71,7 @@ func (s *authService) Register(req request.RegisterRequest) (any, error) {
 func (s *authService) Login(req request.LoginRequest) (string, error) {
 	var existingUser *models.User
 
-	if err := s.db.First(&existingUser, "email = ?", req.Email).Error; err != nil {
+	if err := s.db.Preload("Role").First(&existingUser, "email = ?", req.Email).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return "", errors.New("user is not registered")
 		}
@@ -82,7 +82,7 @@ func (s *authService) Login(req request.LoginRequest) (string, error) {
 		return "", errors.New("incorrect password")
 	}
 
-	access_token, err := helpers.GenerateToken(existingUser.ID, existingUser.Email, "USER")
+	access_token, err := helpers.GenerateToken(existingUser.ID, existingUser.Email, existingUser.Role.RoleName)
 	if err != nil {
 		return "", errors.New("failed to generate token")
 	}
