@@ -13,6 +13,7 @@ type Config struct {
 	Database DatabaseConfig
 	JWT      JWTConfig
 	Minio    MinioConfig
+	Redis    RedisConfig
 }
 
 type AppConfigType struct {
@@ -45,6 +46,11 @@ type MinioConfig struct {
 	Endpoint  string
 }
 
+type RedisConfig struct {
+	ADDRESS    string
+	CONCURENCY int
+}
+
 var AppConfig *Config
 
 func LoadConfig() {
@@ -55,6 +61,7 @@ func LoadConfig() {
 
 	expireHours, _ := strconv.Atoi(GetEnv("JWT_EXPIRE_HOURS", "24"))
 	minioSSL, _ := strconv.ParseBool(GetEnv("MINIO_USE_SSL", "false"))
+	concurency, _ := strconv.Atoi(GetEnv("REDIS_CONCURENCY", "5"))
 
 	AppConfig = &Config{
 		App: AppConfigType{
@@ -82,6 +89,10 @@ func LoadConfig() {
 			AccessKey: GetEnv("MINIO_ACCESS_KEY", "minioadmin"),
 			SecretKey: GetEnv("MINIO_SECRET_KEY", "minioadmin"),
 			Bucket:    GetEnv("MINIO_BUCKET", ""),
+		},
+		Redis: RedisConfig{
+			ADDRESS:    GetEnv("REDIS_ADDRESS", "localhost:6379"),
+			CONCURENCY: concurency,
 		},
 	}
 
