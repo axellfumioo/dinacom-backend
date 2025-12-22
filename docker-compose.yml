@@ -1,6 +1,14 @@
 version: '3.8'
 
 services:
+  redis:
+    image: redis:7-alpine
+    container_name: backend_dinacom_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend_dinacom_network
+    restart: unless-stopped
   minio:
     image: minio/minio
     container_name: minio
