@@ -14,7 +14,7 @@ func RoleRoute(r fiber.Router) {
 	roleController := controllers.NewRoleController(roleService)
 
 	roles := r.Group("roles")
-	roles.Use(middlewares.AuthMiddleware(), middlewares.RoleMiddleware("USER"))
+	roles.Use(middlewares.AuthMiddleware(), middlewares.RoleMiddleware("ADMIN"))
 	{
 		roles.Get("", roleController.GetAllRoles)
 		roles.Post("create", roleController.CreateRole)

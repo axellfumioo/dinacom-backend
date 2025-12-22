@@ -11,6 +11,7 @@ func RunMigration() {
 		&models.User{},
 		&models.UserProfile{},
 		&models.FoodScan{},
+		&models.FoodScanResult{},
 	)
 
 	if err != nil {

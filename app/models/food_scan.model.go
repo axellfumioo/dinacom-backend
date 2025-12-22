@@ -16,6 +16,9 @@ type FoodScan struct {
 	UserID string `gorm:"type:uuid;not null;"`
 	User   *User  `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 
+	// Result A.I
+	Result *FoodScanResult `gorm:"foreignKey:FoodScanID;references:ID" json:"result"`
+
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
