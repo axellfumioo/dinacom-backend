@@ -12,10 +12,14 @@ func NewAsynqServer() *asynq.Server {
 	return server
 }
 
-func NewAsynqClient() *asynq.Client {
-	client := asynq.NewClient(asynq.RedisClientOpt{
-		Addr: AppConfig.Redis.ADDRESS,
-	})
+var QueueClient *asynq.Client
 
-	return client
+func InitQueueClient() *asynq.Client {
+	if QueueClient == nil {
+		client := asynq.NewClient(asynq.RedisClientOpt{
+			Addr: AppConfig.Redis.ADDRESS,
+		})
+		QueueClient = client
+	}
+	return QueueClient
 }

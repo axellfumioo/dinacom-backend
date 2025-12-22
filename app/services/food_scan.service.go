@@ -5,11 +5,14 @@ import (
 	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
+	"backend-dinakom/app/types/payload"
 	"backend-dinakom/configs"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
 
+	"github.com/hibiken/asynq"
 	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
 )
@@ -21,12 +24,13 @@ type FoodScanService interface {
 }
 
 type foodScanService struct {
-	db     *gorm.DB
-	client *minio.Client
+	db          *gorm.DB
+	minioClient *minio.Client
+	queueClient *asynq.Client
 }
 
-func NewFoodScanService(db *gorm.DB, client *minio.Client) FoodScanService {
-	return &foodScanService{db: db, client: client}
+func NewFoodScanService(db *gorm.DB, client *minio.Client, queueClient *asynq.Client) FoodScanService {
+	return &foodScanService{db: db, minioClient: client, queueClient: queueClient}
 }
 
 func (s *foodScanService) GetAllFoodScans(page int, pageSize int) (*[]response.FoodScanResponse, int64, error) {
@@ -72,7 +76,7 @@ func (s *foodScanService) ScanFood(userID string, req request.ScanFoodRequest) (
 	baseUrl := configs.AppConfig.Minio.BaseUrl
 	bucket := configs.AppConfig.Minio.Bucket
 
-	url, err := helpers.UploadFile(s.client, &req.Image, baseUrl, bucket, object)
+	url, err := helpers.UploadFile(s.minioClient, &req.Image, baseUrl, bucket, object)
 	if err != nil {
 		return nil, err
 	}
@@ -84,6 +88,16 @@ func (s *foodScanService) ScanFood(userID string, req request.ScanFoodRequest) (
 	if err := s.db.Create(&foodScan).Error; err != nil {
 		return nil, errors.New("create food scan error")
 	}
+
+	payload := payload.FoodScanPayload{
+		FoodScanID: foodScan.ID,
+		UserID:     userID,
+		ImageURL:   url,
+	}
+
+	b, _ := json.Marshal(payload)
+	task := asynq.NewTask("foodscan:process", b)
+	s.queueClient.Enqueue(task)
 
 	foodScanResponse := helpers.ToFoodScanResponse(foodScan)
 	return &foodScanResponse, nil

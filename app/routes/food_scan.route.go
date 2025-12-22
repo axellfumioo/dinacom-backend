@@ -12,8 +12,9 @@ import (
 
 func FoodScanRoute(r fiber.Router) {
 	minioClient := configs.NewMinioClient()
+	queueClient := configs.QueueClient
 
-	foodScanService := services.NewFoodScanService(database.GetDb(), minioClient)
+	foodScanService := services.NewFoodScanService(database.GetDb(), minioClient, queueClient)
 	foodScanController := controllers.NewFoodScanController(foodScanService)
 
 	foodScans := r.Group("foodscans")

@@ -17,14 +17,14 @@ func main() {
 	// Connect ke database
 	database.ConnectDatabase()
 	database.RunMigration()
+	configs.InitQueueClient()
 
 	app := fiber.New(fiber.Config{
 		AppName:      configs.AppConfig.App.Name,
 		ErrorHandler: middlewares.ErrorMiddleware,
 	})
 	router.SetupRouter(app)
-	redisclient := configs.NewAsynqClient()
-	defer redisclient.Close()
+	defer configs.QueueClient.Close()
 
 	port := configs.AppConfig.App.Port
 	log.Printf("Starting %s server on port %s", configs.AppConfig.App.Name, port)

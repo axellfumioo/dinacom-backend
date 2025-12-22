@@ -14,20 +14,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type JobHandler interface {
-	FoodScanProcess() error
-}
-
-type jobHandler struct {
-	ctx *context.Context
-	t   *asynq.Task
-	db  *gorm.DB
-}
-
-func NewJobHandler(db gorm.DB, ctx context.Context, t *asynq.Task) JobHandler {
-	return &jobHandler{db: &db, ctx: &ctx, t: t}
-}
-
 func fetchAI(imageURL string) (string, error) {
 	// Simulasi fetch ke AI
 	time.Sleep(2 * time.Second)
@@ -47,14 +33,14 @@ func fetchAI(imageURL string) (string, error) {
 	return string(jsonBytes), nil
 }
 
-func (s *jobHandler) FoodScanProcess() error {
+func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	var payload payload.FoodScanPayload
-	if err := json.Unmarshal(s.t.Payload(), &payload); err != nil {
+	if err := json.Unmarshal(t.Payload(), &payload); err != nil {
 		return err
 	}
 
 	var fs models.FoodScan
-	if err := s.db.Where("id = ? AND user_id = ?", payload.FoodScanID, payload.UserID).Error; err != nil {
+	if err := db.Where("id = ? AND user_id = ?", &payload.FoodScanID, &payload.UserID).First(&fs).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("foodscan data not found")
 		}
@@ -63,7 +49,9 @@ func (s *jobHandler) FoodScanProcess() error {
 
 	result, err := fetchAI(payload.ImageURL)
 	if err != nil {
-		s.db.Model(&fs).Update("Status", "Failed")
+		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
+			return err
+		}
 		return err
 	}
 
@@ -81,11 +69,14 @@ func (s *jobHandler) FoodScanProcess() error {
 		Fat:        jsonResult.Fat,
 	}
 
-	if err := s.db.Create(&fsResult).Error; err != nil {
+	if err := db.Create(&fsResult).Error; err != nil {
+		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
+			return err
+		}
 		return err
 	}
 
-	if err := s.db.Model(&fs).Updates(&models.FoodScan{Status: "SUCCESS"}).Error; err != nil {
+	if err := db.Model(&fs).Update("Status", "SUCCESS").Error; err != nil {
 		return err
 	}
 
