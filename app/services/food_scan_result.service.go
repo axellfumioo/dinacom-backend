@@ -23,7 +23,7 @@ func NewFoodScanResultService(db *gorm.DB) FoodScanResultService {
 
 func (s *foodScanResultService) GetResultByID(id string) (*response.FoodScanResultResponse, error) {
 	var existingResult models.FoodScanResult
-	if err := s.db.First(&existingResult, id).Error; err != nil {
+	if err := s.db.Preload("FoodScan").First(&existingResult, "id = ?", id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("result not found")
 		}

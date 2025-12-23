@@ -21,6 +21,7 @@ func SetupRouter(app *fiber.App) {
 	ProfileRoute(api)
 	RoleRoute(api)
 	FoodScanRoute(api)
+	FoodScanResultRoute(api)
 	UserMealRoute(api)
 
 	go workers.StartWorker(database.GetDb())
