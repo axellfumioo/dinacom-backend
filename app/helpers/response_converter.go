@@ -116,15 +116,15 @@ func ToFoodScanResultResponse(fsResult *models.FoodScanResult) response.FoodScan
 		foodScanResponse = r
 	}
 	return response.FoodScanResultResponse{
-		ID:          fsResult.ID,
-		FoodNames:   fsResult.FoodNames,
-		Calories:    fsResult.Calories,
-		Protein:     fsResult.Protein,
-		Fat:         fsResult.Fat,
-		Carbs:       fsResult.Carbs,
-		FoodScanID:  fsResult.FoodScanID,
-		FoodScan:    &foodScanResponse,
-		CreatedAt:   fsResult.CreatedAt,
+		ID:         fsResult.ID,
+		FoodNames:  fsResult.FoodNames,
+		Calories:   fsResult.Calories,
+		Protein:    fsResult.Protein,
+		Fat:        fsResult.Fat,
+		Carbs:      fsResult.Carbs,
+		FoodScanID: fsResult.FoodScanID,
+		FoodScan:   &foodScanResponse,
+		CreatedAt:  fsResult.CreatedAt,
 	}
 }
 
@@ -134,4 +134,31 @@ func ToFoodScanResultsResponse(foodScans []models.FoodScanResult) []response.Foo
 		foodScanResultResponse = append(foodScanResultResponse, ToFoodScanResultResponse(&fsresult))
 	}
 	return foodScanResultResponse
+}
+
+func ToUserMealResponse(um *models.UserMeal) response.UserMealResponse {
+	var userResponse response.UserResponse
+	if um.User != nil {
+		r := ToUserResponse(um.User)
+		userResponse = r
+	}
+	return response.UserMealResponse{
+		ID:        um.ID,
+		FoodNames: um.FoodNames,
+		Calories:  um.Calories,
+		Protein:   um.Protein,
+		Fat:       um.Fat,
+		Carbs:     um.Carbs,
+		User:      &userResponse,
+		UserID:    um.UserID,
+		CreatedAt: um.CreatedAt,
+	}
+}
+
+func ToUserMealsResponse(userMeals []models.UserMeal) []response.UserMealResponse {
+	var userMealsResponse []response.UserMealResponse
+	for _, um := range userMeals {
+		userMealsResponse = append(userMealsResponse, ToUserMealResponse(&um))
+	}
+	return userMealsResponse
 }
