@@ -122,7 +122,6 @@ func ToFoodScanResultResponse(fsResult *models.FoodScanResult) response.FoodScan
 		Protein:     fsResult.Protein,
 		Fat:         fsResult.Fat,
 		Carbs:       fsResult.Carbs,
-		Ingredients: fsResult.Ingredients,
 		FoodScanID:  fsResult.FoodScanID,
 		FoodScan:    &foodScanResponse,
 		CreatedAt:   fsResult.CreatedAt,
