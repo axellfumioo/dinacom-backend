@@ -50,7 +50,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	result, err := fetchAI(payload.ImageURL)
 	if err != nil {
 		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
-			return err
+			return errors.New("error when update foodScan status")
 		}
 		return err
 	}
@@ -71,13 +71,27 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 
 	if err := db.Create(&fsResult).Error; err != nil {
 		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
-			return err
+			return errors.New("error when updating foodScan status")
+
 		}
 		return err
 	}
 
+	userMeal := models.UserMeal{
+		UserID:    payload.UserID,
+		FoodNames: jsonResult.FoodName,
+		Calories:  float64(jsonResult.Calories),
+		Protein:   jsonResult.Protein,
+		Carbs:     jsonResult.Carbohydrates,
+		Fat:       jsonResult.Fat,
+	}
+
+	if err := db.Create(&userMeal).Error; err != nil {
+		return errors.New("error when creating user_meal")
+	}
+
 	if err := db.Model(&fs).Update("Status", "SUCCESS").Error; err != nil {
-		return err
+		return errors.New("error when updating foodScan status")
 	}
 
 	log.Printf("Emit event WS for user %d, result: %s\n", fs.UserID, result)
