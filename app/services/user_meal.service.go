@@ -1,6 +1,8 @@
 package services
 
 import (
+	"backend-dinakom/app/dto/response"
+	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
 	"errors"
 
@@ -8,7 +10,7 @@ import (
 )
 
 type UserMealService interface {
-	GetAllUserMeals(userID string, page int, pageSize int) (any, int64, error)
+	GetAllUserMeals(userID string, page int, pageSize int) ([]response.UserMealResponse, int64, error)
 }
 
 type userMealService struct {
@@ -19,7 +21,7 @@ func NewUserMealService(db *gorm.DB) UserMealService {
 	return &userMealService{db: db}
 }
 
-func (s *userMealService) GetAllUserMeals(userID string, page int, pageSize int) (any, int64, error) {
+func (s *userMealService) GetAllUserMeals(userID string, page int, pageSize int) ([]response.UserMealResponse, int64, error) {
 	// Check if user exist
 	var existingUsers models.User
 	if err := s.db.First(&existingUsers, "id = ?", userID).Error; err != nil {
@@ -42,5 +44,6 @@ func (s *userMealService) GetAllUserMeals(userID string, page int, pageSize int)
 		return nil, 0, errors.New("failed to get foodScan history")
 	}
 
-	return userMeals, totalRows, nil
+	userMealsResponse := helpers.ToUserMealsResponse(userMeals)
+	return userMealsResponse, totalRows, nil
 }
