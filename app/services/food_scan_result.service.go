@@ -11,6 +11,7 @@ import (
 
 type FoodScanResultService interface {
 	GetAllResults(page int, pageSize int) ([]response.FoodScanResultResponse, int64, error)
+	GetAllUserResults(userID string, page int, pageSize int) ([]response.FoodScanResultResponse, int64, error)
 	GetResultByID(id string) (*response.FoodScanResultResponse, error)
 }
 
@@ -32,10 +33,32 @@ func (s *foodScanResultService) GetAllResults(page int, pageSize int) ([]respons
 
 	var fsResults []models.FoodScanResult
 	if err := s.db.Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&fsResults).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, 0, errors.New("foodscan results not found")
-		}
 		return nil, 0, err
+	}
+
+	if len(fsResults) == 0 {
+		return nil, 0, errors.New("foodscan results not found")
+	}
+
+	fsResultResponse := helpers.ToFoodScanResultsResponse(fsResults)
+	return fsResultResponse, totalRows, nil
+}
+
+func (s *foodScanResultService) GetAllUserResults(userID string, page int, pageSize int) ([]response.FoodScanResultResponse, int64, error) {
+	var totalRows int64
+	if err := s.db.Model(&models.FoodScanResult{}).Count(&totalRows).Error; err != nil {
+		return nil, 0, err
+	}
+
+	offset := (page - 1) * pageSize
+
+	var fsResults []models.FoodScanResult
+	if err := s.db.Joins("JOIN food_scans s ON s.id = food_scan_result.food_scan_id").Where("s.user_id = ?", userID).Offset(offset).Limit(pageSize).Order("food_scan_result.created_at DESC").Find(&fsResults).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if len(fsResults) == 0 {
+		return nil, 0, errors.New("foodscan results not found")
 	}
 
 	fsResultResponse := helpers.ToFoodScanResultsResponse(fsResults)
