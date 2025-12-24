@@ -32,7 +32,7 @@ func (s *foodScanResultService) GetAllResults(page int, pageSize int) ([]respons
 	offset := (page - 1) * pageSize
 
 	var fsResults []models.FoodScanResult
-	if err := s.db.Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&fsResults).Error; err != nil {
+	if err := s.db.Preload("FoodScan").Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&fsResults).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -53,7 +53,7 @@ func (s *foodScanResultService) GetAllUserResults(userID string, page int, pageS
 	offset := (page - 1) * pageSize
 
 	var fsResults []models.FoodScanResult
-	if err := s.db.Joins("JOIN food_scans s ON s.id = food_scan_result.food_scan_id").Where("s.user_id = ?", userID).Offset(offset).Limit(pageSize).Order("food_scan_result.created_at DESC").Find(&fsResults).Error; err != nil {
+	if err := s.db.Preload("FoodScan").Joins("JOIN food_scans s ON s.id = food_scan_result.food_scan_id").Where("s.user_id = ?", userID).Offset(offset).Limit(pageSize).Order("food_scan_result.created_at DESC").Find(&fsResults).Error; err != nil {
 		return nil, 0, err
 	}
 
