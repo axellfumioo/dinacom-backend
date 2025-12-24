@@ -15,5 +15,6 @@ func FoodScanResultRoute(r fiber.Router) {
 
 	fsResults := r.Group("results")
 	fsResults.Use(middlewares.AuthMiddleware())
+	fsResults.Get("/", fsResultController.GetAllResults)
 	fsResults.Get("/:id/get", fsResultController.GetResultByID)
 }

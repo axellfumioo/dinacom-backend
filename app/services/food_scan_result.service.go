@@ -10,6 +10,7 @@ import (
 )
 
 type FoodScanResultService interface {
+	GetAllResults(page int, pageSize int) ([]response.FoodScanResultResponse, int64, error)
 	GetResultByID(id string) (*response.FoodScanResultResponse, error)
 }
 
@@ -19,6 +20,26 @@ type foodScanResultService struct {
 
 func NewFoodScanResultService(db *gorm.DB) FoodScanResultService {
 	return &foodScanResultService{db: db}
+}
+
+func (s *foodScanResultService) GetAllResults(page int, pageSize int) ([]response.FoodScanResultResponse, int64, error) {
+	var totalRows int64
+	if err := s.db.Model(&models.FoodScanResult{}).Count(&totalRows).Error; err != nil {
+		return nil, 0, err
+	}
+
+	offset := (page - 1) * pageSize
+
+	var fsResults []models.FoodScanResult
+	if err := s.db.Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&fsResults).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, 0, errors.New("foodscan results not found")
+		}
+		return nil, 0, err
+	}
+
+	fsResultResponse := helpers.ToFoodScanResultsResponse(fsResults)
+	return fsResultResponse, totalRows, nil
 }
 
 func (s *foodScanResultService) GetResultByID(id string) (*response.FoodScanResultResponse, error) {
