@@ -10,7 +10,8 @@ type AiChat struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
-	User *User `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
+	User     *User           `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
+	Messages []AIChatMessage `gorm:"-" json:"messages"`
 }
 
 func (AiChat) TableName() string {
