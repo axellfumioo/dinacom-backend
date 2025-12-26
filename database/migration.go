@@ -14,6 +14,7 @@ func RunMigration() {
 		&models.FoodScanResult{},
 		&models.UserMeal{},
 		&models.AiChat{},
+		&models.AIChatMessage{},
 	)
 
 	if err != nil {
