@@ -15,6 +15,7 @@ type User struct {
 	Profile   *UserProfile `gorm:"foreignKey:UserID;references:ID" json:"profile"`
 	FoodScans []FoodScan   `gorm:"-" json:"food_scans"`
 	UserMeals []UserMeal   `gorm:"-" json:"user_meals"`
+	AIChats   []AiChat     `gorm:"-" json:"ai_chats"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

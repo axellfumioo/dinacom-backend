@@ -13,6 +13,7 @@ func RunMigration() {
 		&models.FoodScan{},
 		&models.FoodScanResult{},
 		&models.UserMeal{},
+		&models.AiChat{},
 	)
 
 	if err != nil {
