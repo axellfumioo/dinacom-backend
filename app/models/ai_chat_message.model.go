@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"backend-dinakom/app/constants"
+	"time"
+)
 
 type AIChatMessage struct {
 	ID string `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
@@ -8,6 +11,7 @@ type AIChatMessage struct {
 	ImageURL   *string `gorm:"type:varchar(500);"`
 	Content    string  `gorm:"type:varchar(500);"`
 	Confidence int
+	SenderRole constants.AIMessageRole `gorm:"type:varchar(20);default:'USER'" json:"sender_role"`
 
 	// Relations
 	ChatID string  `gorm:"type:uuid;not null" json:"chat_id"`
