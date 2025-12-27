@@ -4,14 +4,17 @@ import (
 	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
+	"backend-dinakom/app/types/response"
 	"errors"
 
+	"github.com/go-resty/resty/v2"
 	"gorm.io/gorm"
 )
 
 type AuthService interface {
 	Register(req request.RegisterRequest) (any, error)
 	Login(req request.LoginRequest) (string, error)
+	StravaCallbackHandle(clientID string, clientSecret string, code string) (string, error)
 }
 
 type authService struct {
@@ -88,4 +91,24 @@ func (s *authService) Login(req request.LoginRequest) (string, error) {
 	}
 
 	return access_token, nil
+}
+
+func (c *authService) StravaCallbackHandle(clientID string, clientSecret string, code string) (string, error) {
+	client := resty.New()
+	resp := response.StravaTokenResponse{}
+	_, err := client.R().
+		SetBody(map[string]string{
+			"client_id":     clientID,
+			"client_secret": clientSecret,
+			"code":          code,
+			"grant_type":    "authorization_code",
+		}).
+		SetResult(&resp).
+		Post("https://www.strava.com/oauth/token")
+	if err != nil {
+		return "", err
+	}
+
+	// Ini query db
+	return resp.AccessToken, nil
 }
