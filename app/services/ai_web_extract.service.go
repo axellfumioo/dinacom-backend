@@ -1,6 +1,7 @@
 package services
 
 import (
+	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
@@ -12,7 +13,7 @@ import (
 type AIWebExtractService interface {
 	GetAllWebExtracts(page int, pageSize int) ([]response.AIWebExtractResponse, int64, error)
 	GetWebExtractByID(ID string) (*response.AIWebExtractResponse, error)
-	// CreateWebExtract(req request.CreateWebExtractRequest) (*response.AIWebExtractResponse, error)
+	CreateWebExtract(req request.CreateWebExtractRequest) (*response.AIWebExtractResponse, error)
 	// UpdateWebExtract(ID string, req request.UpdateWebExtractRequest) (*response.AIWebExtractResponse, error)
 	// DeleteWebExtract(ID string) (*response.AIWebExtractResponse, error)
 }
@@ -32,7 +33,7 @@ func (s *aIWebExtractService) GetAllWebExtracts(page int, pageSize int) ([]respo
 	}
 
 	if totalRows == 0 {
-		return nil, 0, errors.New("decisions not founds")
+		return nil, 0, errors.New("AI web extracts not founds")
 	}
 
 	var aiWebExtract []models.AIWebExtract
@@ -50,11 +51,26 @@ func (s *aIWebExtractService) GetWebExtractByID(ID string) (*response.AIWebExtra
 	var existing models.AIWebExtract
 	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, errors.New("AI google search not found")
+			return nil, errors.New("AI web extract not found")
 		}
 		return nil, err
 	}
 
 	webExtractResponse := helpers.ToAIWebExtractResponse(&existing)
+	return &webExtractResponse, nil
+}
+
+func (s *aIWebExtractService) CreateWebExtract(req request.CreateWebExtractRequest) (*response.AIWebExtractResponse, error) {
+	webExtract := &models.AIWebExtract{
+		Domain:     req.Domain,
+		Content:    req.Content,
+		DecisionID: req.DecisionID,
+	}
+
+	if err := s.db.Create(&webExtract).Error; err != nil {
+		return nil, errors.New("failed to create AI web extract")
+	}
+
+	webExtractResponse := helpers.ToAIWebExtractResponse(webExtract)
 	return &webExtractResponse, nil
 }
