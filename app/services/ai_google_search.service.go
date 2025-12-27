@@ -15,7 +15,7 @@ type AIGoogleSearchService interface {
 	GetGoogleSearchByID(ID string) (*response.AIGoogleSearchResponse, error)
 	CreateGoogleSearch(req request.CreateGoogleSearchRequest) (*response.AIGoogleSearchResponse, error)
 	UpdateGoogleSearch(ID string, req request.UpdateGoogleSearchRequest) (*response.AIGoogleSearchResponse, error)
-	// DeleteGoogleSearch(ID string) (*response.AIGoogleSearchResponse, error)
+	DeleteGoogleSearch(ID string) (*response.AIGoogleSearchResponse, error)
 }
 
 type aIGoogleSearchService struct {
@@ -95,6 +95,23 @@ func (s *aIGoogleSearchService) UpdateGoogleSearch(ID string, req request.Update
 	}
 
 	if err := s.db.Model(&existing).Where("id = ?", ID).Updates(updateData).Error; err != nil {
+		return nil, err
+	}
+
+	googleSearchResponse := helpers.ToAIGoogleSearchResponse(&existing)
+	return &googleSearchResponse, nil
+}
+
+func (s *aIGoogleSearchService) DeleteGoogleSearch(ID string) (*response.AIGoogleSearchResponse, error) {
+	var existing models.AIGoogleSearch
+	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("AI google search not found")
+		}
+		return nil, err
+	}
+
+	if err := s.db.Delete(&existing).Error; err != nil {
 		return nil, err
 	}
 
