@@ -42,8 +42,6 @@ func (s *aIGoogleSearchService) GetAllGoogleSearchs(page int, pageSize int) ([]r
 		return nil, 0, err
 	}
 
-	aiGoogleSearchResponse := helpers.ToAIGoogleSearchResponse(aigoogleSearch)
+	aiGoogleSearchResponse := helpers.ToAIGoogleSearchsResponse(aigoogleSearch)
 	return aiGoogleSearchResponse, totalRows, nil
-	
-	return nil, 0, nil
 }

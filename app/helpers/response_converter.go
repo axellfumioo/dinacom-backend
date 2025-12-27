@@ -165,12 +165,12 @@ func ToUserMealsResponse(userMeals []models.UserMeal) []response.UserMealRespons
 
 func ToAIDecisionResponse(decision *models.AIDecision) response.AIDecisionResponse {
 	return response.AIDecisionResponse{
-		ID:            decision.ID,
-		Queries:       decision.Queries,
-		NeedSearch:    decision.NeedSearch,
-		RequestType:   decision.RequestType,
-		RiskLevel:     decision.RiskLevel,
-		CreatedAt:     decision.CreatedAt,
+		ID:          decision.ID,
+		Queries:     decision.Queries,
+		NeedSearch:  decision.NeedSearch,
+		RequestType: decision.RequestType,
+		RiskLevel:   decision.RiskLevel,
+		CreatedAt:   decision.CreatedAt,
 	}
 }
 
@@ -180,4 +180,28 @@ func ToAIDecisionsResponse(decisions []models.AIDecision) []response.AIDecisionR
 		decisionsResponse = append(decisionsResponse, ToAIDecisionResponse(&decision))
 	}
 	return decisionsResponse
+}
+
+func ToAIGoogleSearchResponse(googleSearch *models.AIGoogleSearch) response.AIGoogleSearchResponse {
+	var decision response.AIDecisionResponse
+	if googleSearch.Decision != nil {
+		r := ToAIDecisionResponse(googleSearch.Decision)
+		decision = r
+	}
+	return response.AIGoogleSearchResponse{
+		ID:         googleSearch.ID,
+		URL:        googleSearch.URL,
+		Content:    googleSearch.Content,
+		DecisionID: googleSearch.DecisionID,
+		Decision:   &decision,
+		CreatedAt:  googleSearch.CreatedAt,
+	}
+}
+
+func ToAIGoogleSearchsResponse(googleSearchs []models.AIGoogleSearch) []response.AIGoogleSearchResponse {
+	var googleSearchsResponse []response.AIGoogleSearchResponse
+	for _, googleSearch := range googleSearchs {
+		googleSearchsResponse = append(googleSearchsResponse, ToAIGoogleSearchResponse(&googleSearch))
+	}
+	return googleSearchsResponse
 }

@@ -7,8 +7,8 @@ type AIGoogleSearchResponse struct {
 	URL     string `json:"url"`
 	Content string `json:"content"`
 
-	DecisionID string             `json:"decision_id"`
-	Decision   AIDecisionResponse `json:"decision"`
+	DecisionID string              `json:"decision_id"`
+	Decision   *AIDecisionResponse `json:"decision"`
 
 	CreatedAt time.Time
 }
