@@ -59,16 +59,6 @@ func (s *aIDecisionService) GetDecisionByID(ID string) (*response.AIDecisionResp
 }
 
 func (s *aIDecisionService) CreateDecision(req request.CreateDecisionRequest) (any, error) {
-	var msg models.AIChatMessage
-	if err := s.db.First(&msg, "id = ?", req.MessageId).Error; err != nil {
-		return nil, err
-	}
-
-	var existingDecision models.AIDecision
-	if err := s.db.First(&existingDecision, "chat_message_id = ?", req.MessageId).Error; err == nil {
-		return nil, errors.New("AI decision in this message is already exist")
-	}
-
 	decision := &models.AIDecision{
 		Queries:       req.Queries,
 		NeedSearch:    req.NeedSearch,
