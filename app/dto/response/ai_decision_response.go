@@ -15,7 +15,7 @@ type AIDecisionResponse struct {
 
 	ChatMessageID string `json:"chat_message_id"`
 	// AIChatMessage any   `gorm:"foreignKey:ChatMessageID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	// Searchs       []any `gorm:"-" json:"google_searchs"`
+	Searchs []AIGoogleSearchResponse `json:"google_searchs"`
 	// WebExtracts   []any   `gorm:"-" json:"web_extracts"`
 
 	CreatedAt time.Time
