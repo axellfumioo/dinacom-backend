@@ -17,5 +17,6 @@ func AIRoute(r fiber.Router) {
 
 	ai := r.Group("/ai")
 	decision := ai.Group("/decision")
+	decision.Get("/", aiDecisionController.GetAllDecisions)
 	decision.Post("/", aiDecisionController.CreateDecision)
 }

@@ -2,6 +2,8 @@ package services
 
 import (
 	"backend-dinakom/app/dto/request"
+	"backend-dinakom/app/dto/response"
+	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
 	"errors"
 
@@ -9,6 +11,7 @@ import (
 )
 
 type AIDecisionService interface {
+	GetAllDecisions(page int, pageSize int) ([]response.AIDecisionResponse, int64, error)
 	CreateDecision(req request.CreateDecisionRequest) (any, error)
 }
 
@@ -18,6 +21,27 @@ type aIDecisionService struct {
 
 func NewAIDecisionService(db *gorm.DB) AIDecisionService {
 	return &aIDecisionService{db: db}
+}
+
+func (s *aIDecisionService) GetAllDecisions(page int, pageSize int) ([]response.AIDecisionResponse, int64, error) {
+	var totalRows int64
+	if err := s.db.Model(&models.AIDecision{}).Count(&totalRows).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if totalRows == 0 {
+		return nil, 0, errors.New("decisions not founds")
+	}
+
+	var decisions []models.AIDecision
+	offset := (page - 1) * pageSize
+
+	if err := s.db.Offset(offset).Limit(pageSize).Order("created_at DESC").Find(&decisions).Error; err != nil {
+		return nil, 0, err
+	}
+
+	decisionsResponse := helpers.ToAIDecisionsResponse(decisions)
+	return decisionsResponse, totalRows, nil
 }
 
 func (s *aIDecisionService) CreateDecision(req request.CreateDecisionRequest) (any, error) {
