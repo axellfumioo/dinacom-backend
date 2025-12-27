@@ -10,10 +10,12 @@ import (
 
 func AIRoute(r fiber.Router) {
 	// Services
-	aiDecisionService := services.NewAIDecisionService(database.GetDb())
+	aiDecisionService := services.NewAIDecisionService(database.DB)
+	aiGoogleSearchService := services.NewAIGoogleSearchService(database.DB)
 
 	// Controllers
 	aiDecisionController := controllers.NewAIDecisionController(aiDecisionService)
+	aiGoogleSearchController := controllers.NewAIGoogleSearchController(aiGoogleSearchService)
 
 	ai := r.Group("/ai")
 	// Decision
@@ -25,4 +27,10 @@ func AIRoute(r fiber.Router) {
 	decision.Delete("/:id/delete", aiDecisionController.DeleteDecision)
 
 	// Google Search
+	googleSearch := ai.Group("/search")
+	googleSearch.Get("/", aiGoogleSearchController.GetAllGoogleSearchs)
+	googleSearch.Get("/:id/get", aiGoogleSearchController.GetGoogleSearchByID)
+	googleSearch.Post("/", aiGoogleSearchController.CreateGoogleSearch)
+	googleSearch.Patch("/:id/update", aiGoogleSearchController.UpdateGoogleSearch)
+	googleSearch.Delete("/:id/delete", aiGoogleSearchController.DeleteGoogleSearch)
 }
