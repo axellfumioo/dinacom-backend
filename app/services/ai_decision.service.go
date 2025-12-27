@@ -12,6 +12,7 @@ import (
 
 type AIDecisionService interface {
 	GetAllDecisions(page int, pageSize int) ([]response.AIDecisionResponse, int64, error)
+	GetDecisionByID(ID string) (*response.AIDecisionResponse, error)
 	CreateDecision(req request.CreateDecisionRequest) (any, error)
 }
 
@@ -42,6 +43,19 @@ func (s *aIDecisionService) GetAllDecisions(page int, pageSize int) ([]response.
 
 	decisionsResponse := helpers.ToAIDecisionsResponse(decisions)
 	return decisionsResponse, totalRows, nil
+}
+
+func (s *aIDecisionService) GetDecisionByID(ID string) (*response.AIDecisionResponse, error) {
+	var existingDecision models.AIDecision
+	if err := s.db.First(&existingDecision, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("decisions not found")
+		}
+		return nil, err
+	}
+
+	decisionResponse := helpers.ToAIDecisionResponse(&existingDecision)
+	return &decisionResponse, nil
 }
 
 func (s *aIDecisionService) CreateDecision(req request.CreateDecisionRequest) (any, error) {
