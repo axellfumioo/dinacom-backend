@@ -21,4 +21,5 @@ func AIRoute(r fiber.Router) {
 	decision.Get("/:id/get", aiDecisionController.GetDecisionByID)
 	decision.Post("/", aiDecisionController.CreateDecision)
 	decision.Patch("/:id/update", aiDecisionController.UpdateDecision)
+	decision.Delete("/:id/delete", aiDecisionController.DeleteDecision)
 }
