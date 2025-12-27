@@ -13,6 +13,7 @@ type AIDecisionController interface {
 	GetAllDecisions(c *fiber.Ctx) error
 	GetDecisionByID(c *fiber.Ctx) error
 	CreateDecision(c *fiber.Ctx) error
+	UpdateDecision(c *fiber.Ctx) error
 }
 
 type aiDecisionController struct {
@@ -66,4 +67,20 @@ func (ctrl *aiDecisionController) CreateDecision(c *fiber.Ctx) error {
 	}
 
 	return helpers.CreatedResponse(c, "decision created successfully", data)
+}
+
+func (ctrl *aiDecisionController) UpdateDecision(c *fiber.Ctx) error {
+	ID := c.Params("id")
+	var req request.UpdateDecisionRequest
+
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	data, err := ctrl.AIDecisionService.UpdateDecision(ID, req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "decision updated successfully", data)
 }

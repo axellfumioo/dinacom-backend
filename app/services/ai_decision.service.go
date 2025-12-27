@@ -14,6 +14,7 @@ type AIDecisionService interface {
 	GetAllDecisions(page int, pageSize int) ([]response.AIDecisionResponse, int64, error)
 	GetDecisionByID(ID string) (*response.AIDecisionResponse, error)
 	CreateDecision(req request.CreateDecisionRequest) (any, error)
+	UpdateDecision(ID string, req request.UpdateDecisionRequest) (*response.AIDecisionResponse, error)
 }
 
 type aIDecisionService struct {
@@ -60,10 +61,10 @@ func (s *aIDecisionService) GetDecisionByID(ID string) (*response.AIDecisionResp
 
 func (s *aIDecisionService) CreateDecision(req request.CreateDecisionRequest) (any, error) {
 	decision := &models.AIDecision{
-		Queries:       req.Queries,
-		NeedSearch:    req.NeedSearch,
-		RiskLevel:     req.RiskLevel,
-		RequestType:   req.RequestType,
+		Queries:     req.Queries,
+		NeedSearch:  req.NeedSearch,
+		RiskLevel:   req.RiskLevel,
+		RequestType: req.RequestType,
 	}
 
 	if err := s.db.Create(&decision).Error; err != nil {
@@ -71,4 +72,39 @@ func (s *aIDecisionService) CreateDecision(req request.CreateDecisionRequest) (a
 	}
 
 	return &decision, nil
+}
+
+func (s *aIDecisionService) UpdateDecision(ID string, req request.UpdateDecisionRequest) (*response.AIDecisionResponse, error) {
+	var existingDecision models.AIDecision
+	if err := s.db.First(&existingDecision, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("decision not found")
+		}
+		return nil, err
+	}
+
+	updateData := map[string]interface{}{}
+
+	if req.NeedSearch != nil && req.NeedSearch != &existingDecision.NeedSearch {
+		updateData["need_search"] = req.NeedSearch
+	}
+
+	if req.Queries != nil {
+		updateData["queries"] = req.Queries
+	}
+
+	if req.RequestType != nil && req.RequestType != &existingDecision.RequestType {
+		updateData["request_type"] = req.RequestType
+	}
+
+	if req.RiskLevel != nil && req.RiskLevel != &existingDecision.RiskLevel {
+		updateData["risk_level"] = req.RiskLevel
+	}
+
+	if err := s.db.Model(&existingDecision).Where("id = ?", ID).Updates(updateData).Error; err != nil {
+		return nil, err
+	}
+
+	decisionResponse := helpers.ToAIDecisionResponse(&existingDecision)
+	return &decisionResponse, nil
 }
