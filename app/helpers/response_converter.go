@@ -170,7 +170,6 @@ func ToAIDecisionResponse(decision *models.AIDecision) response.AIDecisionRespon
 		NeedSearch:    decision.NeedSearch,
 		RequestType:   decision.RequestType,
 		RiskLevel:     decision.RiskLevel,
-		ChatMessageID: decision.ChatMessageID,
 		CreatedAt:     decision.CreatedAt,
 	}
 }

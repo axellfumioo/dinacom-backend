@@ -16,10 +16,8 @@ type AIDecision struct {
 	RiskLevel   constants.AIRiskLevel `gorm:"type:varchar(20);"`
 
 	// ForeignKey
-	ChatMessageID string           `gorm:"type:uuid;uniqueIndex"`
-	AIChatMessage *AIChatMessage   `gorm:"foreignKey:ChatMessageID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Searchs       []AIGoogleSearch `gorm:"-" json:"google_searchs"`
-	WebExtracts   []AIWebExtract   `gorm:"-" json:"web_extracts"`
+	Searchs     []AIGoogleSearch `gorm:"-" json:"google_searchs"`
+	WebExtracts []AIWebExtract   `gorm:"-" json:"web_extracts"`
 
 	CreatedAt time.Time
 }

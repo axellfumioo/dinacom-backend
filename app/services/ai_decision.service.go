@@ -70,7 +70,6 @@ func (s *aIDecisionService) CreateDecision(req request.CreateDecisionRequest) (a
 	}
 
 	decision := &models.AIDecision{
-		ChatMessageID: req.MessageId,
 		Queries:       req.Queries,
 		NeedSearch:    req.NeedSearch,
 		RiskLevel:     req.RiskLevel,
