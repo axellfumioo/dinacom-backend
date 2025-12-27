@@ -15,6 +15,7 @@ type AIDecisionService interface {
 	GetDecisionByID(ID string) (*response.AIDecisionResponse, error)
 	CreateDecision(req request.CreateDecisionRequest) (any, error)
 	UpdateDecision(ID string, req request.UpdateDecisionRequest) (*response.AIDecisionResponse, error)
+	DeleteDecision(ID string) (*response.AIDecisionResponse, error)
 }
 
 type aIDecisionService struct {
@@ -106,5 +107,22 @@ func (s *aIDecisionService) UpdateDecision(ID string, req request.UpdateDecision
 	}
 
 	decisionResponse := helpers.ToAIDecisionResponse(&existingDecision)
+	return &decisionResponse, nil
+}
+
+func (s *aIDecisionService) DeleteDecision(ID string) (*response.AIDecisionResponse, error) {
+	var existing models.AIDecision
+	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("decision not found")
+		}
+		return nil, err
+	}
+
+	if err := s.db.Delete(&existing).Error; err != nil {
+		return nil, err
+	}
+
+	decisionResponse := helpers.ToAIDecisionResponse(&existing)
 	return &decisionResponse, nil
 }

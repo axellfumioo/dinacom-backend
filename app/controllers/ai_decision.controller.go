@@ -14,6 +14,7 @@ type AIDecisionController interface {
 	GetDecisionByID(c *fiber.Ctx) error
 	CreateDecision(c *fiber.Ctx) error
 	UpdateDecision(c *fiber.Ctx) error
+	DeleteDecision(c *fiber.Ctx) error
 }
 
 type aiDecisionController struct {
@@ -83,4 +84,15 @@ func (ctrl *aiDecisionController) UpdateDecision(c *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(c, "decision updated successfully", data)
+}
+
+func (ctrl *aiDecisionController) DeleteDecision(c *fiber.Ctx) error {
+	ID := c.Params("id")
+
+	data, err := ctrl.AIDecisionService.DeleteDecision(ID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "decision deleted successfully", data)
 }
