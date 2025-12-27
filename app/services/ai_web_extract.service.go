@@ -14,7 +14,7 @@ type AIWebExtractService interface {
 	GetAllWebExtracts(page int, pageSize int) ([]response.AIWebExtractResponse, int64, error)
 	GetWebExtractByID(ID string) (*response.AIWebExtractResponse, error)
 	CreateWebExtract(req request.CreateWebExtractRequest) (*response.AIWebExtractResponse, error)
-	// UpdateWebExtract(ID string, req request.UpdateWebExtractRequest) (*response.AIWebExtractResponse, error)
+	UpdateWebExtract(ID string, req request.UpdateWebExtractRequest) (*response.AIWebExtractResponse, error)
 	// DeleteWebExtract(ID string) (*response.AIWebExtractResponse, error)
 }
 
@@ -72,5 +72,32 @@ func (s *aIWebExtractService) CreateWebExtract(req request.CreateWebExtractReque
 	}
 
 	webExtractResponse := helpers.ToAIWebExtractResponse(webExtract)
+	return &webExtractResponse, nil
+}
+
+func (s *aIWebExtractService) UpdateWebExtract(ID string, req request.UpdateWebExtractRequest) (*response.AIWebExtractResponse, error) {
+	var existing models.AIWebExtract
+	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("AI google search not found")
+		}
+		return nil, err
+	}
+
+	updateData := map[string]interface{}{}
+
+	if req.Domain != nil && req.Domain != &existing.Domain {
+		updateData["domain"] = req.Domain
+	}
+
+	if req.Content != nil && req.Content != &existing.Content {
+		updateData["content"] = req.Content
+	}
+
+	if err := s.db.Model(&existing).Where("id = ?", ID).Updates(updateData).Error; err != nil {
+		return nil, err
+	}
+
+	webExtractResponse := helpers.ToAIWebExtractResponse(&existing)
 	return &webExtractResponse, nil
 }
