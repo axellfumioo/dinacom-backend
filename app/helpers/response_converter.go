@@ -205,3 +205,27 @@ func ToAIGoogleSearchsResponse(googleSearchs []models.AIGoogleSearch) []response
 	}
 	return googleSearchsResponse
 }
+
+func ToAIWebExtractResponse(we *models.AIWebExtract) response.AIWebExtractResponse {
+	var decision response.AIDecisionResponse
+	if we.Decision != nil {
+		r := ToAIDecisionResponse(we.Decision)
+		decision = r
+	}
+	return response.AIWebExtractResponse{
+		ID:         we.ID,
+		Domain:     we.Domain,
+		Content:    we.Content,
+		DecisionID: we.DecisionID,
+		Decision:   &decision,
+		CreatedAt:  we.CreatedAt,
+	}
+}
+
+func ToAIWebExtractsResponse(webExtracts []models.AIWebExtract) []response.AIWebExtractResponse {
+	var webExtractsResponse []response.AIWebExtractResponse
+	for _, we := range webExtracts {
+		webExtractsResponse = append(webExtractsResponse, ToAIWebExtractResponse(&we))
+	}
+	return webExtractsResponse
+}
