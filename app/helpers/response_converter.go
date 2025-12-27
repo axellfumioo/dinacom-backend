@@ -162,3 +162,23 @@ func ToUserMealsResponse(userMeals []models.UserMeal) []response.UserMealRespons
 	}
 	return userMealsResponse
 }
+
+func ToAIDecisionResponse(decision *models.AIDecision) response.AIDecisionResponse {
+	return response.AIDecisionResponse{
+		ID:            decision.ID,
+		Queries:       decision.Queries,
+		NeedSearch:    decision.NeedSearch,
+		RequestType:   decision.RequestType,
+		RiskLevel:     decision.RiskLevel,
+		ChatMessageID: decision.ChatMessageID,
+		CreatedAt:     decision.CreatedAt,
+	}
+}
+
+func ToAIDecisionsResponse(decisions []models.AIDecision) []response.AIDecisionResponse {
+	var decisionsResponse []response.AIDecisionResponse
+	for _, decision := range decisions {
+		decisionsResponse = append(decisionsResponse, ToAIDecisionResponse(&decision))
+	}
+	return decisionsResponse
+}
