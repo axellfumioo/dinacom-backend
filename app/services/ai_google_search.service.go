@@ -45,3 +45,16 @@ func (s *aIGoogleSearchService) GetAllGoogleSearchs(page int, pageSize int) ([]r
 	aiGoogleSearchResponse := helpers.ToAIGoogleSearchsResponse(aigoogleSearch)
 	return aiGoogleSearchResponse, totalRows, nil
 }
+
+func (s *aIGoogleSearchService) GetGoogleSearchByID(ID string) (*response.AIGoogleSearchResponse, error) {
+	var existing models.AIGoogleSearch
+	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("AI google search not found")
+		}
+		return nil, err
+	}
+
+	googleSearchResponse := helpers.ToAIGoogleSearchResponse(&existing)
+	return &googleSearchResponse, nil
+}
