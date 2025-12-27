@@ -14,6 +14,7 @@ type Config struct {
 	JWT      JWTConfig
 	Minio    MinioConfig
 	Redis    RedisConfig
+	Strava   StravaConfig
 }
 
 type AppConfigType struct {
@@ -49,6 +50,11 @@ type MinioConfig struct {
 type RedisConfig struct {
 	ADDRESS    string
 	CONCURENCY int
+}
+
+type StravaConfig struct {
+	CLIENT_KEY string
+	CLIENT_ID  string
 }
 
 var AppConfig *Config
@@ -93,6 +99,10 @@ func LoadConfig() {
 		Redis: RedisConfig{
 			ADDRESS:    GetEnv("REDIS_ADDRESS", "localhost:6379"),
 			CONCURENCY: concurency,
+		},
+		Strava: StravaConfig{
+			CLIENT_KEY: GetEnv("STRAVA_CLIENT_KEY", ""),
+			CLIENT_ID:  GetEnv("STRAVA_CLIENT_ID", ""),
 		},
 	}
 

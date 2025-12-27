@@ -12,3 +12,7 @@ type AIWebExtract struct {
 
 	CreatedAt time.Time
 }
+
+func (AIWebExtract) TableName() string {
+	return "ai_web_extract"
+}
