@@ -14,10 +14,9 @@ type AIDecision struct {
 
 	// ForeignKey
 	ChatMessageID string `gorm:"type:uuid;uniqueIndex"`
-	// Relations
-
-	AIChatMessage *AIChatMessage   `gorm:"foreignKey:ChatMessageID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AIChatMessage *AIChatMessage   `gorm:"foreignKey:ChatMessageID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Searchs       []AIGoogleSearch `gorm:"-" json:"google_searchs"`
+	WebExtracts   []AIWebExtract   `gorm:"-" json:"web_extracts"`
 
 	CreatedAt time.Time
 }

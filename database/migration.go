@@ -17,6 +17,7 @@ func RunMigration() {
 		&models.AIChatMessage{},
 		&models.AIDecision{},
 		&models.AIGoogleSearch{},
+		&models.AIWebExtract{},
 	)
 
 	if err != nil {

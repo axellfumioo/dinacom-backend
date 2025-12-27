@@ -19,7 +19,7 @@ type AIChatMessage struct {
 
 	Chat       *AiChat     `gorm:"foreignKey:ChatID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
 	User       *User       `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
-	AIDecision *AIDecision `gorm:"foreignKey:ChatMessageID;references:ID"`
+	AIDecision *AIDecision `gorm:"-"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
