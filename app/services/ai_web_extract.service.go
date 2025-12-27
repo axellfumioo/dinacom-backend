@@ -15,7 +15,7 @@ type AIWebExtractService interface {
 	GetWebExtractByID(ID string) (*response.AIWebExtractResponse, error)
 	CreateWebExtract(req request.CreateWebExtractRequest) (*response.AIWebExtractResponse, error)
 	UpdateWebExtract(ID string, req request.UpdateWebExtractRequest) (*response.AIWebExtractResponse, error)
-	// DeleteWebExtract(ID string) (*response.AIWebExtractResponse, error)
+	DeleteWebExtract(ID string) (*response.AIWebExtractResponse, error)
 }
 
 type aIWebExtractService struct {
@@ -79,7 +79,7 @@ func (s *aIWebExtractService) UpdateWebExtract(ID string, req request.UpdateWebE
 	var existing models.AIWebExtract
 	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, errors.New("AI google search not found")
+			return nil, errors.New("AI web extract not found")
 		}
 		return nil, err
 	}
@@ -95,6 +95,23 @@ func (s *aIWebExtractService) UpdateWebExtract(ID string, req request.UpdateWebE
 	}
 
 	if err := s.db.Model(&existing).Where("id = ?", ID).Updates(updateData).Error; err != nil {
+		return nil, err
+	}
+
+	webExtractResponse := helpers.ToAIWebExtractResponse(&existing)
+	return &webExtractResponse, nil
+}
+
+func (s *aIWebExtractService) DeleteWebExtract(ID string) (*response.AIWebExtractResponse, error) {
+	var existing models.AIWebExtract
+	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("AI web extract not found")
+		}
+		return nil, err
+	}
+
+	if err := s.db.Delete(&existing).Error; err != nil {
 		return nil, err
 	}
 
