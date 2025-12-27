@@ -16,11 +16,11 @@ type AIDecision struct {
 	ChatMessageID string `gorm:"type:uuid;uniqueIndex"`
 	// Relations
 
-	AIChatMessage *AIChatMessage `gorm:"foreignKey:ChatMessageID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AIChatMessage *AIChatMessage   `gorm:"foreignKey:ChatMessageID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Searchs       []AIGoogleSearch `gorm:"-" json:"google_searchs"`
 
 	CreatedAt time.Time
 }
-
 
 func (AIDecision) TableName() string {
 	return "ai_decisions"
