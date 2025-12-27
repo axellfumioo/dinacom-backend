@@ -17,8 +17,9 @@ type AIChatMessage struct {
 	ChatID string  `gorm:"type:uuid;not null" json:"chat_id"`
 	UserID *string `gorm:"type:uuid" json:"user_id"`
 
-	Chat *AiChat `gorm:"foreignKey:ChatID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
-	User *User   `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
+	Chat       *AiChat     `gorm:"foreignKey:ChatID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
+	User       *User       `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE;OnDelete:CASCADE"`
+	AIDecision *AIDecision `gorm:"foreignKey:ChatMessageID;references:ID"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
