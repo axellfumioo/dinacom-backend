@@ -14,7 +14,7 @@ type AIGoogleSearchService interface {
 	GetAllGoogleSearchs(page int, pageSize int) ([]response.AIGoogleSearchResponse, int64, error)
 	GetGoogleSearchByID(ID string) (*response.AIGoogleSearchResponse, error)
 	CreateGoogleSearch(req request.CreateGoogleSearchRequest) (*response.AIGoogleSearchResponse, error)
-	// UpdateGoogleSearch(ID string, req request.UpdateGoogleSearchRequest) (*response.AIGoogleSearchResponse, error)
+	UpdateGoogleSearch(ID string, req request.UpdateGoogleSearchRequest) (*response.AIGoogleSearchResponse, error)
 	// DeleteGoogleSearch(ID string) (*response.AIGoogleSearchResponse, error)
 }
 
@@ -72,5 +72,32 @@ func (s *aIGoogleSearchService) CreateGoogleSearch(req request.CreateGoogleSearc
 	}
 
 	googleSearchResponse := helpers.ToAIGoogleSearchResponse(googleSearch)
+	return &googleSearchResponse, nil
+}
+
+func (s *aIGoogleSearchService) UpdateGoogleSearch(ID string, req request.UpdateGoogleSearchRequest) (*response.AIGoogleSearchResponse, error) {
+	var existing models.AIGoogleSearch
+	if err := s.db.First(&existing, "id = ?", ID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("AI google search not found")
+		}
+		return nil, err
+	}
+
+	updateData := map[string]interface{}{}
+
+	if req.URL != nil && req.URL != &existing.URL {
+		updateData["url"] = req.URL
+	}
+
+	if req.Content != nil && req.Content != &existing.Content {
+		updateData["content"] = req.Content
+	}
+
+	if err := s.db.Model(&existing).Where("id = ?", ID).Updates(updateData).Error; err != nil {
+		return nil, err
+	}
+
+	googleSearchResponse := helpers.ToAIGoogleSearchResponse(&existing)
 	return &googleSearchResponse, nil
 }
