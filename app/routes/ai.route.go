@@ -16,10 +16,13 @@ func AIRoute(r fiber.Router) {
 	aiDecisionController := controllers.NewAIDecisionController(aiDecisionService)
 
 	ai := r.Group("/ai")
+	// Decision
 	decision := ai.Group("/decision")
 	decision.Get("/", aiDecisionController.GetAllDecisions)
 	decision.Get("/:id/get", aiDecisionController.GetDecisionByID)
 	decision.Post("/", aiDecisionController.CreateDecision)
 	decision.Patch("/:id/update", aiDecisionController.UpdateDecision)
 	decision.Delete("/:id/delete", aiDecisionController.DeleteDecision)
+
+	// Google Search
 }
