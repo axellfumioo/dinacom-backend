@@ -28,9 +28,9 @@ func NewRoleController(roleService services.RoleService) RoleController {
 // @Description get all roles data
 // @Tags Roles (Admin)
 // @Produce  json
-// @Success 200 {object} response.BaseResponse
-// @Failure 400 {object} response.BaseResponse
-// @Failure 404 {object} response.BaseResponse
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
 // @Router /roles [get]
 // @Security BearerAuth
 func (ctrl *roleController) GetAllRoles(c *fiber.Ctx) error {
@@ -50,8 +50,8 @@ func (ctrl *roleController) GetAllRoles(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param request body request.CreateRoleRequest true "Role create data"
-// @Success 201 {object} response.BaseResponse
-// @Failure 400 {object} response.BaseResponse
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
 // @Router /roles/create [post]
 // @Security BearerAuth
 func (ctrl *roleController) CreateRole(c *fiber.Ctx) error {
@@ -74,9 +74,9 @@ func (ctrl *roleController) CreateRole(c *fiber.Ctx) error {
 // @Description Update a Role data
 // @Tags Roles (Admin)
 // @Produce  json
-// @Success 200 {object} response.BaseResponse
-// @Failure 400 {object} response.BaseResponse
-// @Failure 404 {object} response.BaseResponse
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
 // @Router /role/{id}/update [patch]
 // @Security BearerAuth
 // @Param request body request.UpdateRoleRequest true "Role update data"
@@ -102,9 +102,9 @@ func (ctrl *roleController) UpdateRole(c *fiber.Ctx) error {
 // @Tags Roles (Admin)
 // @Produce  json
 // @Param id path int true "role ID"
-// @Success 200 {object} response.BaseResponse
-// @Failure 400 {object} response.BaseResponse
-// @Failure 404 {object} response.BaseResponse
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
 // @Router /roles/{id} [delete]
 // @Security BearerAuth
 func (ctrl *roleController) DeleteRole(c *fiber.Ctx) error {

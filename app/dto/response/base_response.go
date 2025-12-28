@@ -9,14 +9,14 @@ type BaseResponse struct {
 
 type SuccessResponse struct {
 	Success bool        `json:"success"`
-	Message string      `json:"message"`
+	Message string      `json:"message" example:"data retrieved/created/updated/deleted successfully"`
 	Data    interface{} `json:"data"`
 }
 
 type ErrorResponse struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	Error   string `json:"error"`
+	Success bool   `json:"success" example:"false"`
+	Message string `json:"message" example:"Internal Server Error"`
+	Error   error  `json:"error"`
 }
 
 type PaginationResponse struct {

@@ -25,5 +25,6 @@ func ErrorMiddleware(c *fiber.Ctx, err error) error {
 	return c.Status(status).JSON(response.BaseResponse{
 		Success: false,
 		Message: message,
+		Error:   err,
 	})
 }
