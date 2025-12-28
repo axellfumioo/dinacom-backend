@@ -7,6 +7,18 @@ type BaseResponse struct {
 	Error   interface{} `json:"error,omitempty"`
 }
 
+type SuccessResponse struct {
+	Success bool        `json:"success"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+type ErrorResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+	Error   string `json:"error"`
+}
+
 type PaginationResponse struct {
 	Success    bool        `json:"success"`
 	Message    string      `json:"message"`

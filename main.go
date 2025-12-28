@@ -10,12 +10,13 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 
-	_"backend-dinakom/docs"
+	_ "backend-dinakom/docs"
+	docs "backend-dinakom/docs"
 )
 
 // @title NutriOne API
 // @version 1.0
-// @description API documentation for NutriOne backend
+// @description Dokumentasi API untuk Nutrione
 
 // @host localhost:8080
 // @BasePath /api/v1
@@ -37,6 +38,12 @@ func main() {
 	})
 	router.SetupRouter(app)
 	defer configs.QueueClient.Close()
+
+	docs.SwaggerInfo.Title = "Nutrione API"
+	docs.SwaggerInfo.Description = "Dokumentasi API untuk Nutrione"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:8080"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 
 	port := configs.AppConfig.App.Port
 	log.Printf("Starting %s server on port %s", configs.AppConfig.App.Name, port)
