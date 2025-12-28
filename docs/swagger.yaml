@@ -319,6 +319,107 @@ paths:
       summary: Upload Profile Avatar
       tags:
       - Profiles
+  /results:
+    get:
+      description: Endpoint to get all FoodScans results data
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: GetAllFoodScanResults
+      tags:
+      - Results
+  /results/{id}/get:
+    get:
+      description: Endpoint to get all user foodscan results data by ID
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: GetFoodScanResultByID
+      tags:
+      - Results
+  /results/user:
+    get:
+      description: Endpoint to get all user foodscan results data
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: GetUserFoodScanResult
+      tags:
+      - Results
   /role/{id}/update:
     patch:
       description: Update a Role data
