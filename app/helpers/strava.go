@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"backend-dinakom/app/types/response"
+	"backend-dinakom/app/types"
 	"backend-dinakom/configs"
 	"net/url"
 )
@@ -14,7 +14,7 @@ func StravaRefreshTokenHandle(refreshToken string) (*string, error) {
 		"grant_type":    {"refresh_token"},
 		"refresh_token": {refreshToken},
 	}
-	var responseToken *response.StravaTokenResponse
+	var responseToken *types.StravaTokenResponse
 
 	_, err := client.R().SetBody(&data).SetResult(&responseToken).Post("https://www.strava.com/api/v3/oauth/token")
 	if err != nil {

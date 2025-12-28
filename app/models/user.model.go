@@ -14,6 +14,7 @@ type User struct {
 	Role   *Role `gorm:"foreignKey:RoleID;references:ID"`
 
 	Profile        *UserProfile    `gorm:"foreignKey:UserID;references:ID" json:"profile"`
+	StravaToken    *StravaToken    `gorm:"-"`
 	FoodScans      []FoodScan      `gorm:"-" json:"food_scans"`
 	UserMeals      []UserMeal      `gorm:"-" json:"user_meals"`
 	AIChats        []AiChat        `gorm:"-" json:"ai_chats"`

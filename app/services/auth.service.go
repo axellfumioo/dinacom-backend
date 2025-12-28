@@ -4,8 +4,9 @@ import (
 	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
-	"backend-dinakom/app/types/response"
+	"backend-dinakom/app/types"
 	"errors"
+
 	"github.com/go-resty/resty/v2"
 	"gorm.io/gorm"
 )
@@ -94,7 +95,7 @@ func (s *authService) Login(req request.LoginRequest) (string, error) {
 }
 
 func (s *authService) StravaCallbackHandle(clientID string, clientSecret string, code string) (string, error) {
-	resp := response.StravaTokenResponse{}
+	resp := types.StravaTokenResponse{}
 	_, err := s.restyClient.R().
 		SetBody(map[string]string{
 			"client_id":     clientID,

@@ -1,4 +1,4 @@
-package response
+package types
 
 type StravaTokenResponse struct {
 	AccessToken  string `json:"access_token"`
