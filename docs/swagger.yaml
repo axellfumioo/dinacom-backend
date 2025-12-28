@@ -40,6 +40,19 @@ definitions:
     - name
     - password
     type: object
+  request.UpdateProfileRequest:
+    properties:
+      activity_level:
+        type: string
+      date_of_birth:
+        type: string
+      gender:
+        type: string
+      height_cm:
+        type: number
+      weight_kg:
+        type: number
+    type: object
   request.UpdateRoleRequest:
     properties:
       name:
@@ -274,6 +287,13 @@ paths:
       consumes:
       - application/json
       description: Access this endpoint to update User profile
+      parameters:
+      - description: Update Profile Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateProfileRequest'
       produces:
       - application/json
       responses:
@@ -298,7 +318,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Access this endpoint to upload user avatar
+      description: Access this endpoint to upload user avatar (kirim image di body
+        dengan nama field "avatar")
       produces:
       - application/json
       responses:
@@ -589,4 +610,9 @@ paths:
       summary: GetTodayUserMeals
       tags:
       - Usermeals
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

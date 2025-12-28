@@ -20,6 +20,10 @@ import (
 
 // @host localhost:8080
 // @BasePath /api/v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	configs.LoadConfig()
 
@@ -40,7 +44,7 @@ func main() {
 	defer configs.QueueClient.Close()
 
 	docs.SwaggerInfo.Title = "Nutrione API"
-	docs.SwaggerInfo.Description = "Dokumentasi API untuk Nutrione"
+	docs.SwaggerInfo.Description = "Documentation For Nutrione API"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:8080"
 	docs.SwaggerInfo.BasePath = "/api/v1"

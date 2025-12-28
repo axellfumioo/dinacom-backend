@@ -298,6 +298,17 @@ const docTemplate = `{
                     "Profiles"
                 ],
                 "summary": "Update Profile",
+                "parameters": [
+                    {
+                        "description": "Update Profile Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateProfileRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -327,7 +338,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Access this endpoint to upload user avatar",
+                "description": "Access this endpoint to upload user avatar (kirim image di body dengan nama field \"avatar\")",
                 "consumes": [
                     "application/json"
                 ],
@@ -843,6 +854,26 @@ const docTemplate = `{
                 }
             }
         },
+        "request.UpdateProfileRequest": {
+            "type": "object",
+            "properties": {
+                "activity_level": {
+                    "type": "string"
+                },
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "height_cm": {
+                    "type": "number"
+                },
+                "weight_kg": {
+                    "type": "number"
+                }
+            }
+        },
         "request.UpdateRoleRequest": {
             "type": "object",
             "required": [
@@ -914,6 +945,13 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

@@ -27,6 +27,7 @@ func NewProfileController(profileService services.ProfileService) ProfileControl
 // @Tags Profiles
 // @Accept json
 // @Produce  json
+// @Param request body request.UpdateProfileRequest true "Update Profile Body"
 // @Success 201 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
@@ -49,7 +50,7 @@ func (ctrl *profileController) UpdateProfile(c *fiber.Ctx) error {
 
 // Upload Profile Avatar godoc
 // @Summary Upload Profile Avatar
-// @Description Access this endpoint to upload user avatar
+// @Description Access this endpoint to upload user avatar (kirim image di body dengan nama field "avatar")
 // @Tags Profiles
 // @Accept json
 // @Produce  json
