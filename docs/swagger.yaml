@@ -59,6 +59,27 @@ definitions:
         example: false
         type: boolean
     type: object
+  response.Pagination:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_pages:
+        type: integer
+      total_rows:
+        type: integer
+    type: object
+  response.PaginationResponse:
+    properties:
+      data: {}
+      message:
+        type: string
+      pagination:
+        $ref: '#/definitions/response.Pagination'
+      success:
+        type: boolean
+    type: object
   response.SuccessResponse:
     properties:
       data: {}
@@ -154,6 +175,100 @@ paths:
       summary: Strava integrate Redirect
       tags:
       - Auth
+  /foodscans:
+    get:
+      description: Endpoint to GetAllFoodScans data
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: GetAllFoodScans
+      tags:
+      - Foodscans
+  /foodscans/scan:
+    post:
+      description: Access this endpoint to scanfoods (cukup kirim file dengan nama
+        body "image")
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: ScanFood
+      tags:
+      - Foodscans
+  /foodscans/user:
+    get:
+      description: Endpoint to get all user FoodScans data
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Page size
+        in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.PaginationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: GetUserFoodScans
+      tags:
+      - Foodscans
   /role/{id}/update:
     patch:
       description: Update a Role data

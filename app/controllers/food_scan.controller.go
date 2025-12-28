@@ -23,6 +23,17 @@ func NewFoodScanController(foodScanService services.FoodScanService) FoodScanCon
 	return &foodScanController{foodScanService: foodScanService}
 }
 
+// GetAllFoodScans godoc
+// @Summary GetAllFoodScans
+// @Description Endpoint to GetAllFoodScans data
+// @Tags Foodscans
+// @Produce  json
+// @Param page query int false "Page number" default(1)
+// @Param page_size query int false "Page size" default(10) minimum(1) maximum(100)
+// @Success 200 {object} response.PaginationResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /foodscans [get]
 func (ctrl *foodScanController) GetAllFoodScans(c *fiber.Ctx) error {
 	page, _ := strconv.Atoi(c.Query("page", "1"))
 	pageSize, _ := strconv.Atoi(c.Query("page_size", "10"))
@@ -44,6 +55,18 @@ func (ctrl *foodScanController) GetAllFoodScans(c *fiber.Ctx) error {
 	return helpers.PaginationResponse(c, "foodscans retrieved successfully", foodScans, page, pageSize, totalRows)
 }
 
+// GetUserFoodScans godoc
+// @Summary GetUserFoodScans
+// @Description Endpoint to get all user FoodScans data
+// @Tags Foodscans
+// @Produce  json
+// @Param page query int false "Page number" default(1)
+// @Param page_size query int false "Page size" default(10) minimum(1) maximum(100)
+// @Success 200 {object} response.PaginationResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /foodscans/user [get]
+// @Security BearerAuth
 func (ctrl *foodScanController) GetUserFoodScans(c *fiber.Ctx) error {
 	userId := c.Locals("user_id").(string)
 
@@ -54,6 +77,16 @@ func (ctrl *foodScanController) GetUserFoodScans(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "foodscans retrieved successfully", foodScans)
 }
 
+// Scanfood godoc
+// @Summary ScanFood
+// @Description Access this endpoint to scanfoods (cukup kirim file dengan nama body "image")
+// @Tags Foodscans
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /foodscans/scan [post]
+// @Security BearerAuth
 func (ctrl *foodScanController) ScanFood(c *fiber.Ctx) error {
 	userId := c.Locals("user_id").(string)
 
