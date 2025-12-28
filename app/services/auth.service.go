@@ -6,7 +6,6 @@ import (
 	"backend-dinakom/app/models"
 	"backend-dinakom/app/types/response"
 	"errors"
-
 	"github.com/go-resty/resty/v2"
 	"gorm.io/gorm"
 )
@@ -18,7 +17,7 @@ type AuthService interface {
 }
 
 type authService struct {
-	db *gorm.DB
+	db          *gorm.DB
 	restyClient *resty.Client
 }
 
