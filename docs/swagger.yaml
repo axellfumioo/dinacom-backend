@@ -269,6 +269,56 @@ paths:
       summary: GetUserFoodScans
       tags:
       - Foodscans
+  /profiles:
+    patch:
+      consumes:
+      - application/json
+      description: Access this endpoint to update User profile
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update Profile
+      tags:
+      - Profiles
+  /profiles/avatar:
+    post:
+      consumes:
+      - application/json
+      description: Access this endpoint to upload user avatar
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Upload Profile Avatar
+      tags:
+      - Profiles
   /role/{id}/update:
     patch:
       description: Update a Role data

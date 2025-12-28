@@ -21,6 +21,17 @@ func NewProfileController(profileService services.ProfileService) ProfileControl
 	return &profileController{profileService: profileService}
 }
 
+// Update Profile godoc
+// @Summary Update Profile
+// @Description Access this endpoint to update User profile
+// @Tags Profiles
+// @Accept json
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /profiles [patch]
+// @Security BearerAuth
 func (ctrl *profileController) UpdateProfile(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 
@@ -36,6 +47,17 @@ func (ctrl *profileController) UpdateProfile(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "profile updated successfully", profile)
 }
 
+// Upload Profile Avatar godoc
+// @Summary Upload Profile Avatar
+// @Description Access this endpoint to upload user avatar
+// @Tags Profiles
+// @Accept json
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /profiles/avatar [post]
+// @Security BearerAuth
 func (ctrl *profileController) UploadAvatar(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 
