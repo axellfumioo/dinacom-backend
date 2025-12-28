@@ -10,6 +10,7 @@ import (
 
 type UserMealController interface {
 	GetAllUserMeals(c *fiber.Ctx) error
+	GetTodayUserMeals(c *fiber.Ctx) error
 }
 
 type userMealController struct {
@@ -31,4 +32,14 @@ func (ctrl *userMealController) GetAllUserMeals(c *fiber.Ctx) error {
 	}
 
 	return helpers.PaginationResponse(c, "usermeals data retrieved successfully", userMeals, page, pageSize, totalRows)
+}
+
+func (ctrl *userMealController) GetTodayUserMeals(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+	data, err := ctrl.userMealService.GetTodayUserMeals(UserID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "today user meals retrieved successfully", data)
 }

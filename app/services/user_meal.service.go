@@ -5,12 +5,14 @@ import (
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
 	"errors"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type UserMealService interface {
 	GetAllUserMeals(userID string, page int, pageSize int) ([]response.UserMealResponse, int64, error)
+	GetTodayUserMeals(userID string) ([]response.UserMealResponse, error)
 }
 
 type userMealService struct {
@@ -46,4 +48,22 @@ func (s *userMealService) GetAllUserMeals(userID string, page int, pageSize int)
 
 	userMealsResponse := helpers.ToUserMealsResponse(userMeals)
 	return userMealsResponse, totalRows, nil
+}
+
+func (s *userMealService) GetTodayUserMeals(UserID string) ([]response.UserMealResponse, error) {
+	today := time.Now()
+	startOfDay := time.Date(today.Year(), today.Month(), today.Day(), 0, 0, 0, 0, today.Location())
+	endOfDay := startOfDay.Add(24 * time.Hour)
+
+	var userMeals []models.UserMeal
+	if err := s.db.Where("user_id = ? AND created_at >= ? AND created_at < ?", UserID, startOfDay, endOfDay).Find(&userMeals).Error; err != nil {
+		return nil, err
+	}
+
+	if len(userMeals) == 0 {
+		return nil, errors.New("no meals found today for this user")
+	}
+
+	userMealsResponse := helpers.ToUserMealsResponse(userMeals)
+	return userMealsResponse, nil
 }

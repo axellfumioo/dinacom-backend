@@ -14,5 +14,7 @@ func UserMealRoute(r fiber.Router) {
 	userMealController := controllers.NewUserMealController(userMealService)
 
 	userMeals := r.Group("usermeals")
-	userMeals.Get("/", middlewares.AuthMiddleware(), userMealController.GetAllUserMeals)
+	userMeals.Use(middlewares.AuthMiddleware())
+	userMeals.Get("/", userMealController.GetAllUserMeals)
+	userMeals.Get("/today", userMealController.GetTodayUserMeals)
 }
