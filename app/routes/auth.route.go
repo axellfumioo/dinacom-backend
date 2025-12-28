@@ -3,13 +3,14 @@ package router
 import (
 	"backend-dinakom/app/controllers"
 	"backend-dinakom/app/services"
+	"backend-dinakom/configs"
 	"backend-dinakom/database"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func AuthRoute(r fiber.Router) {
-	authService := services.NewAuthService(*database.GetDb())
+	authService := services.NewAuthService(*database.GetDb(), configs.RestyClient)
 	authController := controllers.NewAuthController(authService)
 
 	auth := r.Group("auth")

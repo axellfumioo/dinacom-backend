@@ -21,6 +21,7 @@ func main() {
 	// Init Client
 	configs.InitQueueClient()
 	configs.InitMinioClient()
+	configs.InitRestyClient()
 
 	app := fiber.New(fiber.Config{
 		AppName:      configs.AppConfig.App.Name,

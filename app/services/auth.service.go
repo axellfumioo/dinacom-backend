@@ -19,10 +19,11 @@ type AuthService interface {
 
 type authService struct {
 	db *gorm.DB
+	restyClient *resty.Client
 }
 
-func NewAuthService(db gorm.DB) AuthService {
-	return &authService{db: &db}
+func NewAuthService(db gorm.DB, restyClient *resty.Client) AuthService {
+	return &authService{db: &db, restyClient: restyClient}
 }
 
 func (s *authService) Register(req request.RegisterRequest) (any, error) {
@@ -93,10 +94,9 @@ func (s *authService) Login(req request.LoginRequest) (string, error) {
 	return access_token, nil
 }
 
-func (c *authService) StravaCallbackHandle(clientID string, clientSecret string, code string) (string, error) {
-	client := resty.New()
+func (s *authService) StravaCallbackHandle(clientID string, clientSecret string, code string) (string, error) {
 	resp := response.StravaTokenResponse{}
-	_, err := client.R().
+	_, err := s.restyClient.R().
 		SetBody(map[string]string{
 			"client_id":     clientID,
 			"client_secret": clientSecret,

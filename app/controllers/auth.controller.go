@@ -63,7 +63,7 @@ func (ctrl *authController) StravaRedirect(c *fiber.Ctx) error {
 	protocol := c.Protocol()
 	host := c.Hostname()
 	callback := fmt.Sprintf("%s://%s/api/v1/auth/strava/callback", protocol, host)
-	
+
 	redirect := url.QueryEscape(callback)
 	url := fmt.Sprintf(
 		"https://www.strava.com/oauth/authorize?client_id=%s&response_type=code&redirect_uri=%s&approval_prompt=auto&scope=read,activity:read_all",
@@ -83,13 +83,12 @@ func (ctrl *authController) StravaCallback(c *fiber.Ctx) error {
 			"error": "missing code from strava",
 		})
 	}
-	resp, err := ctrl.authService.StravaCallbackHandle(clientId, clientSecret, code)
+	// Handle strava
+	_, err := ctrl.authService.StravaCallbackHandle(clientId, clientSecret, code)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 	// Redirect ke frontend
-
-	return c.JSON(fiber.Map{
-		"access_token": resp,
-	})
+	frontendBaseURL := configs.AppConfig.App.Frontend_URL
+	return c.Redirect(frontendBaseURL)
 }
