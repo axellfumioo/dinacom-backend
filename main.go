@@ -2,15 +2,23 @@ package main
 
 import (
 	"backend-dinakom/app/middlewares"
-	"backend-dinakom/app/routes"
+	router "backend-dinakom/app/routes"
 	"backend-dinakom/configs"
 	"backend-dinakom/database"
 	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+
+	_"backend-dinakom/docs"
 )
 
+// @title NutriOne API
+// @version 1.0
+// @description API documentation for NutriOne backend
+
+// @host localhost:8080
+// @BasePath /api/v1
 func main() {
 	configs.LoadConfig()
 
