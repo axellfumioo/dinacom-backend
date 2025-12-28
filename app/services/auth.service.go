@@ -14,7 +14,7 @@ import (
 type AuthService interface {
 	Register(req request.RegisterRequest) (any, error)
 	Login(req request.LoginRequest) (string, error)
-	StravaCallbackHandle(clientID string, clientSecret string, code string) (string, error)
+	StravaCallbackHandle(userID string, clientID string, clientSecret string, code string) (string, error)
 }
 
 type authService struct {
@@ -94,7 +94,7 @@ func (s *authService) Login(req request.LoginRequest) (string, error) {
 	return access_token, nil
 }
 
-func (s *authService) StravaCallbackHandle(clientID string, clientSecret string, code string) (string, error) {
+func (s *authService) StravaCallbackHandle(UserID string, clientID string, clientSecret string, code string) (string, error) {
 	resp := types.StravaTokenResponse{}
 	_, err := s.restyClient.R().
 		SetBody(map[string]string{
@@ -109,6 +109,15 @@ func (s *authService) StravaCallbackHandle(clientID string, clientSecret string,
 		return "", err
 	}
 
-	// Ini query db
+	stravaToken := &models.StravaToken{
+		UserID:       UserID,
+		AccessToken:  resp.AccessToken,
+		RefreshToken: resp.RefreshToken,
+		ExpiresAt:    resp.ExpiresAt,
+	}
+	if err := s.db.Create(&stravaToken).Error; err != nil {
+		return "", err
+	}
+
 	return resp.AccessToken, nil
 }

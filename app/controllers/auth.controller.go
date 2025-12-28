@@ -59,6 +59,7 @@ func (ctrl *authController) Login(c *fiber.Ctx) error {
 }
 
 func (ctrl *authController) StravaRedirect(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
 	clientID := configs.AppConfig.Strava.CLIENT_ID
 	protocol := c.Protocol()
 	host := c.Hostname()
@@ -66,9 +67,10 @@ func (ctrl *authController) StravaRedirect(c *fiber.Ctx) error {
 
 	redirect := url.QueryEscape(callback)
 	url := fmt.Sprintf(
-		"https://www.strava.com/oauth/authorize?client_id=%s&response_type=code&redirect_uri=%s&approval_prompt=auto&scope=read,activity:read_all",
+		"https://www.strava.com/oauth/authorize?client_id=%s&response_type=code&redirect_uri=%s&state=%s&approval_prompt=auto&scope=read,activity:read_all",
 		clientID,
 		redirect,
+		userID,
 	)
 
 	return c.Redirect(url)
@@ -78,13 +80,15 @@ func (ctrl *authController) StravaCallback(c *fiber.Ctx) error {
 	clientId := configs.AppConfig.Strava.CLIENT_ID
 	clientSecret := configs.AppConfig.Strava.CLIENT_KEY
 	code := c.Query("code")
+	userID := c.Query("state")
+
 	if code == "" {
 		return c.Status(400).JSON(fiber.Map{
 			"error": "missing code from strava",
 		})
 	}
 	// Handle strava
-	_, err := ctrl.authService.StravaCallbackHandle(clientId, clientSecret, code)
+	_, err := ctrl.authService.StravaCallbackHandle(userID, clientId, clientSecret, code)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
