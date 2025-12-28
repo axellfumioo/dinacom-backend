@@ -9,6 +9,37 @@ definitions:
     required:
     - name
     type: object
+  request.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  request.RegisterRequest:
+    properties:
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      gender:
+        minLength: 1
+        type: string
+      name:
+        minLength: 3
+        type: string
+      password:
+        type: string
+    required:
+    - date_of_birth
+    - email
+    - gender
+    - name
+    - password
+    type: object
   request.UpdateRoleRequest:
     properties:
       name:
@@ -44,6 +75,85 @@ info:
   title: NutriOne API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      description: User Login endpoint
+      parameters:
+      - description: Login Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Login
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      description: User register endpoint
+      parameters:
+      - description: Register Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: Register
+      tags:
+      - Auth
+  /auth/strava/redirect:
+    get:
+      description: Access this endpoint to Integrate with strava
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Strava integrate Redirect
+      tags:
+      - Auth
   /role/{id}/update:
     patch:
       description: Update a Role data

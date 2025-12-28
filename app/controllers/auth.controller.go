@@ -26,7 +26,16 @@ func NewAuthController(authService services.AuthService) AuthController {
 	return &authController{authService: authService}
 }
 
-// Register
+// Register godoc
+// @Summary Register
+// @Description User register endpoint
+// @Tags Auth
+// @Produce  json
+// @Param request body request.RegisterRequest true "Register Body"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /auth/register [post]
 func (ctrl *authController) Register(c *fiber.Ctx) error {
 	var req request.RegisterRequest
 
@@ -42,7 +51,16 @@ func (ctrl *authController) Register(c *fiber.Ctx) error {
 	return helpers.CreatedResponse(c, "user created successfully", data)
 }
 
-// Login
+// Login godoc
+// @Summary Login
+// @Description User Login endpoint
+// @Tags Auth
+// @Produce  json
+// @Param request body request.LoginRequest true "Login Body"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /auth/login [post]
 func (ctrl *authController) Login(c *fiber.Ctx) error {
 	var req request.LoginRequest
 
@@ -58,6 +76,16 @@ func (ctrl *authController) Login(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "login successfully", access_token)
 }
 
+// Strava Integrate redirect godoc
+// @Summary Strava integrate Redirect
+// @Description Access this endpoint to Integrate with strava
+// @Tags Auth
+// @Produce  json
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /auth/strava/redirect [get]
+// @Security BearerAuth
 func (ctrl *authController) StravaRedirect(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 	clientID := configs.AppConfig.Strava.CLIENT_ID
