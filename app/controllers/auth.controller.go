@@ -6,6 +6,7 @@ import (
 	"backend-dinakom/app/services"
 	"backend-dinakom/configs"
 	"fmt"
+	"net/url"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -59,7 +60,11 @@ func (ctrl *authController) Login(c *fiber.Ctx) error {
 
 func (ctrl *authController) StravaRedirect(c *fiber.Ctx) error {
 	clientID := configs.AppConfig.Strava.CLIENT_ID
-	redirect := "http://localhost:8080/api/v1/auth/strava/callback"
+	protocol := c.Protocol()
+	host := c.Hostname()
+	callback := fmt.Sprintf("%s://%s/api/v1/auth/strava/callback", protocol, host)
+	
+	redirect := url.QueryEscape(callback)
 	url := fmt.Sprintf(
 		"https://www.strava.com/oauth/authorize?client_id=%s&response_type=code&redirect_uri=%s&approval_prompt=auto&scope=read,activity:read_all",
 		clientID,
