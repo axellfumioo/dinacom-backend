@@ -4,6 +4,7 @@ import (
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/types"
 	"errors"
+	"fmt"
 
 	"github.com/go-resty/resty/v2"
 	"gorm.io/gorm"
@@ -11,6 +12,7 @@ import (
 
 type StravaService interface {
 	GetStravaProfile(UserID string) (*types.StravaProfileResponse, error)
+	GetStravaActivities(UserID string, page int, pageSize int) (any, error)
 }
 
 type stravaService struct {
@@ -46,4 +48,19 @@ func (s *stravaService) GetStravaProfile(UserID string) (*types.StravaProfileRes
 		CreatedAt:     result.CreatedAt,
 	}
 	return stravaResponse, nil
+}
+
+func (s *stravaService) GetStravaActivities(UserID string, page int, pageSize int) (any, error) {
+	stravaAccessToken, err := helpers.GetValidStravaToken(s.db, UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	url := fmt.Sprintf("https://www.strava.com/api/v3/athlete/activities?before=&after=&page=%d&per_page=%d", page, pageSize)
+	var result any
+	if _, err := s.restyClient.R().SetAuthToken(*stravaAccessToken).SetResult(&result).Get(url); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }
