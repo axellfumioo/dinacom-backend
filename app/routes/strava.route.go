@@ -15,8 +15,8 @@ func StravaRoute(r fiber.Router) {
 	stravaController := controllers.NewStravaController(stravaService)
 	_ = stravaController
 	strava := r.Group("strava")
-	
-	strava.Use(middlewares.AuthMiddleware())
+
+	strava.Use(middlewares.AuthMiddleware(), middlewares.StravaMiddleware())
 	strava.Get("/profile", stravaController.GetStravaProfile)
 	strava.Get("/activities", stravaController.GetStravaActivities)
 	strava.Get("/activities/:id", stravaController.GetStravaActivityByID)
