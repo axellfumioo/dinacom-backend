@@ -13,14 +13,13 @@ type StravaProfileResponse struct {
 	ID            int64     `json:"id"`
 	Firstname     string    `json:"firstname"`
 	Lastname      string    `json:"lastname"`
+	Username      *string   `json:"username"`
+	Weight        int       `json:"weight"`
 	Premium       bool      `json:"premium"`
 	Profile       string    `json:"profile"`
 	ProfileMedium string    `json:"profile_medium"`
-	ResourceState int       `json:"resource_state"`
-	Sex           string    `json:"sex"`
 	State         string    `json:"state"`
-	Summit        bool      `json:"summit"`
-	Username      *string   `json:"username"`
+	Country       string    `json:"country"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 }
@@ -28,24 +27,15 @@ type StravaProfileResponse struct {
 type StravaActivityResponse struct {
 	ID               int64    `json:"id"`
 	Name             string   `json:"name"`
-	Description      *string  `json:"description"`
 	Calories         *float64 `json:"calories"`
 	Distance         float64  `json:"distance"`
 	MovingTime       int      `json:"moving_time"`
 	ElapsedTime      int      `json:"elapsed_time"`
 	Type             *string  `json:"type"`
 	SportType        *string  `json:"sport_type"`
-	LocationCity     *string  `json:"location_city"`
-	LocationCountry  *string  `json:"location_country"`
-	LocationState    *string  `json:"location_state"`
-	AverageSpeed     *float64 `json:"average_speed"`
-	AverageCadence   *float64 `json:"average_cadence"`
 	AverageHeartrate *float64 `json:"average_heartrate"`
 	Kilojoules       *float64 `json:"kilojoules"`
+	MaxHeartrate     *int     `json:"max_heartrate"`
 
-	MaxSpeed     *float64 `json:"max_speed"`
-	MaxHeartrate *int     `json:"max_heartrate"`
-
-	StartDate      time.Time `json:"start_date"`
-	StartDateLocal time.Time `json:"start_date_local"`
+	StartDate time.Time `json:"start_date"`
 }

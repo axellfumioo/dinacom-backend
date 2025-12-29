@@ -36,19 +36,7 @@ func (s *stravaService) GetStravaProfile(UserID string) (*types.StravaProfileRes
 		return nil, errors.New("failed to get strava profile")
 	}
 
-	stravaResponse := &types.StravaProfileResponse{
-		ID:            result.ID,
-		Username:      result.Username,
-		Firstname:     result.Firstname,
-		Lastname:      result.Lastname,
-		Profile:       result.Profile,
-		ProfileMedium: result.ProfileMedium,
-		State:         result.State,
-		ResourceState: result.ResourceState,
-		Sex:           result.Sex,
-		CreatedAt:     result.CreatedAt,
-	}
-	return stravaResponse, nil
+	return &result, nil
 }
 
 func (s *stravaService) GetStravaActivities(UserID string, page int, pageSize int) ([]types.StravaActivityResponse, error) {
