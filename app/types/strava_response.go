@@ -28,6 +28,8 @@ type StravaProfileResponse struct {
 type StravaActivityResponse struct {
 	ID               int64    `json:"id"`
 	Name             string   `json:"name"`
+	Description      *string  `json:"description"`
+	Calories         *float64 `json:"calories"`
 	Distance         float64  `json:"distance"`
 	MovingTime       int      `json:"moving_time"`
 	ElapsedTime      int      `json:"elapsed_time"`
@@ -38,7 +40,7 @@ type StravaActivityResponse struct {
 	LocationState    *string  `json:"location_state"`
 	AverageSpeed     *float64 `json:"average_speed"`
 	AverageCadence   *float64 `json:"average_cadence"`
-	AverageHeartrate *float64     `json:"average_heartrate"`
+	AverageHeartrate *float64 `json:"average_heartrate"`
 	Kilojoules       *float64 `json:"kilojoules"`
 
 	MaxSpeed     *float64 `json:"max_speed"`

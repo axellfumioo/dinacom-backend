@@ -13,6 +13,7 @@ import (
 type StravaService interface {
 	GetStravaProfile(UserID string) (*types.StravaProfileResponse, error)
 	GetStravaActivities(UserID string, page int, pageSize int) ([]types.StravaActivityResponse, error)
+	GetStravaActivityByID(ID int, UserID string) (*types.StravaActivityResponse, error)
 }
 
 type stravaService struct {
@@ -63,4 +64,19 @@ func (s *stravaService) GetStravaActivities(UserID string, page int, pageSize in
 	}
 
 	return result, nil
+}
+
+func (s *stravaService) GetStravaActivityByID(ID int, UserID string) (*types.StravaActivityResponse, error) {
+	stravaAccessToken, err := helpers.GetValidStravaToken(s.db, UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	url := fmt.Sprintf("https://www.strava.com/api/v3/activities/%d?include_all_efforts=false", ID)
+	var result types.StravaActivityResponse
+	if _, err := s.restyClient.R().SetAuthToken(*stravaAccessToken).SetResult(&result).Get(url); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
 }

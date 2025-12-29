@@ -11,6 +11,7 @@ import (
 type StravaController interface {
 	GetStravaProfile(c *fiber.Ctx) error
 	GetStravaActivities(c *fiber.Ctx) error
+	GetStravaActivityByID(c *fiber.Ctx) error
 }
 
 type stravaController struct {
@@ -43,4 +44,16 @@ func (ctrl *stravaController) GetStravaActivities(c *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(c, "strava activities retrieved successfully", data)
+}
+
+func (ctrl *stravaController) GetStravaActivityByID(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+	ID, _ := strconv.Atoi(c.Params("id"))
+
+	data, err := ctrl.stravaService.GetStravaActivityByID(ID, UserID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "strava activity retrieved successfully", data)
 }
