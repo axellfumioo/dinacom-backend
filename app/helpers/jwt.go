@@ -9,13 +9,14 @@ import (
 )
 
 type JWTClaims struct {
-	UserID string   `json:"user_id"`
-	Email  string `json:"email"`
-	Role   string `json:"role"`
+	UserID           string `json:"user_id"`
+	Email            string `json:"email"`
+	Role             string `json:"role"`
+	StravaIntegrated bool   `json:"strava_integrated"`
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID string, email string, role string) (string, error) {
+func GenerateToken(userID string, email string, role string, stravaIntegrated bool) (string, error) {
 	claims := JWTClaims{
 		UserID: userID,
 		Email:  email,

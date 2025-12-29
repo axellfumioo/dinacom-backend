@@ -32,6 +32,7 @@ func AuthMiddleware() fiber.Handler {
 		c.Locals("user_id", claims.UserID)
 		c.Locals("user_email", claims.Email)
 		c.Locals("user_role", claims.Role)
+		c.Locals("strava_integrated", claims.StravaIntegrated)
 
 		return c.Next()
 	}

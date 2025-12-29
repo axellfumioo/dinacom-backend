@@ -86,7 +86,7 @@ func (s *authService) Login(req request.LoginRequest) (string, error) {
 		return "", errors.New("incorrect password")
 	}
 
-	access_token, err := helpers.GenerateToken(existingUser.ID, existingUser.Email, existingUser.Role.RoleName)
+	access_token, err := helpers.GenerateToken(existingUser.ID, existingUser.Email, existingUser.Role.RoleName, existingUser.StravaIntegrated)
 	if err != nil {
 		return "", errors.New("failed to generate token")
 	}
