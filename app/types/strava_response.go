@@ -22,5 +22,28 @@ type StravaProfileResponse struct {
 	Summit        bool      `json:"summit"`
 	Username      *string   `json:"username"`
 	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time   `json:"updated_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+}
+
+type StravaActivityResponse struct {
+	ID               int64    `json:"id"`
+	Name             string   `json:"name"`
+	Distance         float64  `json:"distance"`
+	MovingTime       int      `json:"moving_time"`
+	ElapsedTime      int      `json:"elapsed_time"`
+	Type             *string  `json:"type"`
+	SportType        *string  `json:"sport_type"`
+	LocationCity     *string  `json:"location_city"`
+	LocationCountry  *string  `json:"location_country"`
+	LocationState    *string  `json:"location_state"`
+	AverageSpeed     *float64 `json:"average_speed"`
+	AverageCadence   *float64 `json:"average_cadence"`
+	AverageHeartrate *float64     `json:"average_heartrate"`
+	Kilojoules       *float64 `json:"kilojoules"`
+
+	MaxSpeed     *float64 `json:"max_speed"`
+	MaxHeartrate *int     `json:"max_heartrate"`
+
+	StartDate      time.Time `json:"start_date"`
+	StartDateLocal time.Time `json:"start_date_local"`
 }
