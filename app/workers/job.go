@@ -16,6 +16,7 @@ import (
 
 func fetchAI(imageURL string) (string, error) {
 	// Simulasi fetch ke AI
+	_= imageURL
 	time.Sleep(2 * time.Second)
 	var result = types.AINutritionResponse{
 		FoodName:      []string{"Tempe", "Tahu", "Ayam"},
@@ -94,6 +95,6 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return errors.New("error when updating foodScan status")
 	}
 
-	log.Printf("Emit event WS for user %d, result: %s\n", fs.UserID, result)
+	log.Printf("Emit event WS for user %s, result: %s\n", fs.UserID, result)
 	return nil
 }

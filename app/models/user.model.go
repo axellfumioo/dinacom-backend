@@ -3,11 +3,12 @@ package models
 import "time"
 
 type User struct {
-	ID          string  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	Email       string  `gorm:"uniqueIndex;type:varchar(100);not null"`
-	Password    *string `gorm:"type:varchar(100);default:null"`
-	FullName    string
-	PhoneNumber *string `gorm:"type:varchar(100);default:null"`
+	ID               string  `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+	Email            string  `gorm:"uniqueIndex;type:varchar(100);not null"`
+	Password         *string `gorm:"type:varchar(100);default:null"`
+	FullName         string
+	PhoneNumber      *string `gorm:"type:varchar(100);default:null"`
+	StravaIntegrated bool    `gorm:"default:false" json:"strava_integrated"`
 
 	// Relations
 	RoleID *string
