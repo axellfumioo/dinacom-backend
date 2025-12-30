@@ -266,6 +266,12 @@ func ToAIChatMessageResponse(msg *models.AIChatMessage) response.AIChatMessageRe
 		r := ToUserResponse(msg.User)
 		user = r
 	}
+
+	var chat response.AiChatResponse
+	if msg.Chat != nil {
+		r := ToAIChatResponse(msg.Chat)
+		chat = r
+	}
 	return response.AIChatMessageResponse{
 		ID:         msg.ID,
 		ImageURL:   msg.ImageURL,
@@ -273,7 +279,9 @@ func ToAIChatMessageResponse(msg *models.AIChatMessage) response.AIChatMessageRe
 		Confidence: msg.Confidence,
 		SenderRole: msg.SenderRole,
 		UserID:     msg.UserID,
+		ChatID:     msg.ChatID,
 		User:       &user,
+		Chat:       &chat,
 		CreatedAt:  msg.CreatedAt,
 		UpdatedAt:  msg.UpdatedAt,
 	}

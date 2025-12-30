@@ -13,8 +13,10 @@ type AIChatMessageResponse struct {
 	SenderRole constants.AIMessageRole `json:"sender_role"`
 
 	// Relations
-	UserID *string `json:"user_id"`
-	User *UserResponse `json:"user"`
+	UserID *string         `json:"user_id"`
+	ChatID string          `json:"chat_id"`
+	User   *UserResponse   `json:"user"`
+	Chat   *AiChatResponse `json:"chat"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
