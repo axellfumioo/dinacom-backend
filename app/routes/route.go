@@ -27,6 +27,7 @@ func SetupRouter(app *fiber.App) {
 	FoodScanResultRoute(api)
 	UserMealRoute(api)
 	StravaRoute(api)
+	AIChatRoute(api)
 
 	go workers.StartWorker(database.GetDb())
 }
