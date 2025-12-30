@@ -230,6 +230,36 @@ func ToAIWebExtractsResponse(webExtracts []models.AIWebExtract) []response.AIWeb
 	return webExtractsResponse
 }
 
+func ToAIChatResponse(aiChat *models.AiChat) response.AiChatResponse {
+	var user response.UserResponse
+	if aiChat.User != nil {
+		r := ToUserResponse(aiChat.User)
+		user = r
+	}
+	var messages []response.AIChatMessageResponse
+	if aiChat.Messages != nil {
+		r := ToAIChatMessagesResponse(aiChat.Messages)
+		messages = r
+	}
+
+	return response.AiChatResponse{
+		ID:        aiChat.ID,
+		Messages:  messages,
+		UserID:    aiChat.UserID,
+		User:      &user,
+		CreatedAt: aiChat.CreatedAt,
+		UpdatedAt: aiChat.UpdatedAt,
+	}
+}
+
+func ToAIChatsResponse(aiChats []models.AiChat) []response.AiChatResponse {
+	var aiChatsResponse []response.AiChatResponse
+	for _, ac := range aiChats {
+		aiChatsResponse = append(aiChatsResponse, ToAIChatResponse(&ac))
+	}
+	return aiChatsResponse
+}
+
 func ToAIChatMessageResponse(msg *models.AIChatMessage) response.AIChatMessageResponse {
 	var user response.UserResponse
 	if msg.User != nil {
