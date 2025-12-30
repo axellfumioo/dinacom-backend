@@ -1,6 +1,8 @@
 package services
 
 import (
+	"backend-dinakom/app/dto/response"
+	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
 	"errors"
 
@@ -8,7 +10,7 @@ import (
 )
 
 type AIChatService interface {
-	CreateNewChat(UserID string) (*models.AiChat, error)
+	CreateNewChat(UserID string) (*response.AiChatResponse, error)
 }
 
 type aIChatService struct {
@@ -19,7 +21,7 @@ func NewAIChatService(db *gorm.DB) AIChatService {
 	return &aIChatService{db: db}
 }
 
-func (s *aIChatService) CreateNewChat(UserID string) (*models.AiChat, error) {
+func (s *aIChatService) CreateNewChat(UserID string) (*response.AiChatResponse, error) {
 	var exist models.AiChat
 	if err := s.db.First(&exist, "user_id = ?", UserID).Error; err == nil {
 		return nil, errors.New("chat is already exist")
@@ -33,5 +35,7 @@ func (s *aIChatService) CreateNewChat(UserID string) (*models.AiChat, error) {
 		return nil, err
 	}
 
-	return AiChat, nil
+	
+	aiChatResponse := helpers.ToAIChatResponse(AiChat)
+	return &aiChatResponse, nil
 }

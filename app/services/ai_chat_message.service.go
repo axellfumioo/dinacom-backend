@@ -2,6 +2,7 @@ package services
 
 import (
 	"backend-dinakom/app/dto/request"
+	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
 	"backend-dinakom/configs"
@@ -15,8 +16,8 @@ import (
 )
 
 type AIChatMessageService interface {
-	CreateNewMessage(req request.CreateMessageRequest, UserID string, ChatID string) (*models.AIChatMessage, error)
-	CreateNewMessageWithImage(req request.CreateMessageWithMediaRequest) (*models.AIChatMessage, error)
+	CreateNewMessage(req request.CreateMessageRequest, UserID string, ChatID string) (*response.AIChatMessageResponse, error)
+	CreateNewMessageWithImage(req request.CreateMessageWithMediaRequest) (*response.AIChatMessageResponse, error)
 }
 
 type aiChatMessageService struct {
@@ -29,7 +30,7 @@ func NewAIChatMessageService(db *gorm.DB, asynqClient *asynq.Client, minioClient
 	return &aiChatMessageService{db: db, asyncqClient: asynqClient, minioClient: minioClient}
 }
 
-func (s *aiChatMessageService) CreateNewMessage(req request.CreateMessageRequest, UserID string, ChatID string) (*models.AIChatMessage, error) {
+func (s *aiChatMessageService) CreateNewMessage(req request.CreateMessageRequest, UserID string, ChatID string) (*response.AIChatMessageResponse, error) {
 	var existingChat models.AiChat
 	if err := s.db.First(&existingChat, "id = ?", ChatID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -49,10 +50,11 @@ func (s *aiChatMessageService) CreateNewMessage(req request.CreateMessageRequest
 		return nil, err
 	}
 
-	return ChatMessage, nil
+	aiChatMessageResponse := helpers.ToAIChatMessageResponse(ChatMessage)
+	return &aiChatMessageResponse, nil
 }
 
-func (s *aiChatMessageService) CreateNewMessageWithImage(req request.CreateMessageWithMediaRequest) (*models.AIChatMessage, error) {
+func (s *aiChatMessageService) CreateNewMessageWithImage(req request.CreateMessageWithMediaRequest) (*response.AIChatMessageResponse, error) {
 	var existingChat models.AiChat
 	if err := s.db.First(&existingChat, "id = ?", req.ChatID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -85,5 +87,6 @@ func (s *aiChatMessageService) CreateNewMessageWithImage(req request.CreateMessa
 		return nil, err
 	}
 
-	return ChatMessage, nil
+	aiChatMessageResponse := helpers.ToAIChatMessageResponse(ChatMessage)
+	return &aiChatMessageResponse, nil
 }
