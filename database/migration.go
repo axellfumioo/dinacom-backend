@@ -19,6 +19,8 @@ func RunMigration() {
 		&models.AIGoogleSearch{},
 		&models.AIWebExtract{},
 		&models.StravaToken{},
+		&models.Family{},
+		&models.FamilyMember{},
 	)
 
 	if err != nil {
