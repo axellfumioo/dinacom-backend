@@ -4,6 +4,7 @@ import (
 	"backend-dinakom/app/controllers"
 	"backend-dinakom/app/middlewares"
 	"backend-dinakom/app/services"
+	"backend-dinakom/configs"
 	"backend-dinakom/database"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,9 +12,12 @@ import (
 
 func AIChatRoute(r fiber.Router) {
 	aiChatService := services.NewAIChatService(database.GetDb())
+	aiChatMessageService := services.NewAIChatMessageService(database.DB, configs.QueueClient)
 	aiChatController := controllers.NewAIChatController(aiChatService)
+	aiChatMessageController := controllers.NewAIChatMessageController(aiChatMessageService)
 
 	aiChats := r.Group("/aichats")
 	aiChats.Use(middlewares.AuthMiddleware())
 	aiChats.Post("/", aiChatController.CreateNewChat)
+	aiChats.Post("/:chatId/message", aiChatMessageController.CreateNewMessage)
 }
