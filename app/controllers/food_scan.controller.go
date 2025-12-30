@@ -92,7 +92,7 @@ func (ctrl *foodScanController) ScanFood(c *fiber.Ctx) error {
 
 	image, err := c.FormFile("image")
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "This field must be image file")
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	foodScan, err := ctrl.foodScanService.ScanFood(userId, request.ScanFoodRequest{Image: *image})

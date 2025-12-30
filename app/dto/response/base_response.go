@@ -3,7 +3,6 @@ package response
 type BaseResponse struct {
 	Success bool        `json:"success"`
 	Message string      `json:"message"`
-	StatusCode    int         `json:"status_code"`
 	Data    interface{} `json:"data,omitempty"`
 	Error   interface{} `json:"error,omitempty"`
 }
@@ -15,9 +14,9 @@ type SuccessResponse struct {
 }
 
 type ErrorResponse struct {
-	Success bool   `json:"success" example:"false"`
-	Message string `json:"message" example:"Internal Server Error"`
-	Error   error  `json:"error"`
+	Success    bool   `json:"success" example:"false"`
+	Message    string `json:"message" example:"Internal Server Error"`
+	StatusCode int    `json:"status_code"`
 }
 
 type PaginationResponse struct {

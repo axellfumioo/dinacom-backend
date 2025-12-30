@@ -119,5 +119,9 @@ func (s *authService) StravaCallbackHandle(UserID string, clientID string, clien
 		return "", err
 	}
 
+	if err := s.db.Model(&models.User{}).Where("id = ?", UserID).Update("StravaIntegrated", true).Error; err != nil {
+		return "", err
+	}
+
 	return resp.AccessToken, nil
 }
