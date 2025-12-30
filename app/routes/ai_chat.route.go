@@ -12,12 +12,14 @@ import (
 
 func AIChatRoute(r fiber.Router) {
 	aiChatService := services.NewAIChatService(database.GetDb())
-	aiChatMessageService := services.NewAIChatMessageService(database.DB, configs.QueueClient)
+	aiChatMessageService := services.NewAIChatMessageService(database.DB, configs.QueueClient, configs.MinioClient)
 	aiChatController := controllers.NewAIChatController(aiChatService)
 	aiChatMessageController := controllers.NewAIChatMessageController(aiChatMessageService)
 
 	aiChats := r.Group("/aichats")
 	aiChats.Use(middlewares.AuthMiddleware())
 	aiChats.Post("/", aiChatController.CreateNewChat)
+
 	aiChats.Post("/:chatId/message", aiChatMessageController.CreateNewMessage)
+	aiChats.Post("/:chatId/message-img", aiChatMessageController.CreateNewMessageWithImage)
 }

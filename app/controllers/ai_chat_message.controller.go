@@ -10,6 +10,7 @@ import (
 
 type AIChatMessageController interface {
 	CreateNewMessage(c *fiber.Ctx) error
+	CreateNewMessageWithImage(c *fiber.Ctx) error
 }
 
 type aiChatMessageController struct {
@@ -34,5 +35,24 @@ func (ctrl *aiChatMessageController) CreateNewMessage(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
-	return helpers.CreatedResponse(c, "ai message create successfully", data)
+	return helpers.CreatedResponse(c, "ai message created successfully", data)
+}
+
+func (ctrl *aiChatMessageController) CreateNewMessageWithImage(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+	ChatID := c.Params("chatId")
+
+	// Multipart handler
+	image, err := c.FormFile("image")
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+	content := c.FormValue("content")
+
+	// Service
+	data, err := ctrl.aiChatMessageService.CreateNewMessageWithImage(request.CreateMessageWithMediaRequest{Content: content, Image: image, UserID: UserID, ChatID: ChatID})
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return helpers.CreatedResponse(c, "ai message created successfully", data)
 }
