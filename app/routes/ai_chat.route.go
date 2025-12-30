@@ -12,9 +12,8 @@ import (
 func AIChatRoute(r fiber.Router) {
 	aiChatService := services.NewAIChatService(database.GetDb())
 	aiChatController := controllers.NewAIChatController(aiChatService)
-	var _ = aiChatController
-	
+
 	aiChats := r.Group("/aichats")
 	aiChats.Use(middlewares.AuthMiddleware())
-	aiChats.Post("/")
+	aiChats.Post("/", aiChatController.CreateNewChat)
 }
