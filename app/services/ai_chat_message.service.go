@@ -5,7 +5,9 @@ import (
 	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
+	"backend-dinakom/app/types/payload"
 	"backend-dinakom/configs"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -61,6 +63,9 @@ func (s *aiChatMessageService) CreateNewMessage(req request.CreateMessageRequest
 		return nil, err
 	}
 
+	var lastMessages []models.AIChatMessage
+	s.db.Where("chat_id = ?", ChatID).Order("created_at DESC").Limit(5).Find(&lastMessages)
+
 	ChatMessage := &models.AIChatMessage{
 		Content: req.Content,
 		ChatID:  ChatID,
@@ -72,6 +77,17 @@ func (s *aiChatMessageService) CreateNewMessage(req request.CreateMessageRequest
 	}
 
 	aiChatMessageResponse := helpers.ToAIChatMessageResponse(ChatMessage)
+	payload := payload.CreateAIMessagePayload{
+		ChatID:      ChatID,
+		UserID:      UserID,
+		Message:     req.Content,
+		ChatHistory: lastMessages,
+	}
+
+	b, _ := json.Marshal(payload)
+	task := asynq.NewTask("aichat:process", b)
+	s.asyncqClient.Enqueue(task)
+
 	return &aiChatMessageResponse, nil
 }
 
@@ -96,6 +112,10 @@ func (s *aiChatMessageService) CreateNewMessageWithImage(req request.CreateMessa
 		return nil, err
 	}
 
+	// Query last message untuk a.i
+	var lastMessages []models.AIChatMessage
+	s.db.Where("chat_id = ?", req.ChatID).Order("created_at DESC").Limit(5).Find(&lastMessages)
+
 	// Create message handler
 	ChatMessage := &models.AIChatMessage{
 		Content:  req.Content,
@@ -109,6 +129,17 @@ func (s *aiChatMessageService) CreateNewMessageWithImage(req request.CreateMessa
 	}
 
 	aiChatMessageResponse := helpers.ToAIChatMessageResponse(ChatMessage)
+	payload := payload.CreateAIMessagePayload{
+		ChatID:      req.ChatID,
+		UserID:      req.UserID,
+		Message:     req.Content,
+		ChatHistory: lastMessages,
+	}
+
+	b, _ := json.Marshal(payload)
+	task := asynq.NewTask("aichat:process", b)
+	s.asyncqClient.Enqueue(task)
+
 	return &aiChatMessageResponse, nil
 }
 
