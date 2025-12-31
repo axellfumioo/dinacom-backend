@@ -4,7 +4,8 @@ import (
 	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
-	"backend-dinakom/app/types"
+	"backend-dinakom/external/types"
+
 	"errors"
 
 	"github.com/go-resty/resty/v2"

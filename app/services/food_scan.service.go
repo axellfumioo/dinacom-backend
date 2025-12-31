@@ -1,11 +1,12 @@
 package services
 
 import (
+	"backend-dinakom/app/dto/payload"
 	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
-	"backend-dinakom/app/types/payload"
+
 	"backend-dinakom/configs"
 	"encoding/json"
 	"errors"

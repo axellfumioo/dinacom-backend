@@ -1,9 +1,10 @@
 package workers
 
 import (
+	"backend-dinakom/app/dto/payload"
 	"backend-dinakom/app/models"
-	"backend-dinakom/app/types"
-	"backend-dinakom/app/types/payload"
+	"backend-dinakom/external/types"
+
 	"context"
 	"encoding/json"
 	"errors"

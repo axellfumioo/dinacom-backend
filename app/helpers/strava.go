@@ -2,8 +2,8 @@ package helpers
 
 import (
 	"backend-dinakom/app/models"
-	"backend-dinakom/app/types"
 	"backend-dinakom/configs"
+	"backend-dinakom/external/types"
 	"errors"
 	"time"
 

@@ -2,7 +2,8 @@ package services
 
 import (
 	"backend-dinakom/app/helpers"
-	"backend-dinakom/app/types"
+	"backend-dinakom/external/types"
+
 	"errors"
 	"fmt"
 
