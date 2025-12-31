@@ -5,16 +5,16 @@ import (
 	transport "github.com/ambelovsky/gosf-socketio/transport"
 )
 
-var ioServer *io.Server
-var ioTransport *transport.WebsocketTransport
+var IoServer *io.Server
+var IoTransport *transport.WebsocketTransport
 
 func ConnectSocketIO() {
-	if ioServer == nil && ioTransport == nil {
+	if IoServer == nil && IoTransport == nil {
 		// Transport configuration
-		ioTransport = transport.GetDefaultWebsocketTransport()
+		IoTransport = transport.GetDefaultWebsocketTransport()
 
-		// SocketIO Server
-		ioTransport.UnsecureTLS = true
-		ioServer = io.NewServer(ioTransport)
+		// SocketIo Server
+		IoTransport.UnsecureTLS = true
+		IoServer = io.NewServer(IoTransport)
 	}
 }
