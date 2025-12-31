@@ -25,4 +25,5 @@ func AIChatRoute(r fiber.Router) {
 	aiChats.Get("/:chatID/message", aiChatMessageController.GetChatMessagesByChatID)
 	aiChats.Post("/:chatId/message", aiChatMessageController.CreateNewMessage)
 	aiChats.Post("/:chatId/message-img", aiChatMessageController.CreateNewMessageWithImage)
+	aiChats.Delete("/message/:messageID", aiChatMessageController.DeleteMessageByID)
 }

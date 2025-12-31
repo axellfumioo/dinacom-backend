@@ -12,6 +12,7 @@ type AIChatMessageController interface {
 	GetChatMessagesByChatID(c *fiber.Ctx) error
 	CreateNewMessage(c *fiber.Ctx) error
 	CreateNewMessageWithImage(c *fiber.Ctx) error
+	DeleteMessageByID(c *fiber.Ctx) error
 }
 
 type aiChatMessageController struct {
@@ -66,4 +67,16 @@ func (ctrl *aiChatMessageController) CreateNewMessageWithImage(c *fiber.Ctx) err
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 	return helpers.CreatedResponse(c, "ai message created successfully", data)
+}
+
+func (ctrl *aiChatMessageController) DeleteMessageByID(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+	ID := c.Params("messageID")
+
+	data, err := ctrl.aiChatMessageService.DeleteChatMessageByID(ID, UserID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.CreatedResponse(c, "ai message deleted successfully", data)
 }
