@@ -10,6 +10,7 @@ import (
 )
 
 type AIChatService interface {
+	GetUserAIChats(UserID string) ([]response.AiChatResponse, error)
 	CreateNewChat(UserID string) (*response.AiChatResponse, error)
 }
 
@@ -21,12 +22,20 @@ func NewAIChatService(db *gorm.DB) AIChatService {
 	return &aIChatService{db: db}
 }
 
-func (s *aIChatService) CreateNewChat(UserID string) (*response.AiChatResponse, error) {
-	var exist models.AiChat
-	if err := s.db.First(&exist, "user_id = ?", UserID).Error; err == nil {
-		return nil, errors.New("chat is already exist")
+func (s *aIChatService) GetUserAIChats(UserID string) ([]response.AiChatResponse, error) {
+	var aiChats []models.AiChat
+	if err := s.db.Preload("Messages").Where("user_id = ?", UserID).Find(&aiChats).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("ai chats not found")
+		}
+		return nil, err
 	}
 
+	aiChatsResponse := helpers.ToAIChatsResponse(aiChats)
+	return aiChatsResponse, nil
+}
+
+func (s *aIChatService) CreateNewChat(UserID string) (*response.AiChatResponse, error) {
 	AiChat := &models.AiChat{
 		UserID: UserID,
 	}
@@ -35,7 +44,6 @@ func (s *aIChatService) CreateNewChat(UserID string) (*response.AiChatResponse, 
 		return nil, err
 	}
 
-	
 	aiChatResponse := helpers.ToAIChatResponse(AiChat)
 	return &aiChatResponse, nil
 }

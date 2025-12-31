@@ -19,6 +19,7 @@ func AIChatRoute(r fiber.Router) {
 	aiChats := r.Group("/aichats")
 	aiChats.Use(middlewares.AuthMiddleware())
 	aiChats.Post("/", aiChatController.CreateNewChat)
+	aiChats.Get("/user", aiChatController.GetUserAIChats)
 
 	aiChats.Post("/:chatId/message", aiChatMessageController.CreateNewMessage)
 	aiChats.Post("/:chatId/message-img", aiChatMessageController.CreateNewMessageWithImage)
