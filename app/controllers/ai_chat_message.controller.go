@@ -9,6 +9,7 @@ import (
 )
 
 type AIChatMessageController interface {
+	GetChatMessagesByChatID(c *fiber.Ctx) error
 	CreateNewMessage(c *fiber.Ctx) error
 	CreateNewMessageWithImage(c *fiber.Ctx) error
 }
@@ -19,6 +20,16 @@ type aiChatMessageController struct {
 
 func NewAIChatMessageController(AIChatMessageService services.AIChatMessageService) AIChatMessageController {
 	return &aiChatMessageController{aiChatMessageService: AIChatMessageService}
+}
+
+func (ctrl *aiChatMessageController) GetChatMessagesByChatID(c *fiber.Ctx) error {
+	ChatID := c.Params("chatId")
+
+	data, err := ctrl.aiChatMessageService.GetChatMessagesByChatID(ChatID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return helpers.SuccessResponse(c, "messages retrieved successfully", data)
 }
 
 func (ctrl *aiChatMessageController) CreateNewMessage(c *fiber.Ctx) error {

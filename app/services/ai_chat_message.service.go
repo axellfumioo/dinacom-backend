@@ -16,6 +16,7 @@ import (
 )
 
 type AIChatMessageService interface {
+	GetChatMessagesByChatID(ChatID string) ([]response.AIChatMessageResponse, error)
 	CreateNewMessage(req request.CreateMessageRequest, UserID string, ChatID string) (*response.AIChatMessageResponse, error)
 	CreateNewMessageWithImage(req request.CreateMessageWithMediaRequest) (*response.AIChatMessageResponse, error)
 }
@@ -28,6 +29,24 @@ type aiChatMessageService struct {
 
 func NewAIChatMessageService(db *gorm.DB, asynqClient *asynq.Client, minioClient *minio.Client) AIChatMessageService {
 	return &aiChatMessageService{db: db, asyncqClient: asynqClient, minioClient: minioClient}
+}
+
+func (s *aiChatMessageService) GetChatMessagesByChatID(ChatID string) ([]response.AIChatMessageResponse, error) {
+	var aiChat models.AiChat
+	if err := s.db.First(&aiChat, "id = ?", ChatID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("chat not found")
+		}
+		return nil, err
+	}
+
+	var messages []models.AIChatMessage
+	if err := s.db.Preload("User").Preload("Chat").Where("chat_id", ChatID).Find(&messages).Error; err != nil {
+		return nil, err
+	}
+
+	messagesResponse := helpers.ToAIChatMessagesResponse(messages)
+	return messagesResponse, nil
 }
 
 func (s *aiChatMessageService) CreateNewMessage(req request.CreateMessageRequest, UserID string, ChatID string) (*response.AIChatMessageResponse, error) {
