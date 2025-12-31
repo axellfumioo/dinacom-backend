@@ -32,6 +32,7 @@ func main() {
 	database.RunMigration()
 
 	// Init Client
+	configs.ConnectSocketIO()
 	configs.InitQueueClient()
 	configs.InitMinioClient()
 	configs.InitRestyClient()
