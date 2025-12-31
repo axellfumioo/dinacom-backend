@@ -10,6 +10,7 @@ import (
 type AIChatController interface {
 	GetUserAIChats(c *fiber.Ctx) error
 	CreateNewChat(c *fiber.Ctx) error
+	DeleteAIChat(c *fiber.Ctx) error
 }
 
 type aiChatController struct {
@@ -38,4 +39,16 @@ func (ctrl *aiChatController) CreateNewChat(c *fiber.Ctx) error {
 	}
 
 	return helpers.CreatedResponse(c, "chat created successfully", data)
+}
+
+func (ctrl *aiChatController) DeleteAIChat(c *fiber.Ctx) error {
+	ID := c.Params("id")
+	UserID := c.Locals("user_id").(string)
+
+	data, err := ctrl.AIChatService.DeleteAIChat(ID, UserID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "chat deleted successfully", data)
 }

@@ -12,6 +12,7 @@ import (
 type AIChatService interface {
 	GetUserAIChats(UserID string) ([]response.AiChatResponse, error)
 	CreateNewChat(UserID string) (*response.AiChatResponse, error)
+	DeleteAIChat(ID string, UserID string) (*response.AiChatResponse, error)
 }
 
 type aIChatService struct {
@@ -45,5 +46,19 @@ func (s *aIChatService) CreateNewChat(UserID string) (*response.AiChatResponse, 
 	}
 
 	aiChatResponse := helpers.ToAIChatResponse(AiChat)
+	return &aiChatResponse, nil
+}
+
+func (s *aIChatService) DeleteAIChat(ID string, UserID string) (*response.AiChatResponse, error) {
+	var exist models.AiChat
+	if err := s.db.Where("id = ? AND user_id = ?", ID, UserID).First(&exist).Error; err != nil {
+		return nil, err
+	}
+
+	if err := s.db.Delete(&exist).Error; err != nil {
+		return nil, err
+	}
+
+	aiChatResponse := helpers.ToAIChatResponse(&exist)
 	return &aiChatResponse, nil
 }
