@@ -11,7 +11,7 @@ type AIChatMessage struct {
 	ImageURL   *string                 `gorm:"type:varchar(500);"`
 	Content    string                  `gorm:"type:varchar(500);"`
 	Confidence *float64                `gorm:"type:float"`
-	SenderRole constants.AIMessageRole `gorm:"type:varchar(20);default:'USER'" json:"sender_role"`
+	SenderRole constants.AIMessageRole `gorm:"type:varchar(20);default:'USER'" json:"sender_role"` // USER, ASSISTANT
 
 	// Relations
 	ChatID string  `gorm:"type:uuid;not null" json:"chat_id"`
