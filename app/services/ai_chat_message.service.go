@@ -20,6 +20,7 @@ type AIChatMessageService interface {
 	CreateNewMessage(req request.CreateMessageRequest, UserID string, ChatID string) (*response.AIChatMessageResponse, error)
 	CreateNewMessageWithImage(req request.CreateMessageWithMediaRequest) (*response.AIChatMessageResponse, error)
 	DeleteChatMessageByID(ID string, UserID string) (*response.AIChatMessageResponse, error)
+	DeleteChatMessages(ChatID string, UserID string) ([]response.AIChatMessageResponse, error)
 }
 
 type aiChatMessageService struct {
@@ -126,4 +127,30 @@ func (s *aiChatMessageService) DeleteChatMessageByID(ID string, UserID string) (
 
 	messageResponse := helpers.ToAIChatMessageResponse(&exist)
 	return &messageResponse, nil
+}
+
+func (s *aiChatMessageService) DeleteChatMessages(ChatID string, UserID string) ([]response.AIChatMessageResponse, error) {
+	var aiChat models.AiChat
+	if err := s.db.Where("id = ? AND user_id = ?", ChatID, UserID).First(&aiChat).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("chat not found")
+		}
+		return nil, err
+	}
+
+	var messages []models.AIChatMessage
+	if err := s.db.Where("chat_id = ?", ChatID).Find(&messages).Error; err != nil {
+		return nil, err
+	}
+
+	if len(messages) == 0 {
+		return nil, errors.New("messages don't exist in this chat")
+	}
+
+	if err := s.db.Delete(&messages).Error; err != nil {
+		return nil, err
+	}
+
+	messagesResponse := helpers.ToAIChatMessagesResponse(messages)
+	return messagesResponse, nil
 }
