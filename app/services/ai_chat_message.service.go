@@ -43,7 +43,7 @@ func (s *aiChatMessageService) GetChatMessagesByChatID(ChatID string) ([]respons
 	}
 
 	var messages []models.AIChatMessage
-	if err := s.db.Preload("User").Preload("Chat").Where("chat_id", ChatID).Find(&messages).Error; err != nil {
+	if err := s.db.Preload("User").Preload("Chat").Order("created_at ASC").Where("chat_id", ChatID).Find(&messages).Error; err != nil {
 		return nil, err
 	}
 
