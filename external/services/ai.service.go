@@ -2,8 +2,10 @@ package extservices
 
 import (
 	"backend-dinakom/app/models"
+	"backend-dinakom/configs"
 	"backend-dinakom/external/types"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -30,6 +32,7 @@ func FetchFoodScanAI(imageURL string) (string, error) {
 
 // AI chat answer
 func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, error) {
+	var restyClient = configs.RestyClient
 	var chatHs []map[string]interface{}
 	for _, hs := range chatHistory {
 		chatHs = append(chatHs, map[string]interface{}{"role": hs.SenderRole, "content": hs.Content})
@@ -40,9 +43,15 @@ func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, er
 		"chat_history": chatHs,
 	}
 
-	// Return AI {response :""}
-	_ = bodyRequest
+	var result map[string]interface{}
+	url := fmt.Sprintf("%s/", "")
+	_, err := restyClient.R().
+		SetBody(&bodyRequest).
+		SetAuthToken("DinacomAIService#2025").
+		SetResult(&result).
+		Post(url)
 
+	// Return AI {response :""}
 	response := types.AIChatResponse{
 		Message:    "Halo juga fiky",
 		Confidence: 9.0,
