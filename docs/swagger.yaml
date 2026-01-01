@@ -1,5 +1,10 @@
 basePath: /api/v1
 definitions:
+  request.CreateMessageRequest:
+    properties:
+      content:
+        type: string
+    type: object
   request.CreateRoleRequest:
     properties:
       name:
@@ -133,9 +138,122 @@ paths:
       summary: CreateNewChat
       tags:
       - Aichats
+  /aichats/{aichatID}/message:
+    post:
+      description: endpoint to create new message (akses endopoint ini kalo mau kirim
+        chat tanpa image/gambar)
+      parameters:
+      - description: Create new message
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: CreateNewMessage
+      tags:
+      - Aichats(message)
+  /aichats/{aichatID}/message-img:
+    post:
+      description: endpoint to create new message with image (akses endopoint ini
+        kalo mau kirim chat dengan image/gambar, Untuk body kirim data ke formdata
+        key "image" (berisi file gambar), "content" (berisi pesan yg dikirim))
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: CreateNewMessageWithImage
+      tags:
+      - Aichats(message)
+  /aichats/{chatID}/message:
+    get:
+      description: endpoint to get aiChats messages
+      parameters:
+      - description: chatID
+        in: path
+        name: chatID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: GetAIChatMessageByChatID
+      tags:
+      - Aichats(message)
+  /aichats/{chatId}/message:
+    delete:
+      description: endpoint to delete all messages in the chat (Hapus semua message
+        di chat)
+      parameters:
+      - description: chatID
+        in: path
+        name: chatID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: DeleteChatMessages
+      tags:
+      - Aichats(message)
   /aichats/{id}:
     delete:
       description: endpoint to delete specific chat with chatID
+      parameters:
+      - description: chatID
+        in: path
+        name: chatID
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -154,6 +272,33 @@ paths:
       summary: DeleteChat
       tags:
       - Aichats
+  /aichats/message/{messageId}:
+    delete:
+      description: endpoint to delete specific message with messageID
+      parameters:
+      - description: messageID
+        in: path
+        name: messageID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: DeleteMessageByID
+      tags:
+      - Aichats(message)
   /aichats/user:
     get:
       description: endpoint to get user aiChats (room)

@@ -24,6 +24,16 @@ func NewAIChatMessageController(AIChatMessageService services.AIChatMessageServi
 	return &aiChatMessageController{aiChatMessageService: AIChatMessageService}
 }
 
+// GetAIChatMessageByChatID godoc
+// @Summary GetAIChatMessageByChatID
+// @Description endpoint to get aiChats messages
+// @Tags Aichats(message)
+// @Produce  json
+// @Param chatID path string true "chatID"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/{chatID}/message [get]
 func (ctrl *aiChatMessageController) GetChatMessagesByChatID(c *fiber.Ctx) error {
 	ChatID := c.Params("chatId")
 
@@ -34,6 +44,16 @@ func (ctrl *aiChatMessageController) GetChatMessagesByChatID(c *fiber.Ctx) error
 	return helpers.SuccessResponse(c, "messages retrieved successfully", data)
 }
 
+// CreateNewMessage godoc
+// @Summary CreateNewMessage
+// @Description endpoint to create new message (akses endopoint ini kalo mau kirim chat tanpa image/gambar)
+// @Tags Aichats(message)
+// @Produce  json
+// @Param request body request.CreateMessageRequest true "Create new message"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/{aichatID}/message [post]
 func (ctrl *aiChatMessageController) CreateNewMessage(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ChatID := c.Params("chatId")
@@ -51,6 +71,15 @@ func (ctrl *aiChatMessageController) CreateNewMessage(c *fiber.Ctx) error {
 	return helpers.CreatedResponse(c, "ai message created successfully", data)
 }
 
+// CreateNewMessageWithImage godoc
+// @Summary CreateNewMessageWithImage
+// @Description endpoint to create new message with image (akses endopoint ini kalo mau kirim chat dengan image/gambar, Untuk body kirim data ke formdata key "image" (berisi file gambar), "content" (berisi pesan yg dikirim))
+// @Tags Aichats(message)
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/{aichatID}/message-img [post]
 func (ctrl *aiChatMessageController) CreateNewMessageWithImage(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ChatID := c.Params("chatId")
@@ -70,6 +99,16 @@ func (ctrl *aiChatMessageController) CreateNewMessageWithImage(c *fiber.Ctx) err
 	return helpers.CreatedResponse(c, "ai message created successfully", data)
 }
 
+// DeleteMessageByID godoc
+// @Summary DeleteMessageByID
+// @Description endpoint to delete specific message with messageID
+// @Tags Aichats(message)
+// @Produce  json
+// @Param messageID path string true "messageID"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/message/{messageId} [delete]
 func (ctrl *aiChatMessageController) DeleteMessageByID(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ID := c.Params("messageId")
@@ -82,6 +121,16 @@ func (ctrl *aiChatMessageController) DeleteMessageByID(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "ai message deleted successfully", data)
 }
 
+// DeletechatMessages godoc
+// @Summary DeleteChatMessages
+// @Description endpoint to delete all messages in the chat (Hapus semua message di chat)
+// @Tags Aichats(message)
+// @Produce  json
+// @Param chatID path string true "chatID"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/{chatId}/message [delete]
 func (ctrl *aiChatMessageController) DeleteChatMessages(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ID := c.Params("chatId")

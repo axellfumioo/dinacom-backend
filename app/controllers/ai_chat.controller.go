@@ -64,6 +64,7 @@ func (ctrl *aiChatController) CreateNewChat(c *fiber.Ctx) error {
 // @Description endpoint to delete specific chat with chatID
 // @Tags Aichats
 // @Produce  json
+// @Param chatID path string true "chatID"
 // @Success 201 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse

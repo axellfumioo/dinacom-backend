@@ -47,6 +47,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/aichats/message/{messageId}": {
+            "delete": {
+                "description": "endpoint to delete specific message with messageID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats(message)"
+                ],
+                "summary": "DeleteMessageByID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "messageID",
+                        "name": "messageID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/aichats/user": {
             "get": {
                 "description": "endpoint to get user aiChats (room)",
@@ -79,6 +120,163 @@ const docTemplate = `{
                 }
             }
         },
+        "/aichats/{aichatID}/message": {
+            "post": {
+                "description": "endpoint to create new message (akses endopoint ini kalo mau kirim chat tanpa image/gambar)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats(message)"
+                ],
+                "summary": "CreateNewMessage",
+                "parameters": [
+                    {
+                        "description": "Create new message",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/aichats/{aichatID}/message-img": {
+            "post": {
+                "description": "endpoint to create new message with image (akses endopoint ini kalo mau kirim chat dengan image/gambar, Untuk body kirim data ke formdata key \"image\" (berisi file gambar), \"content\" (berisi pesan yg dikirim))",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats(message)"
+                ],
+                "summary": "CreateNewMessageWithImage",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/aichats/{chatID}/message": {
+            "get": {
+                "description": "endpoint to get aiChats messages",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats(message)"
+                ],
+                "summary": "GetAIChatMessageByChatID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "chatID",
+                        "name": "chatID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/aichats/{chatId}/message": {
+            "delete": {
+                "description": "endpoint to delete all messages in the chat (Hapus semua message di chat)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats(message)"
+                ],
+                "summary": "DeleteChatMessages",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "chatID",
+                        "name": "chatID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/aichats/{id}": {
             "delete": {
                 "description": "endpoint to delete specific chat with chatID",
@@ -89,6 +287,15 @@ const docTemplate = `{
                     "Aichats"
                 ],
                 "summary": "DeleteChat",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "chatID",
+                        "name": "chatID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -1031,6 +1238,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "request.CreateMessageRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                }
+            }
+        },
         "request.CreateRoleRequest": {
             "type": "object",
             "required": [
