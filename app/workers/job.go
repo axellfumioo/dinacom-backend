@@ -155,7 +155,7 @@ func AIChatProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return err
 	}
 
-	socket.EmitToRoom(payload.ChatID, "refresh:room", nil)
+	socket.EmitToRoom(payload.ChatID, "refresh:room", &message.ChatID)
 	log.Printf("aichat:proccess Done")
 	return nil
 }
