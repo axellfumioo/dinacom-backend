@@ -3,6 +3,7 @@ package workers
 import (
 	"backend-dinakom/app/dto/payload"
 	"backend-dinakom/app/models"
+	"backend-dinakom/app/socket"
 	"backend-dinakom/external/types"
 
 	"context"
@@ -122,7 +123,8 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return errors.New("error when updating foodScan status")
 	}
 
-	log.Printf("Emit event WS for user %s, result: %s\n", fs.UserID, result)
+	socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
+	log.Printf("foodscan:process Done")
 	return nil
 }
 
@@ -153,6 +155,7 @@ func AIChatProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return err
 	}
 
-	log.Printf("Emit event WS for chatRoom %s", payload.ChatID)
+	socket.EmitToRoom(payload.ChatID, "refresh:room", nil)
+	log.Printf("aichat:proccess Done")
 	return nil
 }
