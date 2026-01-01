@@ -113,3 +113,28 @@ func AIChatProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	log.Printf("aichat:proccess Done")
 	return nil
 }
+
+func AIDecisionProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
+	var payload payload.CreateAIDecisionPayload
+	if err := json.Unmarshal(t.Payload(), &payload); err != nil {
+		return err
+	}
+
+	decision := &models.AIDecision{
+		Queries:     payload.Queries,
+		NeedSearch:  payload.NeedSearch,
+		RequestType: payload.RequestType,
+		RiskLevel:   payload.RiskLevel,
+	}
+	
+	if err := db.Create(&decision).Error; err != nil {
+		return errors.New("failed to create decision:" + err.Error())
+	}
+
+	if payload.NeedSearch == true {
+		log.Println("create need search")
+	}
+
+	log.Println("ai-decision:process Done")
+	return nil
+}

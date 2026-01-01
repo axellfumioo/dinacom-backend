@@ -23,6 +23,11 @@ func StartWorker(db *gorm.DB) {
 		return AIChatProcess(ctx, *t, db)
 	})
 
+	// AI Decision handler
+	mux.HandleFunc("ai-decision:process", func(ctx context.Context, t *asynq.Task) error {
+		return AIDecisionProcess(ctx, *t, db)
+	})
+	
 	if err := server.Run(mux); err != nil {
 		log.Fatal(err)
 	}
