@@ -4,63 +4,17 @@ import (
 	"backend-dinakom/app/dto/payload"
 	"backend-dinakom/app/models"
 	"backend-dinakom/app/socket"
+	extservices "backend-dinakom/external/services"
 	"backend-dinakom/external/types"
 
 	"context"
 	"encoding/json"
 	"errors"
 	"log"
-	"time"
 
 	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 )
-
-// AI Fetching (ntar dipisah)
-func fetchFoodScanAI(imageURL string) (string, error) {
-	// Simulasi fetch ke AI
-	_ = imageURL
-	time.Sleep(2 * time.Second)
-	var result = types.AINutritionResponse{
-		FoodName:      []string{"Tempe", "Tahu", "Ayam"},
-		Calories:      10,
-		Protein:       8.4,
-		Carbohydrates: 10.1,
-		Fat:           5.1,
-	}
-
-	jsonBytes, err := json.Marshal(result)
-	if err != nil {
-		return "", err
-	}
-
-	return string(jsonBytes), nil
-}
-
-// AI chat answer
-func fetchAIChat(message string, chatHistory []models.AIChatMessage) (string, error) {
-	var chatHs []map[string]interface{}
-	for _, hs := range chatHistory {
-		chatHs = append(chatHs, map[string]interface{}{"role": hs.SenderRole, "content": hs.Content})
-	}
-
-	bodyRequest := map[string]interface{}{
-		"content":      message,
-		"chat_history": chatHs,
-	}
-	_ = bodyRequest
-
-	response := types.AIChatResponse{
-		Message:    "Halo juga fiky",
-		Confidence: 9.0,
-	}
-
-	jsonBytes, err := json.Marshal(response)
-	if err != nil {
-		return "", err
-	}
-	return string(jsonBytes), nil
-}
 
 func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	var payload payload.FoodScanPayload
@@ -76,7 +30,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return err
 	}
 
-	result, err := fetchFoodScanAI(payload.ImageURL)
+	result, err := extservices.FetchFoodScanAI(payload.ImageURL)
 	if err != nil {
 		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
 			return errors.New("error when update foodScan status")
@@ -134,7 +88,7 @@ func AIChatProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return err
 	}
 
-	response, err := fetchAIChat(payload.Message, payload.ChatHistory)
+	response, err := extservices.FetchAIChat(payload.Message, payload.ChatHistory)
 	if err != nil {
 		return err
 	}
