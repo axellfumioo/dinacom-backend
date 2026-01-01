@@ -21,6 +21,15 @@ func NewAIChatController(AIChatService services.AIChatService) AIChatController 
 	return &aiChatController{AIChatService: AIChatService}
 }
 
+// GetUserAIChats godoc
+// @Summary GetUserAIChats
+// @Description endpoint to get user aiChats (room)
+// @Tags Aichats
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/user [get]
 func (ctrl *aiChatController) GetUserAIChats(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	data, err := ctrl.AIChatService.GetUserAIChats(UserID)
@@ -31,6 +40,15 @@ func (ctrl *aiChatController) GetUserAIChats(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "user AIchats retrieved successfully", data)
 }
 
+// CreateNewChat godoc
+// @Summary CreateNewChat
+// @Description endpoint to create new chat (btw ini cara kerjanya mungkin ntr ada tombol buat tambah chat dengan a.i (kalau belum ada chat ai) trs nembak ke endpoint ini )
+// @Tags Aichats
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/ [post]
 func (ctrl *aiChatController) CreateNewChat(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	data, err := ctrl.AIChatService.CreateNewChat(UserID)
@@ -41,6 +59,15 @@ func (ctrl *aiChatController) CreateNewChat(c *fiber.Ctx) error {
 	return helpers.CreatedResponse(c, "chat created successfully", data)
 }
 
+// DeleteChat godoc
+// @Summary DeleteChat
+// @Description endpoint to delete specific chat with chatID
+// @Tags Aichats
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/{id} [delete]
 func (ctrl *aiChatController) DeleteAIChat(c *fiber.Ctx) error {
 	ID := c.Params("id")
 	UserID := c.Locals("user_id").(string)

@@ -39,6 +39,8 @@ func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, er
 		"content":      message,
 		"chat_history": chatHs,
 	}
+
+	// Return AI {response :""}
 	_ = bodyRequest
 
 	response := types.AIChatResponse{

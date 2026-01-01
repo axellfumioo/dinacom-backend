@@ -9,6 +9,102 @@
     "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
+        "/aichats/": {
+            "post": {
+                "description": "endpoint to create new chat (btw ini cara kerjanya mungkin ntr ada tombol buat tambah chat dengan a.i (kalau belum ada chat ai) trs nembak ke endpoint ini )",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats"
+                ],
+                "summary": "CreateNewChat",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/aichats/user": {
+            "get": {
+                "description": "endpoint to get user aiChats (room)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats"
+                ],
+                "summary": "GetUserAIChats",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/aichats/{id}": {
+            "delete": {
+                "description": "endpoint to delete specific chat with chatID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Aichats"
+                ],
+                "summary": "DeleteChat",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "description": "User Login endpoint",
@@ -1022,10 +1118,12 @@
         "response.ErrorResponse": {
             "type": "object",
             "properties": {
-                "error": {},
                 "message": {
                     "type": "string",
                     "example": "Internal Server Error"
+                },
+                "status_code": {
+                    "type": "integer"
                 },
                 "success": {
                     "type": "boolean",

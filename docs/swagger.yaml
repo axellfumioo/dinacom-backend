@@ -64,10 +64,11 @@ definitions:
     type: object
   response.ErrorResponse:
     properties:
-      error: {}
       message:
         example: Internal Server Error
         type: string
+      status_code:
+        type: integer
       success:
         example: false
         type: boolean
@@ -109,6 +110,71 @@ info:
   title: NutriOne API
   version: "1.0"
 paths:
+  /aichats/:
+    post:
+      description: endpoint to create new chat (btw ini cara kerjanya mungkin ntr
+        ada tombol buat tambah chat dengan a.i (kalau belum ada chat ai) trs nembak
+        ke endpoint ini )
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: CreateNewChat
+      tags:
+      - Aichats
+  /aichats/{id}:
+    delete:
+      description: endpoint to delete specific chat with chatID
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: DeleteChat
+      tags:
+      - Aichats
+  /aichats/user:
+    get:
+      description: endpoint to get user aiChats (room)
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: GetUserAIChats
+      tags:
+      - Aichats
   /auth/login:
     post:
       description: User Login endpoint
