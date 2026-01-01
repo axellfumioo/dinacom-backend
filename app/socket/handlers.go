@@ -23,6 +23,10 @@ func StartConnectionHandler() {
 		fmt.Println("Client Disconnected")
 	})
 
+	server.On("join:room", func(c *io.Channel, roomID string) {
+		c.Join("room:" + roomID)
+		fmt.Println("Success to join room:" + roomID)
+	})
 }
 
 func getUserID(c *io.Channel) string {
