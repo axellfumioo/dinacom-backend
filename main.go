@@ -3,6 +3,7 @@ package main
 import (
 	"backend-dinakom/app/middlewares"
 	router "backend-dinakom/app/routes"
+	"backend-dinakom/app/socket"
 	"backend-dinakom/configs"
 	"backend-dinakom/database"
 	"fmt"
@@ -30,12 +31,14 @@ func main() {
 	// Connect ke database
 	database.ConnectDatabase()
 	database.RunMigration()
-
 	// Init Client
 	configs.ConnectSocketIO()
 	configs.InitQueueClient()
 	configs.InitMinioClient()
 	configs.InitRestyClient()
+
+	// Connect socket
+	socket.StartConnectionHandler()
 
 	app := fiber.New(fiber.Config{
 		AppName:      configs.AppConfig.App.Name,
