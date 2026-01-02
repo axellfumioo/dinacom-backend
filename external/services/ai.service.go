@@ -38,27 +38,31 @@ func FetchFoodScanAI(imageURL string) (string, error) {
 func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, error) {
 	var restyClient = configs.RestyClient
 	var chatHs []map[string]interface{}
+	apiBaseUrl := configs.AppConfig.App.AI_BACKEND_URL
+
 	for _, hs := range chatHistory {
 		chatHs = append(chatHs, map[string]interface{}{"role": hs.SenderRole, "content": hs.Content})
 	}
 
 	bodyRequest := map[string]interface{}{
-		"content":      message,
+		"message":      message,
 		"chat_history": chatHs,
 	}
 
-	var result map[string]interface{}
-	url := fmt.Sprintf("%s/", "")
+	var result *types.AIChatAPIResponse
+	url := fmt.Sprintf("%s/ai/chat", apiBaseUrl)
 	_, err := restyClient.R().
 		SetBody(&bodyRequest).
 		SetAuthToken("DinacomAIService#2025").
 		SetResult(&result).
 		Post(url)
+	if err != nil || result == nil {
+		return "", errors.New("failed to fetch ai chat")
+	}
 
-	// Return AI {response :""}
 	response := types.AIChatResponse{
-		Message:    "Halo juga fiky",
-		Confidence: 9.0,
+		Message:    result.Response,
+		Confidence: 3,
 	}
 
 	jsonBytes, err := json.Marshal(response)
