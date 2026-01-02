@@ -51,6 +51,16 @@ func (ctrl *userController) GetAllUsers(c *fiber.Ctx) error {
 	return helpers.PaginationResponse(c, "Users retrieved successfully", users, page, pageSize, totalRows)
 }
 
+// GetUserSession godoc
+// @Summary GetUserSession
+// @Description Endpoint to get user session
+// @Tags Users
+// @Produce  json 
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /users/session [get]
+// @Security BearerAuth
 func (ctrl *userController) GetUserSession(c *fiber.Ctx) error {
 
 	userId := c.Locals("user_id").(string)
