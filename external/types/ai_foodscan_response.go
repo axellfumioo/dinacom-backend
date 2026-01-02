@@ -1,5 +1,9 @@
 package types
 
+type AIFoodScanResponse struct {
+	Response AINutritionResponse `json:"response"`
+}
+
 type AINutritionResponse struct {
 	FoodName        []string   `json:"food_name"`
 	FoodType        string     `json:"food_type"`

@@ -5,31 +5,28 @@ import (
 	"backend-dinakom/configs"
 	"backend-dinakom/external/types"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"time"
 )
 
 // AI Fetching (ntar dipisah)
 func FetchFoodScanAI(imageURL string) (string, error) {
-	// Simulasi fetch ke AI
-	_ = imageURL
-	time.Sleep(2 * time.Second)
-	var result = types.AINutritionResponse{
-		FoodName: []string{"Tempe", "Tahu", "Ayam"},
-		FoodType: "traditional",
-		Nutrition: types.Nutritions{
-			ProteinG: 8,
-			CarbsG:   6,
-			FatG:     10,
-		},
-		CaloriesKcal:    730,
-		Vitamins:        make([]string, 0),
-		HealthScores:    8,
-		HealthNote:      "sdsds",
-		ConfidenceScore: 9.1,
+	restyClient := configs.RestyClient
+	apiBaseUrl := configs.AppConfig.App.AI_BACKEND_URL
+	bodyRequest := map[string]interface{}{"image_url": imageURL}
+
+	var result *types.AIFoodScanResponse
+	url := fmt.Sprintf("%s/ai/foodscan", apiBaseUrl)
+	_, err := restyClient.R().
+		SetBody(&bodyRequest).
+		SetAuthToken("DinacomAIService#2025").
+		SetResult(&result).
+		Post(url)
+	if err != nil || result == nil {
+		return "", errors.New("failed to fetch ai foodscan")
 	}
 
-	jsonBytes, err := json.Marshal(result)
+	jsonBytes, err := json.Marshal(result.Response)
 	if err != nil {
 		return "", err
 	}
