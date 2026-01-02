@@ -105,7 +105,7 @@ func AIChatProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		ChatID:     payload.ChatID,
 		Content:    jsonResult.Message,
 		Confidence: &jsonResult.Confidence,
-		SenderRole: "AI",
+		SenderRole: "ASSISTANT",
 	}
 	if err := db.Create(&message).Error; err != nil {
 		return err
