@@ -15,11 +15,18 @@ func FetchFoodScanAI(imageURL string) (string, error) {
 	_ = imageURL
 	time.Sleep(2 * time.Second)
 	var result = types.AINutritionResponse{
-		FoodName:      []string{"Tempe", "Tahu", "Ayam"},
-		Calories:      10,
-		Protein:       8.4,
-		Carbohydrates: 10.1,
-		Fat:           5.1,
+		FoodName: []string{"Tempe", "Tahu", "Ayam"},
+		FoodType: "traditional",
+		Nutrition: types.Nutritions{
+			ProteinG: 8,
+			CarbsG:   6,
+			FatG:     10,
+		},
+		CaloriesKcal:    730,
+		Vitamins:        make([]string, 0),
+		HealthScores:    8,
+		HealthNote:      "sdsds",
+		ConfidenceScore: 9.1,
 	}
 
 	jsonBytes, err := json.Marshal(result)

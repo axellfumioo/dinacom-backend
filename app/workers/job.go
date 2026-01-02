@@ -44,12 +44,14 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	}
 
 	fsResult := models.FoodScanResult{
-		FoodScanID: fs.ID,
-		FoodNames:  jsonResult.FoodName,
-		Calories:   float64(jsonResult.Calories),
-		Protein:    jsonResult.Protein,
-		Carbs:      jsonResult.Carbohydrates,
-		Fat:        jsonResult.Fat,
+		FoodScanID:   fs.ID,
+		FoodNames:    jsonResult.FoodName,
+		FoodType:     jsonResult.FoodType,
+		CaloriesKcal: float64(jsonResult.CaloriesKcal),
+		ProteinG:     jsonResult.Nutrition.ProteinG,
+		CarbsG:       jsonResult.Nutrition.CarbsG,
+		FatG:         jsonResult.Nutrition.FatG,
+		Confidence:   jsonResult.ConfidenceScore,
 	}
 
 	if err := db.Create(&fsResult).Error; err != nil {
@@ -63,10 +65,10 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	userMeal := models.UserMeal{
 		UserID:    payload.UserID,
 		FoodNames: jsonResult.FoodName,
-		Calories:  float64(jsonResult.Calories),
-		Protein:   jsonResult.Protein,
-		Carbs:     jsonResult.Carbohydrates,
-		Fat:       jsonResult.Fat,
+		Calories:  float64(jsonResult.CaloriesKcal),
+		Protein:   jsonResult.Nutrition.ProteinG,
+		Carbs:     jsonResult.Nutrition.CarbsG,
+		Fat:       jsonResult.Nutrition.FatG,
 	}
 
 	if err := db.Create(&userMeal).Error; err != nil {
@@ -126,7 +128,7 @@ func AIDecisionProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		RequestType: payload.RequestType,
 		RiskLevel:   payload.RiskLevel,
 	}
-	
+
 	if err := db.Create(&decision).Error; err != nil {
 		return errors.New("failed to create decision:" + err.Error())
 	}

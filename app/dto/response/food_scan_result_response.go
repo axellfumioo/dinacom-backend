@@ -7,15 +7,17 @@ import (
 type FoodScanResultResponse struct {
 	ID string `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 
-	FoodNames   []string `json:"food_names"`
-	Calories    float64  `json:"calories"`
-	Protein     float64  `json:"protein"`
-	Fat         float64  `json:"fat"`
-	Carbs       float64  `json:"carbohydrate"`
-	Ingredients []string `json:"ingrendients"`
+	FoodNames    []string `json:"food_names"`
+	Foodtype     string   `json:"food_type"`
+	CaloriesKcal float64  `json:"calories_kcal"`
+	ProteinG     float64  `json:"protein_g"`
+	FatG         float64  `json:"fat_g"`
+	CarbsG       float64  `json:"carbs_g"`
+	Vitamins     []string `json:"vitamins"`
 
 	FoodScanID string            `gorm:"type:uuid;not null;uniqueIndex;" json:"food_scan_id"`
 	FoodScan   *FoodScanResponse `gorm:"foreignKey:FoodScanID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"food_scan"`
 
-	CreatedAt time.Time
+	Confidence float64 `json:"confidence"`
+	CreatedAt  time.Time
 }
