@@ -507,6 +507,35 @@ paths:
       summary: UpdateFamilyAvatar
       tags:
       - Families
+  /families/{id}/delete:
+    delete:
+      description: endpoint to delete family
+      parameters:
+      - description: id
+        in: path
+        name: ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: DeleteFamily
+      tags:
+      - Families
   /foodscans:
     get:
       description: Endpoint to GetAllFoodScans data

@@ -111,6 +111,17 @@ func (ctrl *familyController) UpdateFamilyAvatar(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "family avatar updated successfully", data)
 }
 
+// Delete Family godoc
+// @Summary DeleteFamily
+// @Description endpoint to delete family
+// @Tags Families
+// @Produce  json
+// @Param ID path string true "id"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /families/{id}/delete [delete]
+// @Security BearerAuth
 func (ctrl *familyController) DeleteFamily(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 	familyID := c.Params("id")
