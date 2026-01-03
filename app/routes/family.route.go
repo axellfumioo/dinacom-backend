@@ -19,4 +19,5 @@ func FamilyRoute(r fiber.Router) {
 	families.Post("/", familyController.CreateNewFamily)
 	families.Patch("/:id", familyController.UpdateFamily)
 	families.Patch("/:id/avatar", familyController.UpdateFamilyAvatar)
+	families.Delete("/:id/delete", familyController.DeleteFamily)
 }

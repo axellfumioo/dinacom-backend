@@ -17,7 +17,8 @@ import (
 type FamilyService interface {
 	CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error)
 	UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*models.Family, error)
-	UpdateFamily(familyID string, UserID string, req request.UpdateFamilyRequest) (*models.Family, error)
+	UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*models.Family, error)
+	DeleteFamily(familyID string, userID string) (*models.Family, error)
 }
 
 type familyService struct {
@@ -123,6 +124,26 @@ func (s *familyService) UpdateFamily(familyID string, userID string, req request
 
 	if err := s.db.Model(&existingFamily).Updates(updateData).Error; err != nil {
 		return nil, errors.New("failed to update family:" + err.Error())
+	}
+
+	return &existingFamily, nil
+}
+
+func (s *familyService) DeleteFamily(familyID string, userID string) (*models.Family, error) {
+	// Check if exist
+	var existingMember models.FamilyMember
+	if err := s.db.First(&existingMember, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
+		return nil, errors.New("failed to get member data:" + err.Error())
+	}
+
+	var existingFamily models.Family
+	if err := s.db.First(&existingFamily, "id = ?", familyID).Error; err != nil {
+		return nil, errors.New("failed to get family:" + err.Error())
+	}
+
+	// Delete family
+	if err := s.db.Delete(&existingFamily).Error; err != nil {
+		return nil, errors.New("failed to delete family:" + err.Error())
 	}
 
 	return &existingFamily, nil

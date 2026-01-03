@@ -12,6 +12,7 @@ type FamilyController interface {
 	CreateNewFamily(c *fiber.Ctx) error
 	UpdateFamilyAvatar(c *fiber.Ctx) error
 	UpdateFamily(c *fiber.Ctx) error
+	DeleteFamily(c *fiber.Ctx) error
 }
 
 type familyController struct {
@@ -73,4 +74,16 @@ func (ctrl *familyController) UpdateFamilyAvatar(c *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(c, "family avatar updated successfully", data)
+}
+
+func (ctrl *familyController) DeleteFamily(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+	familyID := c.Params("id")
+
+	data, err := ctrl.familyService.DeleteFamily(familyID, userID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "family avatar deleted successfully", data)
 }
