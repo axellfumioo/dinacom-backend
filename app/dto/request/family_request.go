@@ -8,3 +8,8 @@ type CreateFamilyRequest struct {
 	memberIds    []string
 	FamilyAvatar *multipart.FileHeader
 }
+
+type UpdateFamilyRequest struct {
+	Name        *string
+	Description *string
+}

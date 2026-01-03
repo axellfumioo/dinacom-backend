@@ -10,6 +10,7 @@ import (
 
 type FamilyController interface {
 	CreateNewFamily(c *fiber.Ctx) error
+	UpdateFamily(c *fiber.Ctx) error
 }
 
 type familyController struct {
@@ -37,4 +38,21 @@ func (ctrl *familyController) CreateNewFamily(c *fiber.Ctx) error {
 	}
 
 	return helpers.CreatedResponse(c, "family created successfully", data)
+}
+
+func (ctrl *familyController) UpdateFamily(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+	familyID := c.Params("id")
+
+	var req request.UpdateFamilyRequest
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	data, err := ctrl.familyService.UpdateFamily(familyID, userID, req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "family updated successfully", data)
 }

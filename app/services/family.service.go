@@ -15,6 +15,7 @@ import (
 
 type FamilyService interface {
 	CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error)
+	UpdateFamily(familyID string, UserID string, req request.UpdateFamilyRequest) (*models.Family, error)
 }
 
 type familyService struct {
@@ -61,4 +62,32 @@ func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyR
 	}
 
 	return family, nil
+}
+
+func (s *familyService) UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*models.Family, error) {
+	// Check is exist
+	var existingMember models.FamilyMember
+	if err := s.db.First(&existingMember, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
+		return nil, errors.New("failed to get member data:" + err.Error())
+	}
+
+	var existingFamily models.Family
+	if err := s.db.First(&existingFamily, "id = ?", familyID).Error; err != nil {
+		return nil, errors.New("failed to get family:" + err.Error())
+	}
+
+	updateData := map[string]interface{}{}
+	if req.Name != nil && req.Name != &existingFamily.Name {
+		updateData["name"] = req.Name
+	}
+
+	if req.Description != nil && req.Description != existingFamily.Desc {
+		updateData["desc"] = req.Name
+	}
+
+	if err := s.db.Model(&existingFamily).Updates(updateData).Error; err != nil {
+		return nil, errors.New("failed to update family:" + err.Error())
+	}
+
+	return &existingFamily, nil
 }
