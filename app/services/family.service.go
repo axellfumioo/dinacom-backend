@@ -32,13 +32,17 @@ func NewFamilyService(db *gorm.DB, minioClient *minio.Client) FamilyService {
 
 func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error) {
 	var existingUser models.User
-	if err := s.db.Preload("Profile").First(&existingUser, "id = ?", UserID).Error; err != nil {
-		return nil, errors.New("user query error:" + err.Error())
+	if err := s.db.Preload("Profile").Preload("member_of").First(&existingUser, "id = ?", UserID).Error; err != nil {
+		return nil, errors.New("failed to get user:" + err.Error())
+	}
+
+	if existingUser.MembersOf != nil {
+		return nil, errors.New("failed to create family: this member already has a family")
 	}
 
 	countAge := helpers.CalculateAge(existingUser.Profile.DateOfBirth)
 	if countAge < 17 {
-		return nil, errors.New("your age is not enough to create a family")
+		return nil, errors.New("failed to create family: user age is not enough to create a family")
 	}
 
 	// File Upload
