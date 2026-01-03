@@ -20,7 +20,7 @@ type User struct {
 	UserMeals      []UserMeal      `gorm:"-" json:"user_meals"`
 	AIChats        []AiChat        `gorm:"-" json:"ai_chats"`
 	AIChatMessages []AIChatMessage `gorm:"-" json:"ai_chat_messages"`
-	MembersOf      []FamilyMember  `gorm:"-" json:"member_of"`
+	MembersOf      *FamilyMember  `gorm:"-" json:"member_of"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
