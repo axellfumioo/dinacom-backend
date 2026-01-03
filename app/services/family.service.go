@@ -32,11 +32,11 @@ func NewFamilyService(db *gorm.DB, minioClient *minio.Client) FamilyService {
 
 func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error) {
 	var existingUser models.User
-	if err := s.db.Preload("Profile").Preload("member_of").First(&existingUser, "id = ?", UserID).Error; err != nil {
+	if err := s.db.Preload("Profile").Preload("MemberOf").First(&existingUser, "id = ?", UserID).Error; err != nil {
 		return nil, errors.New("failed to get user:" + err.Error())
 	}
 
-	if existingUser.MembersOf != nil {
+	if existingUser.MemberOf == nil {
 		return nil, errors.New("failed to create family: this member already has a family")
 	}
 

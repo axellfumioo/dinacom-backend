@@ -23,6 +23,19 @@ func NewFamilyController(familyService services.FamilyService) FamilyController 
 	return &familyController{familyService: familyService}
 }
 
+// CreatenewFamily godoc
+// @Summary CreatenewFamily
+// @Description endpoint to create new family
+// @Tags Families
+// @Produce  json
+// @Param name formData string true "enter family name"
+// @Param description formData string true "family description"
+// @Param image formData file true "upload family avatar"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /families [post]
+// @Security BearerAuth
 func (ctrl *familyController) CreateNewFamily(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 	// Body

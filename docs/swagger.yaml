@@ -399,6 +399,45 @@ paths:
       summary: Strava integrate Redirect
       tags:
       - Auth
+  /families:
+    post:
+      description: endpoint to create new family
+      parameters:
+      - description: enter family name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: family description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: upload family avatar
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: CreatenewFamily
+      tags:
+      - Families
   /foodscans:
     get:
       description: Endpoint to GetAllFoodScans data
