@@ -10,6 +10,7 @@ import (
 
 type FamilyController interface {
 	CreateNewFamily(c *fiber.Ctx) error
+	UpdateFamilyAvatar(c *fiber.Ctx) error
 	UpdateFamily(c *fiber.Ctx) error
 }
 
@@ -30,7 +31,7 @@ func (ctrl *familyController) CreateNewFamily(c *fiber.Ctx) error {
 	// File handler
 	image, err := c.FormFile("image")
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, "validation error:"+err.Error())
 	}
 	data, err := ctrl.familyService.CreateNewFamily(userID, request.CreateFamilyRequest{Name: name, Description: desc, FamilyAvatar: image})
 	if err != nil {
@@ -46,7 +47,7 @@ func (ctrl *familyController) UpdateFamily(c *fiber.Ctx) error {
 
 	var req request.UpdateFamilyRequest
 	if err := c.BodyParser(&req); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		return fiber.NewError(fiber.StatusBadRequest, "validation error:"+err.Error())
 	}
 
 	data, err := ctrl.familyService.UpdateFamily(familyID, userID, req)
@@ -55,4 +56,21 @@ func (ctrl *familyController) UpdateFamily(c *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(c, "family updated successfully", data)
+}
+
+func (ctrl *familyController) UpdateFamilyAvatar(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+	familyID := c.Params("id")
+
+	avatar, err := c.FormFile("avatar")
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "validation error:"+err.Error())
+	}
+
+	data, err := ctrl.familyService.UpdateFamilyAvatar(familyID, userID, avatar)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "family avatar updated successfully", data)
 }

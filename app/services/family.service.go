@@ -7,6 +7,7 @@ import (
 	"backend-dinakom/configs"
 	"errors"
 	"fmt"
+	"mime/multipart"
 	"path/filepath"
 
 	"github.com/minio/minio-go/v7"
@@ -15,6 +16,7 @@ import (
 
 type FamilyService interface {
 	CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error)
+	UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*models.Family, error)
 	UpdateFamily(familyID string, UserID string, req request.UpdateFamilyRequest) (*models.Family, error)
 }
 
@@ -62,6 +64,40 @@ func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyR
 	}
 
 	return family, nil
+}
+
+func (s *familyService) UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*models.Family, error) {
+	// Check is exist
+	var existingMember models.FamilyMember
+	if err := s.db.First(&existingMember, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
+		return nil, errors.New("failed to get member data:" + err.Error())
+	}
+
+	var existingFamily models.Family
+	if err := s.db.First(&existingFamily, "id = ?", familyID).Error; err != nil {
+		return nil, errors.New("failed to get family:" + err.Error())
+	}
+
+	// File Upload
+	ext := filepath.Ext(avatar.Filename)
+	object := fmt.Sprintf("family/%s%s", existingFamily.Name, ext)
+	baseUrl := configs.AppConfig.Minio.BaseUrl
+	bucket := configs.AppConfig.Minio.Bucket
+
+	// Minio Uploader
+	avatarUrl, err := helpers.UploadFile(s.minioClient, avatar, baseUrl, bucket, object)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update avatar
+	if avatarUrl != existingFamily.AvatarUrl {
+		if err := s.db.Model(&existingFamily).Update("AvatarUrl", avatarUrl).Error; err != nil {
+			return nil, errors.New("failed to update family avatar:" + err.Error())
+		}
+	}
+
+	return &existingFamily, nil
 }
 
 func (s *familyService) UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*models.Family, error) {
