@@ -501,6 +501,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/families/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "endpoint to update family",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Families"
+                ],
+                "summary": "UpdateFamily",
+                "parameters": [
+                    {
+                        "description": "Update family body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateFamilyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/foodscans": {
             "get": {
                 "description": "Endpoint to GetAllFoodScans data",
@@ -1396,6 +1444,21 @@ const docTemplate = `{
                     "minLength": 3
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.UpdateFamilyRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

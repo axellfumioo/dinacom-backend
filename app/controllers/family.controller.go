@@ -55,6 +55,17 @@ func (ctrl *familyController) CreateNewFamily(c *fiber.Ctx) error {
 	return helpers.CreatedResponse(c, "family created successfully", data)
 }
 
+// UpdateFamily godoc
+// @Summary UpdateFamily
+// @Description endpoint to update family
+// @Tags Families
+// @Produce  json
+// @Param request body request.UpdateFamilyRequest true "Update family body"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /families/{id} [patch]
+// @Security BearerAuth
 func (ctrl *familyController) UpdateFamily(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 	familyID := c.Params("id")

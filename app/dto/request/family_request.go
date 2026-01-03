@@ -10,6 +10,6 @@ type CreateFamilyRequest struct {
 }
 
 type UpdateFamilyRequest struct {
-	Name        *string
-	Description *string
+	Name        *string `binding:"required"`
+	Description *string `binding:"required,min:3"`
 }
