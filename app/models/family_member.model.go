@@ -10,7 +10,7 @@ type FamilyMember struct {
 	Role constants.MemberRole `gorm:"type:varchar(20);default:'CHILD'"` // PARENT - CHILD
 
 	FamilyID string `gorm:"type:uuid;not null"`
-	UserID   string `gorm:"type:uuid;not null"`
+	UserID   string `gorm:"type:uuid;not null;uniqueIndex"`
 
 	User   *User   `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Family *Family `gorm:"foreignKey:FamilyID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
