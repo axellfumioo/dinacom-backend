@@ -543,6 +543,52 @@
                 }
             }
         },
+        "/families/{id}/avatar": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "endpoint to update family avatar",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Families"
+                ],
+                "summary": "UpdateFamilyAvatar",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "upload family avatar",
+                        "name": "avatar",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/foodscans": {
             "get": {
                 "description": "Endpoint to GetAllFoodScans data",

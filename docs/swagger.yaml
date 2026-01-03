@@ -478,6 +478,35 @@ paths:
       summary: UpdateFamily
       tags:
       - Families
+  /families/{id}/avatar:
+    patch:
+      description: endpoint to update family avatar
+      parameters:
+      - description: upload family avatar
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: UpdateFamilyAvatar
+      tags:
+      - Families
   /foodscans:
     get:
       description: Endpoint to GetAllFoodScans data

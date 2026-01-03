@@ -83,6 +83,17 @@ func (ctrl *familyController) UpdateFamily(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "family updated successfully", data)
 }
 
+// UpdateFamilyAvatar godoc
+// @Summary UpdateFamilyAvatar
+// @Description endpoint to update family avatar
+// @Tags Families
+// @Produce  json
+// @Param avatar formData file true "upload family avatar"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /families/{id}/avatar [patch]
+// @Security BearerAuth
 func (ctrl *familyController) UpdateFamilyAvatar(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 	familyID := c.Params("id")
