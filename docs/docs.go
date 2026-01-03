@@ -706,6 +706,15 @@ const docTemplate = `{
                     "Foodscans"
                 ],
                 "summary": "ScanFood",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "upload image",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",

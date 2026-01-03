@@ -82,6 +82,7 @@ func (ctrl *foodScanController) GetUserFoodScans(c *fiber.Ctx) error {
 // @Description Access this endpoint to scanfoods (cukup kirim file dengan nama body "image")
 // @Tags Foodscans
 // @Produce  json
+// @Param image formData file true "upload image"
 // @Success 201 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse

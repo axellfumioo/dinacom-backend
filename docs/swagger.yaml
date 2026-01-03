@@ -574,6 +574,12 @@ paths:
     post:
       description: Access this endpoint to scanfoods (cukup kirim file dengan nama
         body "image")
+      parameters:
+      - description: upload image
+        in: formData
+        name: image
+        required: true
+        type: file
       produces:
       - application/json
       responses:
