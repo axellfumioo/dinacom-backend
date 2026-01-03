@@ -51,6 +51,7 @@ func (ctrl *profileController) UpdateProfile(c *fiber.Ctx) error {
 // Upload Profile Avatar godoc
 // @Summary Upload Profile Avatar
 // @Description Access this endpoint to upload user avatar (kirim image di body dengan nama field "avatar")
+// @Param avatar formData file true "upload profile avatar"
 // @Tags Profiles
 // @Accept json
 // @Produce  json
