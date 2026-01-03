@@ -54,6 +54,7 @@ func (ctrl *aiChatMessageController) GetChatMessagesByChatID(c *fiber.Ctx) error
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Router /aichats/{aichatID}/message [post]
+// @Security BearerAuth
 func (ctrl *aiChatMessageController) CreateNewMessage(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ChatID := c.Params("chatId")
@@ -76,10 +77,13 @@ func (ctrl *aiChatMessageController) CreateNewMessage(c *fiber.Ctx) error {
 // @Description endpoint to create new message with image (akses endopoint ini kalo mau kirim chat dengan image/gambar, Untuk body kirim data ke formdata key "image" (berisi file gambar), "content" (berisi pesan yg dikirim))
 // @Tags Aichats(message)
 // @Produce  json
+// @Param content formData string true "write a message"
+// @Param image formData file true "upload message image"
 // @Success 201 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Router /aichats/{aichatID}/message-img [post]
+// @Security BearerAuth
 func (ctrl *aiChatMessageController) CreateNewMessageWithImage(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ChatID := c.Params("chatId")
@@ -109,6 +113,7 @@ func (ctrl *aiChatMessageController) CreateNewMessageWithImage(c *fiber.Ctx) err
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Router /aichats/message/{messageId} [delete]
+// @Security BearerAuth
 func (ctrl *aiChatMessageController) DeleteMessageByID(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ID := c.Params("messageId")
@@ -131,6 +136,7 @@ func (ctrl *aiChatMessageController) DeleteMessageByID(c *fiber.Ctx) error {
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Router /aichats/{chatId}/message [delete]
+// @Security BearerAuth
 func (ctrl *aiChatMessageController) DeleteChatMessages(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	ID := c.Params("chatId")

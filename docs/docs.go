@@ -49,6 +49,11 @@ const docTemplate = `{
         },
         "/aichats/message/{messageId}": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "endpoint to delete specific message with messageID",
                 "produces": [
                     "application/json"
@@ -122,6 +127,11 @@ const docTemplate = `{
         },
         "/aichats/{aichatID}/message": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "endpoint to create new message (akses endopoint ini kalo mau kirim chat tanpa image/gambar)",
                 "produces": [
                     "application/json"
@@ -165,6 +175,11 @@ const docTemplate = `{
         },
         "/aichats/{aichatID}/message-img": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "endpoint to create new message with image (akses endopoint ini kalo mau kirim chat dengan image/gambar, Untuk body kirim data ke formdata key \"image\" (berisi file gambar), \"content\" (berisi pesan yg dikirim))",
                 "produces": [
                     "application/json"
@@ -173,6 +188,22 @@ const docTemplate = `{
                     "Aichats(message)"
                 ],
                 "summary": "CreateNewMessageWithImage",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "write a message",
+                        "name": "content",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "upload message image",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -238,6 +269,11 @@ const docTemplate = `{
         },
         "/aichats/{chatId}/message": {
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "endpoint to delete all messages in the chat (Hapus semua message di chat)",
                 "produces": [
                     "application/json"
@@ -861,6 +897,15 @@ const docTemplate = `{
                     "Profiles"
                 ],
                 "summary": "Upload Profile Avatar",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "upload profile avatar",
+                        "name": "avatar",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
