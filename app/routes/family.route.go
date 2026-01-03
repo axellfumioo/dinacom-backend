@@ -17,4 +17,5 @@ func FamilyRoute(r fiber.Router) {
 	families := r.Group("families")
 	families.Use(middlewares.AuthMiddleware())
 	families.Post("/", familyController.CreateNewFamily)
+	families.Patch("/:id", familyController.UpdateFamily)
 }
