@@ -12,7 +12,8 @@ import (
 
 type MemberService interface {
 	GetFamilyMembers(FamilyID string) ([]models.FamilyMember, error)
-	AddFamilyMembers(userID string ,req request.AddFamilyMemberRequest) ([]models.FamilyMember, error)
+	AddFamilyMembers(userID string, req request.AddFamilyMemberRequest) ([]models.FamilyMember, error)
+	DeleteFamilyMember(userID string, familyID string, memberID string) (*models.FamilyMember, error)
 }
 
 type memberService struct {
@@ -28,7 +29,7 @@ func (s *memberService) AddFamilyMembers(userID string, req request.AddFamilyMem
 	if err := s.db.First(&currentMember, "user_id = ? AND family_id = ?", userID, req.FamilyID).Error; err != nil {
 		return nil, errors.New("failed to get current member:" + err.Error())
 	}
-	
+
 	if currentMember.Role != "PARENT" {
 		return nil, errors.New("access denied:you dont have access to this feature")
 	}
@@ -50,11 +51,35 @@ func (s *memberService) GetFamilyMembers(FamilyID string) ([]models.FamilyMember
 	if err := s.db.First(&existingFamily, "id = ?", FamilyID).Error; err != nil {
 		return nil, errors.New("failed to get family:" + err.Error())
 	}
-	
+
 	var members []models.FamilyMember
 	if err := s.db.Where("family_id = ?", FamilyID).Find(&members).Error; err != nil {
 		return nil, errors.New("failed to get members:" + err.Error())
 	}
-	
+
 	return members, nil
+}
+
+func (s *memberService) DeleteFamilyMember(userID string, familyID string, memberID string) (*models.FamilyMember, error) {
+	var currentMember models.FamilyMember
+	if err := s.db.First(&currentMember, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
+		return nil, errors.New("failed to get current member:" + err.Error())
+	}
+
+	// Check if member is not a parent
+	if currentMember.Role != "PARENT" {
+		return nil, errors.New("access denied:you dont have access to this feature")
+	}
+
+	// Check if exist
+	var exist models.FamilyMember
+	if err := s.db.First(&exist, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
+		return nil, errors.New("failed to get member:" + err.Error())
+	}
+
+	if err := s.db.Delete(&exist).Error; err != nil {
+		return nil, errors.New("failed to delete member:" + err.Error())
+	}
+
+	return &exist, nil
 }

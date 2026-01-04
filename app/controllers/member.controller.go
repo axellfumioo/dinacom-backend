@@ -11,6 +11,7 @@ import (
 type MemberController interface {
 	GetFamilyMembers(c *fiber.Ctx) error
 	AddFamilyMembers(c *fiber.Ctx) error
+	DeleteFamilyMember(c *fiber.Ctx) error
 }
 
 type memberController struct {
@@ -66,4 +67,17 @@ func (ctrl *memberController) AddFamilyMembers(c *fiber.Ctx) error {
 	}
 
 	return helpers.CreatedResponse(c, "family members added successfully", data)
+}
+
+func (ctrl *memberController) DeleteFamilyMember(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+	familyID := c.Params("familyID")
+	memberID := c.Params("id")
+
+	data, err := ctrl.memberService.DeleteFamilyMember(userID, familyID, memberID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "family member deleted successfully", data)
 }
