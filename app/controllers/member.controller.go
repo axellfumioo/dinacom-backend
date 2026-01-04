@@ -20,6 +20,17 @@ func NewMemberService(memberService services.MemberService) MemberController {
 	return &memberController{memberService: memberService}
 }
 
+// AddFamilyMembers godoc
+// @Summary AddFamilyMembers
+// @Description endpoint to add family members
+// @Tags Members
+// @Produce  json
+// @Param request body request.AddFamilyRequest true "add family body"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /members/ [post]
+// @Security BearerAuth
 func (ctrl *memberController) AddFamilyMembers(c *fiber.Ctx) error {
 	var req request.AddFamilyMemberRequest
 	if err := c.BodyParser(&req); err != nil {
