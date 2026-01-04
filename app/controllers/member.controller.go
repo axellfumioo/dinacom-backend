@@ -9,6 +9,7 @@ import (
 )
 
 type MemberController interface {
+	GetFamilyMembers(c *fiber.Ctx) error
 	AddFamilyMembers(c *fiber.Ctx) error
 }
 
@@ -18,6 +19,16 @@ type memberController struct {
 
 func NewMemberService(memberService services.MemberService) MemberController {
 	return &memberController{memberService: memberService}
+}
+
+func (ctrl *memberController) GetFamilyMembers(c *fiber.Ctx) error {
+	familyID := c.Params("familyID")
+	data, err := ctrl.memberService.GetFamilyMembers(familyID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "family members retrieved successfully", data)
 }
 
 // AddFamilyMembers godoc
