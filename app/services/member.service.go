@@ -25,7 +25,7 @@ func NewMemberService(db *gorm.DB) MemberService {
 func (s *memberService) AddFamilyMembers(req request.AddFamilyMemberRequest) (any, error) {
 	var members []models.FamilyMember
 	for _, member := range req.Members {
-		members = append(members, models.FamilyMember{UserID: member.UserID, Role: constants.MemberRole(member.Role)})
+		members = append(members, models.FamilyMember{UserID: member.UserID, FamilyID: req.FamilyID, Role: constants.MemberRole(member.Role)})
 	}
 
 	if err := s.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&members).Error; err != nil {
