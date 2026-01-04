@@ -12,7 +12,7 @@ import (
 
 type MemberService interface {
 	GetFamilyMembers(FamilyID string) ([]models.FamilyMember, error)
-	AddFamilyMembers(req request.AddFamilyMemberRequest) ([]models.FamilyMember, error)
+	AddFamilyMembers(userID string ,req request.AddFamilyMemberRequest) ([]models.FamilyMember, error)
 }
 
 type memberService struct {
@@ -23,7 +23,16 @@ func NewMemberService(db *gorm.DB) MemberService {
 	return &memberService{db: db}
 }
 
-func (s *memberService) AddFamilyMembers(req request.AddFamilyMemberRequest) ([]models.FamilyMember, error) {
+func (s *memberService) AddFamilyMembers(userID string, req request.AddFamilyMemberRequest) ([]models.FamilyMember, error) {
+	var currentMember models.FamilyMember
+	if err := s.db.First(&currentMember, "user_id = ? AND family_id = ?", userID, req.FamilyID).Error; err != nil {
+		return nil, errors.New("failed to get current member:" + err.Error())
+	}
+	
+	if currentMember.Role != "PARENT" {
+		return nil, errors.New("access denied:you dont have access to this feature")
+	}
+
 	var members []models.FamilyMember
 	for _, member := range req.Members {
 		members = append(members, models.FamilyMember{UserID: member.UserID, FamilyID: req.FamilyID, Role: constants.MemberRole(member.Role)})

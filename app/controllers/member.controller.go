@@ -54,12 +54,13 @@ func (ctrl *memberController) GetFamilyMembers(c *fiber.Ctx) error {
 // @Router /members/ [post]
 // @Security BearerAuth
 func (ctrl *memberController) AddFamilyMembers(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
 	var req request.AddFamilyMemberRequest
 	if err := c.BodyParser(&req); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "validation error:"+err.Error())
 	}
 
-	data, err := ctrl.memberService.AddFamilyMembers(req)
+	data, err := ctrl.memberService.AddFamilyMembers(userID, req)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
