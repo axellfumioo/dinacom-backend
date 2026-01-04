@@ -69,9 +69,21 @@ func (ctrl *memberController) AddFamilyMembers(c *fiber.Ctx) error {
 	return helpers.CreatedResponse(c, "family members added successfully", data)
 }
 
+// DeleteFamilyMember godoc
+// @Summary DeleteFamilyMember
+// @Description endpoint to delete family member
+// @Tags Members
+// @Produce  json
+// @Param ID path string true "id"
+// @Param familyID path string true "familyID"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /members/{id}/family/{familyid} [delete]
+// @Security BearerAuth
 func (ctrl *memberController) DeleteFamilyMember(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
-	familyID := c.Params("familyID")
+	familyID := c.Params("familyid")
 	memberID := c.Params("id")
 
 	data, err := ctrl.memberService.DeleteFamilyMember(userID, familyID, memberID)
