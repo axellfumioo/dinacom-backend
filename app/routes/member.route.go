@@ -16,5 +16,5 @@ func MemberRoute(r fiber.Router) {
 	members.Use(middlewares.AuthMiddleware())
 	members.Post("/", memberController.AddFamilyMembers)
 	members.Get("/family/:familyID", memberController.GetFamilyMembers)
-	members.Delete("/:ID/family/:familyID")
+	members.Delete("/:ID/family/:familyID", memberController.DeleteFamilyMember)
 }
