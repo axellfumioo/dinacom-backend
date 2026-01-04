@@ -21,6 +21,17 @@ func NewMemberService(memberService services.MemberService) MemberController {
 	return &memberController{memberService: memberService}
 }
 
+// GetFamilyMembers godoc
+// @Summary GetFamilyMembers
+// @Description endpoint to get family members
+// @Tags Members
+// @Produce  json
+// @Param familyID path string true "familyID"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /members/family/{familyID} [get]
+// @Security BearerAuth
 func (ctrl *memberController) GetFamilyMembers(c *fiber.Ctx) error {
 	familyID := c.Params("familyID")
 	data, err := ctrl.memberService.GetFamilyMembers(familyID)

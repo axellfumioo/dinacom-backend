@@ -704,6 +704,35 @@ paths:
       summary: AddFamilyMembers
       tags:
       - Members
+  /members/family/{familyID}:
+    get:
+      description: endpoint to get family members
+      parameters:
+      - description: familyID
+        in: path
+        name: familyID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: GetFamilyMembers
+      tags:
+      - Members
   /profiles:
     patch:
       consumes:
