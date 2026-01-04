@@ -828,6 +828,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/members/": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "endpoint to add family members",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Members"
+                ],
+                "summary": "AddFamilyMembers",
+                "parameters": [
+                    {
+                        "description": "add family member body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AddFamilyMemberRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/profiles": {
             "patch": {
                 "security": [
@@ -1529,6 +1577,24 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "request.AddFamilyMemberRequest": {
+            "type": "object",
+            "required": [
+                "familyID",
+                "members"
+            ],
+            "properties": {
+                "familyID": {
+                    "type": "string"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/request.Member"
+                    }
+                }
+            }
+        },
         "request.CreateMessageRequest": {
             "type": "object",
             "properties": {
@@ -1561,6 +1627,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.Member": {
+            "type": "object",
+            "properties": {
+                "role": {
+                    "type": "string"
+                },
+                "userID": {
                     "type": "string"
                 }
             }

@@ -25,7 +25,7 @@ func NewMemberService(memberService services.MemberService) MemberController {
 // @Description endpoint to add family members
 // @Tags Members
 // @Produce  json
-// @Param request body request.AddFamilyRequest true "add family body"
+// @Param request body request.AddFamilyMemberRequest true "add family member body"
 // @Success 201 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
