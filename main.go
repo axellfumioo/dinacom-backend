@@ -10,6 +10,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 
 	_ "backend-dinakom/docs"
 	docs "backend-dinakom/docs"
@@ -41,10 +42,17 @@ func main() {
 	socket.StartConnectionHandler()
 
 	app := fiber.New(fiber.Config{
-		AppName:      configs.AppConfig.App.Name,
+		AppName: configs.AppConfig.App.Name,
+
 		ErrorHandler: middlewares.ErrorMiddleware,
 	})
+
 	router.SetupRouter(app)
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,PUT,PATCH,DELETE",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+	}))
 	defer configs.QueueClient.Close()
 
 	docs.SwaggerInfo.Title = "Nutrione API"
@@ -57,6 +65,6 @@ func main() {
 	log.Printf("Starting %s server on port %s", configs.AppConfig.App.Name, port)
 
 	if err := app.Listen(":" + port); err != nil {
-		log.Fatal(fmt.Sprintf("Failed to start server: %v", err))
+		log.Fatalf(fmt.Sprintf("Failed to start server: %v", err))
 	}
 }
