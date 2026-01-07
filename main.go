@@ -47,12 +47,13 @@ func main() {
 		ErrorHandler: middlewares.ErrorMiddleware,
 	})
 
-	router.SetupRouter(app)
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
+		AllowOrigins: "htpp://localhost:3000",
 		AllowMethods: "GET,POST,PUT,PATCH,DELETE",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
+	router.SetupRouter(app)
+	
 	defer configs.QueueClient.Close()
 
 	docs.SwaggerInfo.Title = "Nutrione API"
