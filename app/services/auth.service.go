@@ -120,9 +120,19 @@ func (s *authService) StravaCallbackHandle(UserID string, clientID string, clien
 		return "", err
 	}
 
-	if err := s.db.Model(&models.User{}).Where("id = ?", UserID).Update("StravaIntegrated", true).Error; err != nil {
+	var existingUser models.User
+	if err := s.db.First(&existingUser, "id = ?", UserID).Error; err != nil {
+		return "", errors.New("failed to get user:" + err.Error())
+	}
+
+	if err := s.db.Model(&existingUser).Update("StravaIntegrated", true).Error; err != nil {
 		return "", err
 	}
 
-	return resp.AccessToken, nil
+	new_access_token, err := helpers.GenerateToken(existingUser.ID, existingUser.Email, existingUser.Role.RoleName, existingUser.StravaIntegrated)
+	if err != nil {
+		return "", errors.New("failed to generate token")
+	}
+
+	return new_access_token, nil
 }
