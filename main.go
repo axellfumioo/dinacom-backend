@@ -32,6 +32,7 @@ func main() {
 	// Connect ke database
 	database.ConnectDatabase()
 	database.RunMigration()
+	database.RunSeeder(database.DB)
 	// Init Client
 	configs.ConnectSocketIO()
 	configs.InitQueueClient()
@@ -53,7 +54,7 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 	router.SetupRouter(app)
-	
+
 	defer configs.QueueClient.Close()
 
 	docs.SwaggerInfo.Title = "Nutrione API"
