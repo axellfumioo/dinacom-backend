@@ -31,5 +31,5 @@ func SetupRouter(app *fiber.App) {
 	FamilyRoute(api)
 	MemberRoute(api)
 
-	go workers.StartWorker(database.GetDb())
+	go workers.StartWorker(database.DB)
 }
