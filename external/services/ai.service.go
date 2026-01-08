@@ -20,7 +20,7 @@ func FetchFoodScanAI(imageURL string) (string, error) {
 		SetBody(map[string]string{
 			"image_url": imageURL,
 		}).
-		SetAuthToken("DinacomAIService#2025").
+		SetAuthToken(configs.AppConfig.App.AI_BACKEND_BEARER).
 		SetResult(&result).
 		Post(url)
 
@@ -59,7 +59,7 @@ func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, er
 	url := fmt.Sprintf("%s/ai/chat", apiBaseUrl)
 	_, err := restyClient.R().
 		SetBody(&bodyRequest).
-		SetAuthToken("DinacomAIService#2025").
+		SetAuthToken(configs.AppConfig.App.AI_BACKEND_BEARER).
 		SetResult(&result).
 		Post(url)
 	if err != nil || result == nil {
