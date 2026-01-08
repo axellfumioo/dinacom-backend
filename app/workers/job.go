@@ -14,6 +14,7 @@ import (
 
 	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
@@ -111,6 +112,15 @@ func AIChatProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		SenderRole: "ASSISTANT",
 	}
 	if err := db.Create(&message).Error; err != nil {
+		return err
+	}
+
+	var sources []models.AIChatMessageSource
+	for _, source := range jsonResult.Sources {
+		sources = append(sources, models.AIChatMessageSource{Url: source.Url, Title: source.Title, Query: source.Query, MessageID: message.ID})
+	}
+
+	if err := db.Clauses(clause.OnConflict{DoNothing: true}).Create(&sources).Error; err != nil {
 		return err
 	}
 
