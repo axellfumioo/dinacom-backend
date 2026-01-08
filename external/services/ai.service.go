@@ -13,17 +13,23 @@ import (
 func FetchFoodScanAI(imageURL string) (string, error) {
 	restyClient := configs.RestyClient
 	apiBaseUrl := configs.AppConfig.App.AI_BACKEND_URL
-	bodyRequest := map[string]interface{}{"image_url": imageURL}
 
 	var result *types.AIFoodScanResponse
 	url := fmt.Sprintf("%s/ai/foodscan", apiBaseUrl)
-	_, err := restyClient.R().
-		SetBody(&bodyRequest).
+	resp, err := restyClient.R().
+		SetBody(map[string]string{
+			"image_url": imageURL,
+		}).
 		SetAuthToken("DinacomAIService#2025").
 		SetResult(&result).
 		Post(url)
-	if err != nil || result == nil {
-		return "", errors.New("failed to fetch ai foodscan")
+
+	if err != nil {
+		return "", err
+	}
+
+	if resp.IsError() {
+		return "", errors.New("ai foodscan returned error status")
 	}
 
 	jsonBytes, err := json.Marshal(result.Response)

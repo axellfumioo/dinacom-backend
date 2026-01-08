@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
 	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
@@ -72,7 +73,12 @@ func (s *foodScanService) GetUserFoodScans(id string) (*[]response.FoodScanRespo
 
 func (s *foodScanService) ScanFood(userID string, req request.ScanFoodRequest) (*response.FoodScanResponse, error) {
 	ext := filepath.Ext(req.Image.Filename)
-	object := fmt.Sprintf("foodscans/%s%s", userID, ext)
+	object := fmt.Sprintf(
+		"foodscans/%s-%s-%s",
+		userID,
+		uuid.NewString(),
+		ext,
+	)
 
 	baseUrl := configs.AppConfig.Minio.BaseUrl
 	bucket := configs.AppConfig.Minio.Bucket

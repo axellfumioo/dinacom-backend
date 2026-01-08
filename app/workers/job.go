@@ -23,15 +23,17 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	}
 
 	var fs models.FoodScan
-	if err := db.Where("id = ? AND user_id = ?", &payload.FoodScanID, &payload.UserID).First(&fs).Error; err != nil {
+	if err := db.Where("id = ? AND user_id = ?", payload.FoodScanID, payload.UserID).First(&fs).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
+			log.Printf("foodscan not found")
 			return errors.New("foodscan data not found")
 		}
 		return err
 	}
 
-	result, err := extservices.FetchFoodScanAI(payload.ImageURL)
+	result, err := extservices.FetchFoodScanAI(fs.ImageURL)
 	if err != nil {
+		log.Printf(err.Error())
 		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
 			return errors.New("error when update foodScan status")
 		}
