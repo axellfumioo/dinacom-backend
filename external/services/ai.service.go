@@ -55,19 +55,23 @@ func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, er
 		"chat_history": chatHs,
 	}
 
-	var result *types.AIChatAPIResponse
+	var result types.AIChatAPIResponse
 	url := fmt.Sprintf("%s/ai/chat", apiBaseUrl)
-	_, err := restyClient.R().
+	resp, err := restyClient.R().
 		SetBody(&bodyRequest).
 		SetAuthToken(configs.AppConfig.App.AI_BACKEND_BEARER).
 		SetResult(&result).
 		Post(url)
-	if err != nil || result == nil {
-		return "", errors.New("failed to fetch ai chat")
+	if err != nil {
+		return "", errors.New("failed to fetch ai chat:" + err.Error())
+	}
+
+	if resp.IsError() {
+		return "", errors.New("ai chat returned error status")
 	}
 
 	response := types.AIChatResponse{
-		Message:    result.Response,
+		Message:    result.Answer,
 		Confidence: 3,
 	}
 
