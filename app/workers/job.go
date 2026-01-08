@@ -54,6 +54,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		CarbsG:       jsonResult.Nutrition.CarbsG,
 		FatG:         jsonResult.Nutrition.FatG,
 		Confidence:   jsonResult.ConfidenceScore,
+		Vitamins:     jsonResult.Vitamins,
 	}
 
 	if err := db.Create(&fsResult).Error; err != nil {
