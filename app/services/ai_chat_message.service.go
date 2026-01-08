@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
 	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
@@ -104,7 +105,7 @@ func (s *aiChatMessageService) CreateNewMessageWithImage(req request.CreateMessa
 
 	// File handler
 	ext := filepath.Ext(req.Image.Filename)
-	object := fmt.Sprintf("messages/%s%s", req.UserID, ext)
+	object := fmt.Sprintf("messages/%s%s%s", req.UserID, uuid.NewString(), ext)
 
 	baseUrl := configs.AppConfig.Minio.BaseUrl
 	bucket := configs.AppConfig.Minio.Bucket

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/minio/minio-go/v7"
 	"gorm.io/gorm"
 )
@@ -81,7 +82,7 @@ func (s *profileService) UploadAvatar(req request.UploadAvatarRequest) (*respons
 
 	// File handler
 	ext := filepath.Ext(req.Avatar.Filename)
-	object := fmt.Sprintf("avatars/%s%s", req.UserID, ext)
+	object := fmt.Sprintf("avatars/%s%s%s", req.UserID, uuid.NewString(), ext)
 
 	baseUrl := configs.AppConfig.Minio.BaseUrl
 	bucket := configs.AppConfig.Minio.Bucket
