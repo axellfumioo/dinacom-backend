@@ -14,7 +14,7 @@ func FetchFoodScanAI(imageURL string) (string, error) {
 	restyClient := configs.RestyClient
 	apiBaseUrl := configs.AppConfig.App.AI_BACKEND_URL
 
-	var result *types.AIFoodScanResponse
+	var result types.AIFoodScanResponse
 	url := fmt.Sprintf("%s/ai/foodscan", apiBaseUrl)
 	resp, err := restyClient.R().
 		SetBody(map[string]string{

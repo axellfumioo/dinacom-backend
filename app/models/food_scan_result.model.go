@@ -9,7 +9,7 @@ import (
 type FoodScanResult struct {
 	ID string `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 
-	FoodNames    pq.StringArray `gorm:"type:text[]"`
+	FoodName    string         `gorm:"type:text"`
 	FoodType     string         `json:"food_type"`
 	CaloriesKcal float64        `json:"calories_kcal"`
 	ProteinG     float64        `json:"protein_g"`

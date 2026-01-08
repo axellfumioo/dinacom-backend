@@ -116,17 +116,17 @@ func ToFoodScanResultResponse(fsResult *models.FoodScanResult) response.FoodScan
 		foodScanResponse = r
 	}
 	return response.FoodScanResultResponse{
-		ID:         fsResult.ID,
-		FoodNames:  fsResult.FoodNames,
-		Foodtype: fsResult.FoodType,
-		Vitamins: fsResult.Vitamins,
-		CaloriesKcal:   fsResult.CaloriesKcal,
-		ProteinG:    fsResult.ProteinG,
-		FatG:        fsResult.FatG,
-		CarbsG:      fsResult.CarbsG,
-		FoodScanID: fsResult.FoodScanID,
-		FoodScan:   &foodScanResponse,
-		CreatedAt:  fsResult.CreatedAt,
+		ID:           fsResult.ID,
+		FoodNames:    fsResult.FoodName,
+		Foodtype:     fsResult.FoodType,
+		Vitamins:     fsResult.Vitamins,
+		CaloriesKcal: fsResult.CaloriesKcal,
+		ProteinG:     fsResult.ProteinG,
+		FatG:         fsResult.FatG,
+		CarbsG:       fsResult.CarbsG,
+		FoodScanID:   fsResult.FoodScanID,
+		FoodScan:     &foodScanResponse,
+		CreatedAt:    fsResult.CreatedAt,
 	}
 }
 
@@ -146,7 +146,7 @@ func ToUserMealResponse(um *models.UserMeal) response.UserMealResponse {
 	}
 	return response.UserMealResponse{
 		ID:        um.ID,
-		FoodNames: um.FoodNames,
+		FoodName:  um.FoodName,
 		Calories:  um.Calories,
 		Protein:   um.Protein,
 		Fat:       um.Fat,

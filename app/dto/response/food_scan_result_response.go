@@ -7,7 +7,7 @@ import (
 type FoodScanResultResponse struct {
 	ID string `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
 
-	FoodNames    []string `json:"food_names"`
+	FoodNames    string `json:"food_names"`
 	Foodtype     string   `json:"food_type"`
 	CaloriesKcal float64  `json:"calories_kcal"`
 	ProteinG     float64  `json:"protein_g"`

@@ -5,8 +5,9 @@ type AIFoodScanResponse struct {
 }
 
 type AINutritionResponse struct {
-	FoodName        []string   `json:"food_name"`
+	FoodName        string     `json:"food_name"`
 	FoodType        string     `json:"food_type"`
+	IsFastFood      bool       `json:"is_fast_food"`
 	Nutrition       Nutritions `json:"nutrition"`
 	CaloriesKcal    int        `json:"calories_kcal"`
 	Vitamins        []string   `json:"vitamins"`

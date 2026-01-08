@@ -3,12 +3,12 @@ package response
 import "time"
 
 type UserMealResponse struct {
-	ID        string   `json:"id"`
-	FoodNames []string `json:"food_names"`
-	Calories  float64
-	Protein   float64
-	Fat       float64
-	Carbs     float64
+	ID       string `json:"id"`
+	FoodName string `json:"food_names"`
+	Calories float64
+	Protein  float64
+	Fat      float64
+	Carbs    float64
 
 	UserID string        `json:"user_id"`
 	User   *UserResponse `json:"user"`

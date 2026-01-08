@@ -47,7 +47,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 
 	fsResult := models.FoodScanResult{
 		FoodScanID:   fs.ID,
-		FoodNames:    jsonResult.FoodName,
+		FoodName:     jsonResult.FoodName,
 		FoodType:     jsonResult.FoodType,
 		CaloriesKcal: float64(jsonResult.CaloriesKcal),
 		ProteinG:     jsonResult.Nutrition.ProteinG,
@@ -65,12 +65,12 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	}
 
 	userMeal := models.UserMeal{
-		UserID:    payload.UserID,
-		FoodNames: jsonResult.FoodName,
-		Calories:  float64(jsonResult.CaloriesKcal),
-		Protein:   jsonResult.Nutrition.ProteinG,
-		Carbs:     jsonResult.Nutrition.CarbsG,
-		Fat:       jsonResult.Nutrition.FatG,
+		UserID:   payload.UserID,
+		FoodName: jsonResult.FoodName,
+		Calories: float64(jsonResult.CaloriesKcal),
+		Protein:  jsonResult.Nutrition.ProteinG,
+		Carbs:    jsonResult.Nutrition.CarbsG,
+		Fat:      jsonResult.Nutrition.FatG,
 	}
 
 	if err := db.Create(&userMeal).Error; err != nil {
