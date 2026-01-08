@@ -73,6 +73,7 @@ func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, er
 	response := types.AIChatResponse{
 		Message:    result.Answer,
 		Confidence: 3,
+		Sources:    result.Sources,
 	}
 
 	jsonBytes, err := json.Marshal(response)

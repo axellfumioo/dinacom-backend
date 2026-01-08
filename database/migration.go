@@ -15,6 +15,7 @@ func RunMigration() {
 		&models.UserMeal{},
 		&models.AiChat{},
 		&models.AIChatMessage{},
+		&models.AIChatMessageSource{},
 		&models.AIDecision{},
 		&models.AIGoogleSearch{},
 		&models.AIWebExtract{},
