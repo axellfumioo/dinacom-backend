@@ -18,11 +18,12 @@ type Config struct {
 }
 
 type AppConfigType struct {
-	Name           string
-	Env            string
-	Port           string
-	Frontend_URL   string
-	AI_BACKEND_URL string
+	Name              string
+	Env               string
+	Port              string
+	Frontend_URL      string
+	AI_BACKEND_URL    string
+	AI_BACKEND_BEARER string
 }
 
 type DatabaseConfig struct {
@@ -73,11 +74,12 @@ func LoadConfig() {
 
 	AppConfig = &Config{
 		App: AppConfigType{
-			Name:           GetEnv("APP_NAME", "Backend-Dinacom"),
-			Env:            GetEnv("APP_ENV", "development"),
-			Port:           GetEnv("APP_PORT", "8080"),
-			Frontend_URL:   GetEnv("FRONTEND_BASE_URL", "http://localhost:3000"),
-			AI_BACKEND_URL: GetEnv("AI_BACKEND_BASE_URL", "http://localhost:8000/api/v1"),
+			Name:              GetEnv("APP_NAME", "Backend-Dinacom"),
+			Env:               GetEnv("APP_ENV", "development"),
+			Port:              GetEnv("APP_PORT", "8080"),
+			Frontend_URL:      GetEnv("FRONTEND_BASE_URL", "http://localhost:3000"),
+			AI_BACKEND_URL:    GetEnv("AI_BACKEND_BASE_URL", "http://localhost:8000/api/v1"),
+			AI_BACKEND_BEARER: GetEnv("AI_BACKEND_BEARER", ""),
 		},
 		Database: DatabaseConfig{
 			Host:     GetEnv("DB_HOST", "localhost"),
