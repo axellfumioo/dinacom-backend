@@ -24,6 +24,17 @@ func NewFamilyController(familyService services.FamilyService) FamilyController 
 	return &familyController{familyService: familyService}
 }
 
+// GetFamilyByID godoc
+// @Summary GetFamilyByID
+// @Description endpoint to get family by familyID
+// @Tags Families
+// @Produce  json
+// @Param ID path string true "id"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /families/{id} [get]
+// @Security BearerAuth
 func (ctrl *familyController) GetFamilyByID(c *fiber.Ctx) error {
 	ID := c.Params("id")
 	UserID := c.Locals("user_id").(string)
