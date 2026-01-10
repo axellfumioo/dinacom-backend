@@ -15,6 +15,7 @@ import (
 )
 
 type FamilyService interface {
+	GetUserFamily(UserID string) (*models.Family, error)
 	GetFamilyByID(ID string, UserID string) (*models.Family, error)
 	CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error)
 	UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*models.Family, error)
@@ -29,6 +30,15 @@ type familyService struct {
 
 func NewFamilyService(db *gorm.DB, minioClient *minio.Client) FamilyService {
 	return &familyService{db: db, minioClient: minioClient}
+}
+
+func (s *familyService) GetUserFamily(UserID  string) (*models.Family, error) {
+	var family models.Family
+	if err := s.db.Preload("Member").Joins("JOIN family_members fm ON fm.family_id = families.id").Where("fm.user_id = ?", UserID).First(&family,).Error; err !=nil {
+		return nil, errors.New("failed to find family :" + err.Error())
+	}
+
+	return	&family,nil
 }
 
 func (s *familyService) GetFamilyByID(ID string, UserID string) (*models.Family, error) {

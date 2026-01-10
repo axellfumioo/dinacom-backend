@@ -9,6 +9,7 @@ import (
 )
 
 type FamilyController interface {
+	GetUserFamily(c *fiber.Ctx) error
 	GetFamilyByID(c *fiber.Ctx) error
 	CreateNewFamily(c *fiber.Ctx) error
 	UpdateFamilyAvatar(c *fiber.Ctx) error
@@ -22,6 +23,17 @@ type familyController struct {
 
 func NewFamilyController(familyService services.FamilyService) FamilyController {
 	return &familyController{familyService: familyService}
+}
+
+func (ctrl *familyController) GetUserFamily(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+
+	data, err := ctrl.familyService.GetUserFamily(UserID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "family retrieved successfully" , data)
 }
 
 // GetFamilyByID godoc

@@ -8,7 +8,7 @@ type Family struct {
 	AvatarUrl string  `gorm:"type:text;" json:"avatar_url"`
 	Desc      *string `gorm:"type:text;"`
 
-	Member []FamilyMember `gorm:"-"`
+	Member []FamilyMember `gorm:"foreignKey:FamilyID"`
 
 	CreatedAt time.Time
 	UpdateAt  time.Time
