@@ -22,6 +22,16 @@ func NewAIChatController(AIChatService services.AIChatService) AIChatController 
 	return &aiChatController{AIChatService: AIChatService}
 }
 
+// GetAIChatByID godoc
+// @Summary GetAIChatByID
+// @Description endpoint to get aiChat by id (room)
+// @Tags Aichats
+// @Produce  json
+// @Param ID path string true "id"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /aichats/{id} [get]
 func (ctrl *aiChatController) GetAIChatByID(c *fiber.Ctx) error {
 	ID := c.Params("id")
 	UserID := c.Locals("user_id").(string)
