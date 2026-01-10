@@ -15,6 +15,7 @@ import (
 )
 
 type FamilyService interface {
+	GetFamilyByID(ID string, UserID string) (*models.Family, error)
 	CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error)
 	UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*models.Family, error)
 	UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*models.Family, error)
@@ -28,6 +29,23 @@ type familyService struct {
 
 func NewFamilyService(db *gorm.DB, minioClient *minio.Client) FamilyService {
 	return &familyService{db: db, minioClient: minioClient}
+}
+
+func (s *familyService) GetFamilyByID(ID string, UserID string) (*models.Family, error) {
+	var existingMember models.FamilyMember
+	if err := s.db.First(&existingMember, "family_id = ? AND user_id = ?", ID, UserID).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("access denied:you are not member in this family")
+		}
+		return nil, errors.New("failed to find member:" + err.Error())
+	}
+
+	var family models.Family
+	if err := s.db.First(&family, "id = ?", ID).Error; err != nil {
+		return nil, errors.New("failed to find family:" + err.Error())
+	}
+
+	return &family, nil
 }
 
 func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error) {
