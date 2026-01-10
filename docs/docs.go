@@ -537,6 +537,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/families/user": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "endpoint to get user family",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Families"
+                ],
+                "summary": "GetUserFamily",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/families/{id}": {
             "get": {
                 "security": [
