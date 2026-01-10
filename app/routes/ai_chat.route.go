@@ -18,8 +18,9 @@ func AIChatRoute(r fiber.Router) {
 
 	aiChats := r.Group("/aichats")
 	aiChats.Use(middlewares.AuthMiddleware())
-	aiChats.Get("/user", aiChatController.GetUserAIChats)
 	aiChats.Post("/", aiChatController.CreateNewChat)
+	aiChats.Get("/user", aiChatController.GetUserAIChats)
+	aiChats.Get("/:id", aiChatController.GetAIChatByID)
 	aiChats.Delete("/:id", aiChatController.DeleteAIChat)
 
 	aiChats.Get("/:chatID/message", aiChatMessageController.GetChatMessagesByChatID)
