@@ -10,6 +10,7 @@ import (
 )
 
 type AIChatService interface {
+	GetAIChatByID(ID string, userID string) (*response.AiChatResponse, error)
 	GetUserAIChats(UserID string) ([]response.AiChatResponse, error)
 	CreateNewChat(UserID string) (*response.AiChatResponse, error)
 	DeleteAIChat(ID string, UserID string) (*response.AiChatResponse, error)
@@ -21,6 +22,19 @@ type aIChatService struct {
 
 func NewAIChatService(db *gorm.DB) AIChatService {
 	return &aIChatService{db: db}
+}
+
+func (s *aIChatService) GetAIChatByID(ID string, UserID string) (*response.AiChatResponse, error) {
+	var aiChat models.AiChat
+	if err := s.db.Preload("Messages").Where("id = ? AND user_id = ?", ID, UserID).First(&aiChat).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errors.New("failed to get aichat: aichat not found")
+		}
+		return nil, errors.New("failed to get aiChat: " + err.Error())
+	}
+
+	aiChatResponse := helpers.ToAIChatResponse(&aiChat)
+	return &aiChatResponse, nil
 }
 
 func (s *aIChatService) GetUserAIChats(UserID string) ([]response.AiChatResponse, error) {

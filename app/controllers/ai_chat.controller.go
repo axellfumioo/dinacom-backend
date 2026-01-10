@@ -8,6 +8,7 @@ import (
 )
 
 type AIChatController interface {
+	GetAIChatByID(c *fiber.Ctx) error
 	GetUserAIChats(c *fiber.Ctx) error
 	CreateNewChat(c *fiber.Ctx) error
 	DeleteAIChat(c *fiber.Ctx) error
@@ -20,6 +21,18 @@ type aiChatController struct {
 func NewAIChatController(AIChatService services.AIChatService) AIChatController {
 	return &aiChatController{AIChatService: AIChatService}
 }
+
+func (ctrl *aiChatController) GetAIChatByID(c *fiber.Ctx) error {
+	ID := c.Params("id")
+	UserID := c.Locals("user_id").(string)
+	data, err := ctrl.AIChatService.GetAIChatByID(ID, UserID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "AIchat retrieved successfully", data)
+}
+
 
 // GetUserAIChats godoc
 // @Summary GetUserAIChats
