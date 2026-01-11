@@ -81,6 +81,7 @@ func (ctrl *authController) Login(c *fiber.Ctx) error {
 // @Description Access this endpoint to Integrate with strava
 // @Tags Auth
 // @Produce  json
+// @Param user_id query string true "Isi ini pake global state user_id" default("")
 // @Success 200 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse

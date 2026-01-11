@@ -318,6 +318,32 @@ paths:
       summary: DeleteChat
       tags:
       - Aichats
+    get:
+      description: endpoint to get aiChat by id (room)
+      parameters:
+      - description: id
+        in: path
+        name: ID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      summary: GetAIChatByID
+      tags:
+      - Aichats
   /aichats/message/{messageId}:
     delete:
       description: endpoint to delete specific message with messageID
@@ -427,6 +453,13 @@ paths:
   /auth/strava/redirect:
     get:
       description: Access this endpoint to Integrate with strava
+      parameters:
+      - default: '""'
+        description: Isi ini pake global state user_id
+        in: query
+        name: user_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:
