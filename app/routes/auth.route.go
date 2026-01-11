@@ -2,7 +2,6 @@ package router
 
 import (
 	"backend-dinakom/app/controllers"
-	"backend-dinakom/app/middlewares"
 	"backend-dinakom/app/services"
 	"backend-dinakom/configs"
 	"backend-dinakom/database"
@@ -17,6 +16,6 @@ func AuthRoute(r fiber.Router) {
 	auth := r.Group("auth")
 	auth.Post("register", authController.Register)
 	auth.Post("login", authController.Login)
-	auth.Get("/strava/redirect", middlewares.AuthMiddleware(), authController.StravaRedirect)
+	auth.Get("/strava/redirect", authController.StravaRedirect)
 	auth.Get("/strava/callback", authController.StravaCallback)
 }

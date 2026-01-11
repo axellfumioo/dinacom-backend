@@ -87,7 +87,7 @@ func (ctrl *authController) Login(c *fiber.Ctx) error {
 // @Router /auth/strava/redirect [get]
 // @Security BearerAuth
 func (ctrl *authController) StravaRedirect(c *fiber.Ctx) error {
-	userID := c.Locals("user_id").(string)
+	userID := c.Query("user_id", "")
 	clientID := configs.AppConfig.Strava.CLIENT_ID
 	protocol := c.Protocol()
 	host := c.Hostname()
