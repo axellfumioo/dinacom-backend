@@ -41,6 +41,17 @@ func (ctrl *questionnaireController) GetUserQuestionnaires(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "questionnaires retrieved successfully", data)
 }
 
+// UpdateQuestionnaires godoc
+// @Summary UpdateQuestionnaires
+// @Description endpoint to update questionnaires (Ini endpoint untuk jawaban)
+// @Tags Quest
+// @Produce  json
+// @Param request body request.UpdateQuestionnairesRequest true "Update Question Body"
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /quest/answer [patch]
+// @Security BearerAuth
 func (ctrl *questionnaireController) UpdateQuestionnaires(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	var req request.UpdateQuestionnairesRequest

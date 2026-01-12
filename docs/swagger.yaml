@@ -43,6 +43,15 @@ definitions:
       userID:
         type: string
     type: object
+  request.QuestionnaresAnswerRequest:
+    properties:
+      answer:
+        type: string
+      number:
+        type: integer
+      question_id:
+        type: string
+    type: object
   request.RegisterRequest:
     properties:
       date_of_birth:
@@ -86,6 +95,13 @@ definitions:
         type: number
       weight_kg:
         type: number
+    type: object
+  request.UpdateQuestionnairesRequest:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/request.QuestionnaresAnswerRequest'
+        type: array
     type: object
   request.UpdateRoleRequest:
     properties:
@@ -936,6 +952,36 @@ paths:
       security:
       - BearerAuth: []
       summary: GetUserQuestionnaires
+      tags:
+      - Quest
+  /quest/answer:
+    patch:
+      description: endpoint to update questionnaires (Ini endpoint untuk jawaban)
+      parameters:
+      - description: Update Question Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateQuestionnairesRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: UpdateQuestionnaires
       tags:
       - Quest
   /results:

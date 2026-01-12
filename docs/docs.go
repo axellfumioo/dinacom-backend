@@ -1242,6 +1242,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/quest/answer": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "endpoint to update questionnaires (Ini endpoint untuk jawaban)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Quest"
+                ],
+                "summary": "UpdateQuestionnaires",
+                "parameters": [
+                    {
+                        "description": "Update Question Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UpdateQuestionnairesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/results": {
             "get": {
                 "security": [
@@ -1908,6 +1956,20 @@ const docTemplate = `{
                 }
             }
         },
+        "request.QuestionnaresAnswerRequest": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "question_id": {
+                    "type": "string"
+                }
+            }
+        },
         "request.RegisterRequest": {
             "type": "object",
             "required": [
@@ -1969,6 +2031,17 @@ const docTemplate = `{
                 },
                 "weight_kg": {
                     "type": "number"
+                }
+            }
+        },
+        "request.UpdateQuestionnairesRequest": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/request.QuestionnaresAnswerRequest"
+                    }
                 }
             }
         },
