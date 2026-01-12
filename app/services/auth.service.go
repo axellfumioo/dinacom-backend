@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type AuthService interface {
@@ -70,6 +71,25 @@ func (s *authService) Register(req request.RegisterRequest) (any, error) {
 	}
 
 	userResponse := helpers.ToUserResponse(user)
+
+	// Langsung create questionnaires
+	questions := [5]string{
+		"Siapa nama lengkap Anda?",
+		"Berapa usia Anda saat ini? (dalam tahun, angka saja)",
+		"Apakah Anda saat ini merupakan perokok aktif? (jawab: ya atau tidak)",
+		"Rata-rata berapa jam Anda tidur setiap hari? (angka saja, contoh: 6)",
+		"Rata-rata berapa jam Anda berolahraga per hari? (angka saja, boleh 0 jika tidak berolahraga)",
+	}
+
+	var questionnaires []models.Questionnaire
+	for i, quest := range questions {
+		questionnaires = append(questionnaires, models.Questionnaire{Number: i + 1, Question: quest, UserID: user.ID})
+	}
+
+	if err := s.db.Clauses(clause.OnConflict{DoNothing: true}).Create(&questionnaires).Error; err != nil {
+		return nil, errors.New("failed to create questionnaires:" + err.Error())
+	}
+
 	return &userResponse, nil
 }
 
