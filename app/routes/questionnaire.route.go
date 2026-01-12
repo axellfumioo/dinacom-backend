@@ -2,7 +2,6 @@ package router
 
 import (
 	"backend-dinakom/app/controllers"
-	"backend-dinakom/app/middlewares"
 	"backend-dinakom/app/services"
 	"backend-dinakom/configs"
 	"backend-dinakom/database"
@@ -16,7 +15,6 @@ func QuestionRoute(r fiber.Router) {
 	questionService := services.NewQuestionnaireService(database.DB, configs.QueueClient)
 	questionController := controllers.NewQuestionnaireController(questionService)
 
-	questions.Use(middlewares.AuthMiddleware())
 	questions.Get("/", questionController.GetUserQuestionnaires)
 	questions.Patch("/answer", questionController.UpdateQuestionnaires)
 }
