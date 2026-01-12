@@ -13,8 +13,9 @@ type FoodScanResponse struct {
 	Status constants.FoodScanStatus `json:"status"`
 
 	// Owner
-	UserID string        `json:"user_id"`
-	User   *UserResponse `json:"user"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	UserID    string                  `json:"user_id"`
+	User      *UserResponse           `json:"user"`
+	Result    *FoodScanResultResponse `json:"result"`
+	CreatedAt time.Time               `json:"created_at"`
+	UpdatedAt time.Time               `json:"updated_at"`
 }

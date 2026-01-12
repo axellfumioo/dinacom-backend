@@ -38,6 +38,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
 			return errors.New("error when update foodScan status")
 		}
+		socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
 		return err
 	}
 
@@ -63,6 +64,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 			return errors.New("error when updating foodScan status")
 
 		}
+		socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
 		return err
 	}
 
@@ -80,6 +82,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	}
 
 	if err := db.Model(&fs).Update("Status", "SUCCESS").Error; err != nil {
+		socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
 		return errors.New("error when updating foodScan status")
 	}
 

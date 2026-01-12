@@ -90,12 +90,19 @@ func ToFoodScanResponse(fs *models.FoodScan) response.FoodScanResponse {
 		r := ToUserResponse(fs.User)
 		userResponse = r
 	}
+
+	var resultResponse response.FoodScanResultResponse
+	if fs.Result != nil {
+		r := ToFoodScanResultResponse(fs.Result)
+		resultResponse = r
+	}
 	return response.FoodScanResponse{
 		ID:        fs.ID,
 		ImageURL:  fs.ImageURL,
 		Status:    fs.Status,
 		UserID:    fs.UserID,
 		User:      &userResponse,
+		Result:    &resultResponse,
 		CreatedAt: fs.CreatedAt,
 		UpdatedAt: fs.UpdatedAt,
 	}
