@@ -22,6 +22,7 @@ func RunMigration() {
 		&models.StravaToken{},
 		&models.Family{},
 		&models.FamilyMember{},
+		&models.Questionnaire{},
 	)
 
 	if err != nil {
