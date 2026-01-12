@@ -1201,11 +1201,6 @@
         },
         "/quest": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "endpoint to get user questionnaires",
                 "produces": [
                     "application/json"
@@ -1214,6 +1209,16 @@
                     "Quest"
                 ],
                 "summary": "GetUserQuestionnaires",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"\"",
+                        "description": "Isi ini pake global state user_id",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -1238,11 +1243,6 @@
         },
         "/quest/answer": {
             "patch": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "endpoint to update questionnaires (Ini endpoint untuk jawaban)",
                 "produces": [
                     "application/json"
@@ -1252,6 +1252,14 @@
                 ],
                 "summary": "UpdateQuestionnaires",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"\"",
+                        "description": "Isi ini pake global state userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "Update Question Body",
                         "name": "request",

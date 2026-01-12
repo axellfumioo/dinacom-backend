@@ -1207,11 +1207,6 @@ const docTemplate = `{
         },
         "/quest": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "endpoint to get user questionnaires",
                 "produces": [
                     "application/json"
@@ -1220,6 +1215,16 @@ const docTemplate = `{
                     "Quest"
                 ],
                 "summary": "GetUserQuestionnaires",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"\"",
+                        "description": "Isi ini pake global state user_id",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -1244,11 +1249,6 @@ const docTemplate = `{
         },
         "/quest/answer": {
             "patch": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
                 "description": "endpoint to update questionnaires (Ini endpoint untuk jawaban)",
                 "produces": [
                     "application/json"
@@ -1258,6 +1258,14 @@ const docTemplate = `{
                 ],
                 "summary": "UpdateQuestionnaires",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "default": "\"\"",
+                        "description": "Isi ini pake global state userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "description": "Update Question Body",
                         "name": "request",

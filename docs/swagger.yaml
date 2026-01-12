@@ -934,6 +934,13 @@ paths:
   /quest:
     get:
       description: endpoint to get user questionnaires
+      parameters:
+      - default: '""'
+        description: Isi ini pake global state user_id
+        in: query
+        name: userId
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -949,8 +956,6 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - BearerAuth: []
       summary: GetUserQuestionnaires
       tags:
       - Quest
@@ -958,6 +963,12 @@ paths:
     patch:
       description: endpoint to update questionnaires (Ini endpoint untuk jawaban)
       parameters:
+      - default: '""'
+        description: Isi ini pake global state userId
+        in: query
+        name: userId
+        required: true
+        type: string
       - description: Update Question Body
         in: body
         name: request
@@ -979,8 +990,6 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/response.ErrorResponse'
-      security:
-      - BearerAuth: []
       summary: UpdateQuestionnaires
       tags:
       - Quest

@@ -26,11 +26,11 @@ func NewQuestionnaireController(questionnaireService services.QuestionnaireServi
 // @Description endpoint to get user questionnaires
 // @Tags Quest
 // @Produce  json
+// @Param userId query string true "Isi ini pake global state user_id" default("")
 // @Success 201 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Router /quest [get]
-// @Security BearerAuth
 func (ctrl *questionnaireController) GetUserQuestionnaires(c *fiber.Ctx) error {
 	UserID := c.Query("userId", "")
 	data, err := ctrl.questionnaireService.GetUserQuestionnaires(UserID)
@@ -46,12 +46,12 @@ func (ctrl *questionnaireController) GetUserQuestionnaires(c *fiber.Ctx) error {
 // @Description endpoint to update questionnaires (Ini endpoint untuk jawaban)
 // @Tags Quest
 // @Produce  json
+// @Param userId query string true "Isi ini pake global state userId" default("")
 // @Param request body request.UpdateQuestionnairesRequest true "Update Question Body"
 // @Success 201 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Router /quest/answer [patch]
-// @Security BearerAuth
 func (ctrl *questionnaireController) UpdateQuestionnaires(c *fiber.Ctx) error {
 	UserID := c.Query("userId", "")
 	var req request.UpdateQuestionnairesRequest
