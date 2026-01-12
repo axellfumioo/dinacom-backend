@@ -32,7 +32,7 @@ func NewQuestionnaireController(questionnaireService services.QuestionnaireServi
 // @Router /quest [get]
 // @Security BearerAuth
 func (ctrl *questionnaireController) GetUserQuestionnaires(c *fiber.Ctx) error {
-	UserID := c.Locals("user_id").(string)
+	UserID := c.Query("userId", "")
 	data, err := ctrl.questionnaireService.GetUserQuestionnaires(UserID)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
@@ -53,7 +53,7 @@ func (ctrl *questionnaireController) GetUserQuestionnaires(c *fiber.Ctx) error {
 // @Router /quest/answer [patch]
 // @Security BearerAuth
 func (ctrl *questionnaireController) UpdateQuestionnaires(c *fiber.Ctx) error {
-	UserID := c.Locals("user_id").(string)
+	UserID := c.Query("userId", "")
 	var req request.UpdateQuestionnairesRequest
 	if err := c.BodyParser(&req); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
