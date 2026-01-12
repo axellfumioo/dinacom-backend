@@ -17,7 +17,7 @@ type questionnaireController struct {
 	questionnaireService services.QuestionnaireService
 }
 
-func newQuestionnaireController(questionnaireService services.QuestionnaireService) QuestionnaireController {
+func NewQuestionnaireController(questionnaireService services.QuestionnaireService) QuestionnaireController {
 	return &questionnaireController{questionnaireService: questionnaireService}
 }
 

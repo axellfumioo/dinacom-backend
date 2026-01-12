@@ -30,6 +30,7 @@ func SetupRouter(app *fiber.App) {
 	AIChatRoute(api)
 	FamilyRoute(api)
 	MemberRoute(api)
+	QuestionRoute(api)
 
 	go workers.StartWorker(database.DB)
 }

@@ -21,7 +21,7 @@ type questionnaireService struct {
 	asynqClient *asynq.Client
 }
 
-func newQuestionnaireService(db *gorm.DB, asynqClient *asynq.Client) QuestionnaireService {
+func NewQuestionnaireService(db *gorm.DB, asynqClient *asynq.Client) QuestionnaireService {
 	return &questionnaireService{db: db, asynqClient: asynqClient}
 }
 
