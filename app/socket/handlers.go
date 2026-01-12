@@ -14,6 +14,9 @@ func StartConnectionHandler() {
 
 	server.On(io.OnConnection, func(c *io.Channel) {
 		userID := getUserID(c)
+		if userID == "" {
+			return
+		}
 
 		c.Join("user:" + userID)
 		fmt.Println("Client Connected")
@@ -30,7 +33,7 @@ func StartConnectionHandler() {
 }
 
 func getUserID(c *io.Channel) string {
-	token := c.Request().Header.Get("Authorization")
+	token := c.Request().URL.Query().Get("token")
 	parts := strings.Split(token, " ")
 	if len(parts) != 2 {
 		fmt.Println("Invalid Authorization header format")
@@ -44,7 +47,6 @@ func getUserID(c *io.Channel) string {
 	claims, err := helpers.ValidateToken(token)
 	if err != nil {
 		fmt.Println("Token invalid:", err.Error())
-		c.Close()
 		return ""
 	}
 
