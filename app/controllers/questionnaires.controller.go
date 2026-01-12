@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/services"
 
@@ -9,6 +10,7 @@ import (
 
 type QuestionnaireController interface {
 	GetUserQuestionnaires(c *fiber.Ctx) error
+	UpdateQuestionnaires(c *fiber.Ctx) error
 }
 
 type questionnaireController struct {
@@ -27,4 +29,19 @@ func (ctrl *questionnaireController) GetUserQuestionnaires(c *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(c, "questionnaires retrieved successfully", data)
+}
+
+func (ctrl *questionnaireController) UpdateQuestionnaires(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+	var req request.UpdateQuestionnairesRequest
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	err := ctrl.questionnaireService.UpdateQuestionnaires(UserID, &req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "questionnaires updated successfully", nil)
 }
