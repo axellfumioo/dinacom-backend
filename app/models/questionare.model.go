@@ -4,6 +4,7 @@ import "time"
 
 type Questionnaire struct {
 	ID       string  `gorm:"type:uuid;default:gen_random_uuid();primaryKey;"`
+	Number   int     `gorm:""`
 	Question string  `gorm:"type:text;not null"`
 	Answer   *string `gorm:"type:text"`
 
