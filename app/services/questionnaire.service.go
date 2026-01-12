@@ -32,7 +32,7 @@ func (s *questionnaireService) GetUserQuestionnaires(UserID string) ([]models.Qu
 	}
 
 	var questionnaires []models.Questionnaire
-	if err := s.db.Where("user_id = ?", UserID).Find(&questionnaires).Error; err != nil {
+	if err := s.db.Where("user_id = ?", UserID).Find(&questionnaires).Order("number ASC").Error; err != nil {
 		return nil, errors.New("failed to get questionnaires: " + err.Error())
 	}
 
