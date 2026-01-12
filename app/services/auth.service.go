@@ -73,12 +73,11 @@ func (s *authService) Register(req request.RegisterRequest) (any, error) {
 	userResponse := helpers.ToUserResponse(user)
 
 	// Langsung create questionnaires
-	questions := [5]string{
-		"Siapa nama lengkap Anda?",
-		"Berapa usia Anda saat ini? (dalam tahun, angka saja)",
-		"Apakah Anda saat ini merupakan perokok aktif? (jawab: ya atau tidak)",
-		"Rata-rata berapa jam Anda tidur setiap hari? (angka saja, contoh: 6)",
-		"Rata-rata berapa jam Anda berolahraga per hari? (angka saja, boleh 0 jika tidak berolahraga)",
+	questions := [4]string{
+		" Apakah Saat Ini memiliki permasalahan kesehatan?",
+		"Apakah Anda saat ini merupakan perokok aktif? ",
+		"Rata-rata berapa jam Anda tidur setiap hari? ",
+		"Rata-rata berapa jam Anda berolahraga per hari? ",
 	}
 
 	var questionnaires []models.Questionnaire
