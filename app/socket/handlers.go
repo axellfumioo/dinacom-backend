@@ -4,7 +4,8 @@ import (
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/configs"
 	"fmt"
-	"strings"
+	"log"
+	"net/http"
 
 	io "github.com/ambelovsky/gosf-socketio"
 )
@@ -30,17 +31,17 @@ func StartConnectionHandler() {
 		c.Join("room:" + roomID)
 		fmt.Println("Success to join room:" + roomID)
 	})
+
+	mux := http.NewServeMux()
+	mux.Handle("/socket.io/", server)
+
+	log.Println("Socket.IO running on :8001")
+	go http.ListenAndServe(":8001", mux)
 }
 
 func getUserID(c *io.Channel) string {
-	token := c.Request().URL.Query().Get("token")
-	parts := strings.Split(token, " ")
-	if len(parts) != 2 {
-		fmt.Println("Invalid Authorization header format")
-		return ""
-	}
-
-	token = parts[1]
+	params := c.Request().URL.Query()
+	token := params.Get("token")
 
 	fmt.Println("Token received")
 
