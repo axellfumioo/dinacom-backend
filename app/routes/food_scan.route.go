@@ -22,4 +22,5 @@ func FoodScanRoute(r fiber.Router) {
 	foodScans.Get("/", middlewares.RoleMiddleware("ADMIN"), foodScanController.GetAllFoodScans)
 	foodScans.Post("/scan", foodScanController.ScanFood)
 	foodScans.Get("/user", foodScanController.GetUserFoodScans)
+	foodScans.Get("/:id/get", foodScanController.GetFoodScanByID)
 }

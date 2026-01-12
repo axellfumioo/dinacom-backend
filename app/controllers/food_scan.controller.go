@@ -12,6 +12,7 @@ import (
 type FoodScanController interface {
 	GetAllFoodScans(c *fiber.Ctx) error
 	GetUserFoodScans(c *fiber.Ctx) error
+	GetFoodScanByID(c *fiber.Ctx) error
 	ScanFood(c *fiber.Ctx) error
 }
 
@@ -75,6 +76,17 @@ func (ctrl *foodScanController) GetUserFoodScans(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 	return helpers.SuccessResponse(c, "foodscans retrieved successfully", foodScans)
+}
+
+func (ctrl *foodScanController) GetFoodScanByID(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+	id := c.Params("id")
+	
+	foodScan, err := ctrl.foodScanService.GetFoodScanByID(UserID, id)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return helpers.SuccessResponse(c, "foodscan retrieved successfully", foodScan)
 }
 
 // Scanfood godoc

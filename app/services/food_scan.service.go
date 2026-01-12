@@ -22,6 +22,7 @@ import (
 type FoodScanService interface {
 	GetAllFoodScans(page int, pageSize int) (*[]response.FoodScanResponse, int64, error)
 	GetUserFoodScans(id string) (*[]response.FoodScanResponse, error)
+	GetFoodScanByID(userID string, id string) (*response.FoodScanResponse, error)
 	ScanFood(userID string, req request.ScanFoodRequest) (*response.FoodScanResponse, error)
 }
 
@@ -69,6 +70,16 @@ func (s *foodScanService) GetUserFoodScans(id string) (*[]response.FoodScanRespo
 
 	foodScansSesponse := helpers.ToFoodScansResponse(foodScans)
 	return &foodScansSesponse, nil
+}
+
+func (s *foodScanService) GetFoodScanByID(userID string, id string) (*response.FoodScanResponse, error) {
+	var existing models.FoodScan
+	if err := s.db.Preload("Result").Where("id = ? AND user_id = ?", id, userID).First(&existing).Error; err != nil {
+		return nil, errors.New("failed to get foodscan :" + err.Error())
+	}
+
+	foodscanResponse := helpers.ToFoodScanResponse(&existing)
+	return &foodscanResponse, nil
 }
 
 func (s *foodScanService) ScanFood(userID string, req request.ScanFoodRequest) (*response.FoodScanResponse, error) {
