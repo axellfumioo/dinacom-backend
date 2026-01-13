@@ -9,6 +9,7 @@ import (
 )
 
 type ProfileController interface {
+	GetUserProfile(c *fiber.Ctx) error
 	UpdateProfile(c *fiber.Ctx) error
 	UploadAvatar(c *fiber.Ctx) error
 }
@@ -19,6 +20,16 @@ type profileController struct {
 
 func NewProfileController(profileService services.ProfileService) ProfileController {
 	return &profileController{profileService: profileService}
+}
+
+func (ctrl *profileController) GetUserProfile(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+	profile, err := ctrl.profileService.GetUserProfile(userID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.SuccessResponse(c, "profile retrieved successfully", profile)
 }
 
 // Update Profile godoc

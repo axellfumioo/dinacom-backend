@@ -16,6 +16,8 @@ func ProfileRoute(r fiber.Router) {
 	profileController := controllers.NewProfileController(profileService)
 
 	profiles := r.Group("profiles")
-	profiles.Post("/avatar", middlewares.AuthMiddleware(), profileController.UploadAvatar)
-	profiles.Patch("/", middlewares.AuthMiddleware(), profileController.UpdateProfile)
+	profiles.Use(middlewares.AuthMiddleware())
+	profiles.Get("/", profileController.GetUserProfile)
+	profiles.Post("/avatar", profileController.UploadAvatar)
+	profiles.Patch("/", profileController.UpdateProfile)
 }

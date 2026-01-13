@@ -16,6 +16,7 @@ import (
 )
 
 type ProfileService interface {
+	GetUserProfile(userId string) (*response.ProfileResponse, error)
 	UpdateProfile(userId string, req request.UpdateProfileRequest) (*response.ProfileResponse, error)
 	UploadAvatar(req request.UploadAvatarRequest) (*response.ProfileResponse, error)
 }
@@ -27,6 +28,21 @@ type profileService struct {
 
 func NewProfileService(db *gorm.DB, client *minio.Client) ProfileService {
 	return &profileService{db: db, client: client}
+}
+
+func (s *profileService) GetUserProfile(userId string) (*response.ProfileResponse, error) {
+	var existingUser models.User
+	if err := s.db.First(&existingUser, "id = ?", userId).Error; err != nil {
+		return  nil, errors.New("failed to get user: " + err.Error())
+	}
+	
+	var existingProfile models.UserProfile
+	if err := s.db.Preload("User").First(&existingProfile, "user_id = ?", userId).Error; err != nil {
+		return  nil, errors.New("failed to get profile: " + err.Error())
+	}
+
+	profileResponse := helpers.ToProfileResponse(&existingProfile)
+	return &profileResponse, nil
 }
 
 func (s *profileService) UpdateProfile(userId string, req request.UpdateProfileRequest) (*response.ProfileResponse, error) {
