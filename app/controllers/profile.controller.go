@@ -22,6 +22,17 @@ func NewProfileController(profileService services.ProfileService) ProfileControl
 	return &profileController{profileService: profileService}
 }
 
+// GetUserProfile godoc
+// @Summary Get User Profile
+// @Description Access this endpoint to get User profile
+// @Tags Profiles
+// @Accept json
+// @Produce  json
+// @Success 201 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /profiles [get]
+// @Security BearerAuth
 func (ctrl *profileController) GetUserProfile(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(string)
 	profile, err := ctrl.profileService.GetUserProfile(userID)

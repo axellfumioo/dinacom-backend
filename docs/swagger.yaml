@@ -868,6 +868,30 @@ paths:
       tags:
       - Members
   /profiles:
+    get:
+      consumes:
+      - application/json
+      description: Access this endpoint to get User profile
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get User Profile
+      tags:
+      - Profiles
     patch:
       consumes:
       - application/json
