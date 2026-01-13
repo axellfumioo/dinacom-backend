@@ -2069,9 +2069,6 @@ const docTemplate = `{
                 "date_of_birth": {
                     "type": "string"
                 },
-                "gender": {
-                    "type": "string"
-                },
                 "height_cm": {
                     "type": "number"
                 },
