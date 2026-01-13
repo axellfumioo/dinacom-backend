@@ -61,10 +61,6 @@ func (s *profileService) UpdateProfile(userId string, req request.UpdateProfileR
 		updates["date_of_birth"] = &req.DateOfBirth
 	}
 
-	if req.Gender != nil {
-		updates["gender"] = &req.Gender
-	}
-
 	if req.WeightKG != nil {
 		updates["weight_kg"] = &req.WeightKG
 	}
