@@ -94,17 +94,32 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 func AIChatProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	var payload payload.CreateAIMessagePayload
 	if err := json.Unmarshal(t.Payload(), &payload); err != nil {
-		return err
+		return nil
+	}
+
+	errorMessage := &models.AIChatMessage{
+		ChatID:     payload.ChatID,
+		Content:    "Aku mengalami kendala saat memproses permintaan ini. Silakan kirim pesan lagi.",
+		Confidence: nil,
+		SenderRole: "ASSISTANT",
 	}
 
 	response, err := extservices.FetchAIChat(payload.Message, payload.ChatHistory)
 	if err != nil {
-		return err
+		if err := db.Create(&errorMessage).Error; err != nil {
+			return err
+		}
+		socket.EmitToRoom(payload.ChatID, "refresh:room", &errorMessage.ChatID)
+		return nil
 	}
 
 	var jsonResult types.AIChatResponse
 	if err := json.Unmarshal([]byte(response), &jsonResult); err != nil {
-		return err
+		if err := db.Create(&errorMessage).Error; err != nil {
+			return err
+		}
+		socket.EmitToRoom(payload.ChatID, "refresh:room", &errorMessage.ChatID)
+		return nil
 	}
 
 	// Create Chat

@@ -87,7 +87,7 @@ func (s *aiChatMessageService) CreateNewMessage(req request.CreateMessageRequest
 	}
 
 	b, _ := json.Marshal(payload)
-	task := asynq.NewTask("aichat:process", b)
+	task := asynq.NewTask("aichat:process", b, asynq.MaxRetry(0))
 	s.asyncqClient.Enqueue(task)
 
 	return &aiChatMessageResponse, nil
