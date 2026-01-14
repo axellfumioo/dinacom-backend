@@ -27,15 +27,9 @@ func StartConnectionHandler() {
 		fmt.Println("Client Disconnected")
 	})
 
-	server.On("join:room", func(c *io.Channel, roomID string, ack func()) {
-		fmt.Println("Joined room: room:" + roomID)
+	server.On("join:room", func(c *io.Channel, roomID string) {
 		c.Join("room:" + roomID)
-		ack()
-	})
-
-	server.On("leave:room", func(c *io.Channel, roomId string) {
-		fmt.Println("Leaved room: room:" + roomId)
-		c.Leave("room:" + roomId)
+		fmt.Println("Success to join room:" + roomID)
 	})
 
 	mux := http.NewServeMux()
