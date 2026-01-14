@@ -16,12 +16,12 @@ type User struct {
 	Role           *Role           `gorm:"foreignKey:RoleID;references:ID"`
 	Profile        *UserProfile    `gorm:"foreignKey:UserID;references:ID" json:"profile"`
 	StravaToken    *StravaToken    `gorm:"-"`
+	AIChats        *AiChat         `gorm:"-" json:"ai_chats"`
+	MemberOf       *FamilyMember   `gorm:"foreignKey:UserID" json:"member_of"`
 	FoodScans      []FoodScan      `gorm:"-" json:"food_scans"`
 	UserMeals      []UserMeal      `gorm:"-" json:"user_meals"`
-	AIChats        []AiChat        `gorm:"-" json:"ai_chats"`
 	AIChatMessages []AIChatMessage `gorm:"-" json:"ai_chat_messages"`
-	MemberOf       *FamilyMember   `gorm:"foreignKey:UserID" json:"member_of"`
-	Questions      []Questionnaire    `gorm:"-"`
+	Questions      []Questionnaire `gorm:"-"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
