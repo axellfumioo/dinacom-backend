@@ -9,7 +9,7 @@ import (
 
 type AIChatController interface {
 	GetAIChatByID(c *fiber.Ctx) error
-	GetUserAIChats(c *fiber.Ctx) error
+	GetUserAIChat(c *fiber.Ctx) error
 	CreateNewChat(c *fiber.Ctx) error
 	DeleteAIChat(c *fiber.Ctx) error
 }
@@ -53,9 +53,9 @@ func (ctrl *aiChatController) GetAIChatByID(c *fiber.Ctx) error {
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
 // @Router /aichats/user [get]
-func (ctrl *aiChatController) GetUserAIChats(c *fiber.Ctx) error {
+func (ctrl *aiChatController) GetUserAIChat(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
-	data, err := ctrl.AIChatService.GetUserAIChats(UserID)
+	data, err := ctrl.AIChatService.GetUserAIChat(UserID)
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}

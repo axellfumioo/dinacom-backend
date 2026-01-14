@@ -11,7 +11,7 @@ import (
 
 type AIChatService interface {
 	GetAIChatByID(ID string, userID string) (*response.AiChatResponse, error)
-	GetUserAIChats(UserID string) ([]response.AiChatResponse, error)
+	GetUserAIChat(UserID string) (*response.AiChatResponse, error)
 	CreateNewChat(UserID string) (*response.AiChatResponse, error)
 	DeleteAIChat(ID string, UserID string) (*response.AiChatResponse, error)
 }
@@ -37,17 +37,17 @@ func (s *aIChatService) GetAIChatByID(ID string, UserID string) (*response.AiCha
 	return &aiChatResponse, nil
 }
 
-func (s *aIChatService) GetUserAIChats(UserID string) ([]response.AiChatResponse, error) {
-	var aiChats []models.AiChat
-	if err := s.db.Preload("Messages").Where("user_id = ?", UserID).Find(&aiChats).Error; err != nil {
+func (s *aIChatService) GetUserAIChat(UserID string) (*response.AiChatResponse, error) {
+	var aiChat models.AiChat
+	if err := s.db.Preload("Messages").Where("user_id = ?", UserID).First(&aiChat).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("ai chats not found")
 		}
 		return nil, err
 	}
 
-	aiChatsResponse := helpers.ToAIChatsResponse(aiChats)
-	return aiChatsResponse, nil
+	aiChatResponse := helpers.ToAIChatResponse(&aiChat)
+	return &aiChatResponse, nil
 }
 
 func (s *aIChatService) CreateNewChat(UserID string) (*response.AiChatResponse, error) {
