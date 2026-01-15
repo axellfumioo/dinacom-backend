@@ -68,19 +68,6 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return err
 	}
 
-	userMeal := models.UserMeal{
-		UserID:   payload.UserID,
-		FoodName: jsonResult.FoodName,
-		Calories: float64(jsonResult.CaloriesKcal),
-		Protein:  jsonResult.Nutrition.ProteinG,
-		Carbs:    jsonResult.Nutrition.CarbsG,
-		Fat:      jsonResult.Nutrition.FatG,
-	}
-
-	if err := db.Create(&userMeal).Error; err != nil {
-		return errors.New("error when creating user_meal")
-	}
-
 	if err := db.Model(&fs).Update("Status", "SUCCESS").Error; err != nil {
 		socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
 		return errors.New("error when updating foodScan status")
