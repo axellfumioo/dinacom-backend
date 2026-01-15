@@ -303,3 +303,61 @@ func ToAIChatMessagesResponse(msgs []models.AIChatMessage) []response.AIChatMess
 	}
 	return messageResponse
 }
+
+func ToFamilyResponse(family *models.Family) response.FamilyResponse {
+	var members []response.FamilyMemberResponse
+	if family.Member != nil {
+		r := ToFamilyMembersResponse(family.Member)
+		members = r
+	}
+
+	return response.FamilyResponse{
+		ID:        family.ID,
+		Name:      family.Name,
+		Desc:      family.Desc,
+		AvatarUrl: family.AvatarUrl,
+		Member:    members,
+		CreatedAt: family.CreatedAt,
+		UpdateAt:  family.UpdateAt,
+	}
+}
+
+func ToFamiliesResponse(families []models.Family) []response.FamilyResponse {
+	var familiesResponse []response.FamilyResponse
+	for _, family := range families {
+		familiesResponse = append(familiesResponse, ToFamilyResponse(&family))
+	}
+	return familiesResponse
+}
+
+func ToFamilyMemberResponse(member *models.FamilyMember) response.FamilyMemberResponse {
+	var user response.UserResponse
+	if member.User != nil {
+		r := ToUserResponse(member.User)
+		user = r
+	}
+
+	var family response.FamilyResponse
+	if member.Family != nil {
+		r := ToFamilyResponse(member.Family)
+		family = r
+	}
+	return response.FamilyMemberResponse{
+		ID:        member.ID,
+		Role:      member.Role,
+		UserID:    member.UserID,
+		User:      &user,
+		FamilyID:  member.FamilyID,
+		Family:    &family,
+		CreatedAt: member.CreatedAt,
+		UpdatedAt: member.UpdatedAt,
+	}
+}
+
+func ToFamilyMembersResponse(members []models.FamilyMember) []response.FamilyMemberResponse {
+	var membersResponse []response.FamilyMemberResponse
+	for _, member := range members {
+		membersResponse = append(membersResponse, ToFamilyMemberResponse(&member))
+	}
+	return membersResponse
+}
