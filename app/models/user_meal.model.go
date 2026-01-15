@@ -1,6 +1,7 @@
 package models
 
 import (
+	"backend-dinakom/app/constants"
 	"time"
 )
 
@@ -11,6 +12,8 @@ type UserMeal struct {
 	Protein  float64
 	Fat      float64
 	Carbs    float64
+
+	Type constants.UserMealType `gorm:"type:varchar(25);not null"` // BREAKFAST, LUNCH, DINNER, SNACK
 
 	UserID string `gorm:"type:uuid;not null;" json:"user_id"`
 	User   *User  `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
