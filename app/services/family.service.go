@@ -2,6 +2,7 @@ package services
 
 import (
 	"backend-dinakom/app/dto/request"
+	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
 	"backend-dinakom/configs"
@@ -15,12 +16,12 @@ import (
 )
 
 type FamilyService interface {
-	GetUserFamily(UserID string) (*models.Family, error)
-	GetFamilyByID(ID string, UserID string) (*models.Family, error)
-	CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error)
-	UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*models.Family, error)
-	UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*models.Family, error)
-	DeleteFamily(familyID string, userID string) (*models.Family, error)
+	GetUserFamily(UserID string) (*response.FamilyResponse, error)
+	GetFamilyByID(ID string, UserID string) (*response.FamilyResponse, error)
+	CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*response.FamilyResponse, error)
+	UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*response.FamilyResponse, error)
+	UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*response.FamilyResponse, error)
+	DeleteFamily(familyID string, userID string) (*response.FamilyResponse, error)
 }
 
 type familyService struct {
@@ -32,16 +33,17 @@ func NewFamilyService(db *gorm.DB, minioClient *minio.Client) FamilyService {
 	return &familyService{db: db, minioClient: minioClient}
 }
 
-func (s *familyService) GetUserFamily(UserID  string) (*models.Family, error) {
+func (s *familyService) GetUserFamily(UserID string) (*response.FamilyResponse, error) {
 	var family models.Family
-	if err := s.db.Preload("Member").Joins("JOIN family_members fm ON fm.family_id = families.id").Where("fm.user_id = ?", UserID).First(&family,).Error; err !=nil {
+	if err := s.db.Preload("Member").Joins("JOIN family_members fm ON fm.family_id = families.id").Where("fm.user_id = ?", UserID).First(&family).Error; err != nil {
 		return nil, errors.New("failed to find family :" + err.Error())
 	}
 
-	return	&family,nil
+	familyResponse := helpers.ToFamilyResponse(&family)
+	return &familyResponse, nil
 }
 
-func (s *familyService) GetFamilyByID(ID string, UserID string) (*models.Family, error) {
+func (s *familyService) GetFamilyByID(ID string, UserID string) (*response.FamilyResponse, error) {
 	var existingMember models.FamilyMember
 	if err := s.db.First(&existingMember, "family_id = ? AND user_id = ?", ID, UserID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -55,10 +57,11 @@ func (s *familyService) GetFamilyByID(ID string, UserID string) (*models.Family,
 		return nil, errors.New("failed to find family:" + err.Error())
 	}
 
-	return &family, nil
+	familyResponse := helpers.ToFamilyResponse(&family)
+	return &familyResponse, nil
 }
 
-func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*models.Family, error) {
+func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyRequest) (*response.FamilyResponse, error) {
 	var existingUser models.User
 	if err := s.db.Preload("Profile").Preload("MemberOf").First(&existingUser, "id = ?", UserID).Error; err != nil {
 		return nil, errors.New("failed to get user:" + err.Error())
@@ -96,10 +99,11 @@ func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyR
 		return nil, errors.New("failed to create family:" + err.Error())
 	}
 
-	return family, nil
+	familyResponse := helpers.ToFamilyResponse(family)
+	return &familyResponse, nil
 }
 
-func (s *familyService) UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*models.Family, error) {
+func (s *familyService) UpdateFamilyAvatar(familyID string, userID string, avatar *multipart.FileHeader) (*response.FamilyResponse, error) {
 	// Check is exist
 	var existingMember models.FamilyMember
 	if err := s.db.First(&existingMember, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
@@ -130,10 +134,11 @@ func (s *familyService) UpdateFamilyAvatar(familyID string, userID string, avata
 		}
 	}
 
-	return &existingFamily, nil
+	familyResponse := helpers.ToFamilyResponse(&existingFamily)
+	return &familyResponse, nil
 }
 
-func (s *familyService) UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*models.Family, error) {
+func (s *familyService) UpdateFamily(familyID string, userID string, req request.UpdateFamilyRequest) (*response.FamilyResponse, error) {
 	// Check is exist
 	var existingMember models.FamilyMember
 	if err := s.db.First(&existingMember, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
@@ -158,10 +163,11 @@ func (s *familyService) UpdateFamily(familyID string, userID string, req request
 		return nil, errors.New("failed to update family:" + err.Error())
 	}
 
-	return &existingFamily, nil
+	familyResponse := helpers.ToFamilyResponse(&existingFamily)
+	return &familyResponse, nil
 }
 
-func (s *familyService) DeleteFamily(familyID string, userID string) (*models.Family, error) {
+func (s *familyService) DeleteFamily(familyID string, userID string) (*response.FamilyResponse, error) {
 	// Check if exist
 	var existingMember models.FamilyMember
 	if err := s.db.First(&existingMember, "user_id = ? AND family_id = ?", userID, familyID).Error; err != nil {
@@ -178,5 +184,6 @@ func (s *familyService) DeleteFamily(familyID string, userID string) (*models.Fa
 		return nil, errors.New("failed to delete family:" + err.Error())
 	}
 
-	return &existingFamily, nil
+	familyResponse := helpers.ToFamilyResponse(&existingFamily)
+	return &familyResponse, nil
 }
