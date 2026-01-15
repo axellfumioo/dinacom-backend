@@ -158,3 +158,22 @@ func AIDecisionProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	log.Println("ai-decision:process Done")
 	return nil
 }
+
+func AIInsightProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
+	var payload payload.AIInsightPayload
+	if err := json.Unmarshal(t.Payload(), &payload); err != nil {
+		return nil
+	}
+
+	response, err := extservices.FetchAIInsight(payload)
+	if err != nil {
+		return err
+	}
+
+	var jsonResult types.AIInsightResponse
+	if err := json.Unmarshal([]byte(response), &jsonResult); err != nil {
+		return nil
+	}
+
+	return nil
+}

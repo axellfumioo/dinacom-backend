@@ -1,6 +1,7 @@
 package extservices
 
 import (
+	"backend-dinakom/app/dto/payload"
 	"backend-dinakom/app/models"
 	"backend-dinakom/configs"
 	"backend-dinakom/external/types"
@@ -80,5 +81,32 @@ func FetchAIChat(message string, chatHistory []models.AIChatMessage) (string, er
 	if err != nil {
 		return "", err
 	}
+	return string(jsonBytes), nil
+}
+
+func FetchAIInsight(request payload.AIInsightPayload) (string, error) {
+	var restyClient = configs.RestyClient
+	apiBaseUrl := configs.AppConfig.App.AI_BACKEND_URL
+
+	var result types.AIInsightResponse
+	url := fmt.Sprintf("%s/ai/insight", apiBaseUrl)
+	resp, err := restyClient.R().
+		SetBody(&request).
+		SetAuthToken(configs.AppConfig.App.AI_BACKEND_BEARER).
+		SetResult(&result).
+		Post(url)
+	if err != nil {
+		return "", errors.New("failed to fetch ai insight:" + err.Error())
+	}
+
+	if resp.IsError() {
+		return "", errors.New("ai insight returned error status")
+	}
+
+	jsonBytes, err := json.Marshal(result)
+	if err != nil {
+		return "", err
+	}
+
 	return string(jsonBytes), nil
 }
