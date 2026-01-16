@@ -1,6 +1,7 @@
 package services
 
 import (
+	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
@@ -13,6 +14,7 @@ import (
 type UserMealService interface {
 	GetAllUserMeals(userID string, page int, pageSize int) ([]response.UserMealResponse, int64, error)
 	GetTodayUserMeals(userID string) ([]response.UserMealResponse, error)
+	CreateUserMeal(userID string, req request.CreateUserMealRequest) (*response.UserMealResponse, error)
 }
 
 type userMealService struct {
@@ -66,4 +68,28 @@ func (s *userMealService) GetTodayUserMeals(UserID string) ([]response.UserMealR
 
 	userMealsResponse := helpers.ToUserMealsResponse(userMeals)
 	return userMealsResponse, nil
+}
+
+func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMealRequest) (*response.UserMealResponse, error) {
+	var existingUser models.User
+	if err := s.db.First(&existingUser, "user_id = ?", userID).Error; err != nil {
+		return nil, errors.New("failed to find user: " + err.Error())
+	}
+
+	userMeal := models.UserMeal{
+		FoodName: req.FoodName,
+		Calories: req.Calories,
+		Protein:  req.Protein,
+		Fat:      req.Fat,
+		Carbs:    req.Carbs,
+		Portion:  req.Portion,
+		Time:     req.Time,
+		UserID:   userID,
+	}
+	if err := s.db.Create(&userMeal).Error; err != nil {
+		return nil, errors.New("failed to create usermeal: " + err.Error())
+	}
+
+	userMealResponse := helpers.ToUserMealResponse(&userMeal)
+	return &userMealResponse, nil
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/services"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 type UserMealController interface {
 	GetAllUserMeals(c *fiber.Ctx) error
 	GetTodayUserMeals(c *fiber.Ctx) error
+	CreateUserMeal(c *fiber.Ctx) error
 }
 
 type userMealController struct {
@@ -50,7 +52,7 @@ func (ctrl *userMealController) GetAllUserMeals(c *fiber.Ctx) error {
 // @Summary GetTodayUserMeals
 // @Description Endpoint to get all today user meals data
 // @Tags Usermeals
-// @Produce  json 
+// @Produce  json
 // @Success 200 {object} response.SuccessResponse
 // @Failure 400 {object} response.ErrorResponse
 // @Failure 404 {object} response.ErrorResponse
@@ -64,4 +66,19 @@ func (ctrl *userMealController) GetTodayUserMeals(c *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(c, "today user meals retrieved successfully", data)
+}
+
+func (ctrl *userMealController) CreateUserMeal(c *fiber.Ctx) error {
+	UserID := c.Locals("user_id").(string)
+	var req request.CreateUserMealRequest
+	if err := c.BodyParser(&req); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	data, err := ctrl.userMealService.CreateUserMeal(UserID, req)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return helpers.CreatedResponse(c, "user meal created successfully", data)
 }
