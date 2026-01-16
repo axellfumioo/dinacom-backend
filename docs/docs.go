@@ -1859,6 +1859,49 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Add new Usermeal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usermeals"
+                ],
+                "summary": "Add new Usermeal",
+                "parameters": [
+                    {
+                        "description": "Usermeal create data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CreateUserMealRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/usermeals/today": {
@@ -1937,6 +1980,21 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "constants.UserMealTime": {
+            "type": "string",
+            "enum": [
+                "BREAKFAST",
+                "LUNCH",
+                "DINNER",
+                "SNACK"
+            ],
+            "x-enum-varnames": [
+                "UserMealBreakFast",
+                "UserMealLunch",
+                "UserMealDinner",
+                "UserMealSnack"
+            ]
+        },
         "request.AddFamilyMemberRequest": {
             "type": "object",
             "required": [
@@ -1973,6 +2031,37 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 100,
                     "minLength": 3
+                }
+            }
+        },
+        "request.CreateUserMealRequest": {
+            "type": "object",
+            "properties": {
+                "calories": {
+                    "type": "number"
+                },
+                "carbohydrate": {
+                    "type": "number"
+                },
+                "fat": {
+                    "type": "number"
+                },
+                "food_name": {
+                    "type": "string"
+                },
+                "portion": {
+                    "type": "integer"
+                },
+                "protein": {
+                    "type": "number"
+                },
+                "time": {
+                    "description": "BREAKFAST, LUNCH, DINNER, SNACK",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/constants.UserMealTime"
+                        }
+                    ]
                 }
             }
         },

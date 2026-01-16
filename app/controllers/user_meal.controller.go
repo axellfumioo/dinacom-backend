@@ -68,6 +68,17 @@ func (ctrl *userMealController) GetTodayUserMeals(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "today user meals retrieved successfully", data)
 }
 
+// CreateUserMeal godoc
+// @Summary Add new Usermeal
+// @Description Add new Usermeal
+// @Tags Usermeals
+// @Accept json
+// @Produce json
+// @Param request body request.CreateUserMealRequest true "Usermeal create data"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /usermeals [post]
+// @Security BearerAuth
 func (ctrl *userMealController) CreateUserMeal(c *fiber.Ctx) error {
 	UserID := c.Locals("user_id").(string)
 	var req request.CreateUserMealRequest
