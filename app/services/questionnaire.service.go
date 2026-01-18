@@ -1,8 +1,11 @@
 package services
 
 import (
+	"backend-dinakom/app/dto/payload"
 	"backend-dinakom/app/dto/request"
+	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
+	"encoding/json"
 	"errors"
 	"strconv"
 	"strings"
@@ -49,6 +52,11 @@ func (s *questionnaireService) UpdateQuestionnaires(UserID string, req *request.
 	var sleepDuration int
 
 	tx := s.db.Begin()
+	var existingUser models.User
+	if err := tx.Preload("Profile").First(&existingUser, "id = ?", UserID).Error;err != nil {
+		return errors.New("failed to find user: " + err.Error())
+	}
+
 	for _, answer := range req.Answers {
 		if answer.Number == 2 {
 			isSmooking = strings.ToLower(answer.Answer) == "ya"
@@ -73,9 +81,22 @@ func (s *questionnaireService) UpdateQuestionnaires(UserID string, req *request.
 		}
 	}
 
-	_ = isSmooking
-	_ = sleepDuration
-	_ = sportDuration
+	userAge := helpers.CalculateAge(existingUser.Profile.DateOfBirth)
+	payload := payload.AIInsightPayload{
+		User: payload.UserAIInsight{
+			ID: existingUser.ID,
+			Name: existingUser.FullName,
+			Age: userAge,
+			Gender: existingUser.Profile.Gender,
+			Smoking: isSmooking,
+			SleepDuration: sleepDuration,
+			SportDuration: sportDuration,
+		},
+	}
+
+	b, _ := json.Marshal(payload);
+	task := asynq.NewTask("ai-insight:process", b)
+	s.asynqClient.Enqueue(task, asynq.MaxRetry(1))
 
 	return tx.Commit().Error
 }

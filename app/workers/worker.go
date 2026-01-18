@@ -31,4 +31,8 @@ func StartWorker(db *gorm.DB) {
 	if err := server.Run(mux); err != nil {
 		log.Fatal(err)
 	}
+
+	mux.HandleFunc("ai-insight:process", func(ctx context.Context, t *asynq.Task) error {
+		return AIInsightProcess(ctx, *t, db)
+	})
 }

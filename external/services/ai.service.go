@@ -89,7 +89,7 @@ func FetchAIInsight(request payload.AIInsightPayload) (string, error) {
 	apiBaseUrl := configs.AppConfig.App.AI_BACKEND_URL
 
 	var result types.AIInsightResponse
-	url := fmt.Sprintf("%s/ai/insight", apiBaseUrl)
+	url := fmt.Sprintf("%s/ai/user-insight", apiBaseUrl)
 	resp, err := restyClient.R().
 		SetBody(&request).
 		SetAuthToken(configs.AppConfig.App.AI_BACKEND_BEARER).
