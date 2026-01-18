@@ -22,6 +22,7 @@ type User struct {
 	UserMeals      []UserMeal      `gorm:"-" json:"user_meals"`
 	AIChatMessages []AIChatMessage `gorm:"-" json:"ai_chat_messages"`
 	Questions      []Questionnaire `gorm:"-"`
+	Insights       []AIInsight     `gorm:"-"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
