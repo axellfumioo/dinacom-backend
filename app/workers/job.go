@@ -189,5 +189,6 @@ func AIInsightProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return err
 	}
 
+	socket.EmitToUser(payload.User.ID, "refresh:dashboard", Insight);
 	return nil
 }
