@@ -167,12 +167,26 @@ func AIInsightProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 
 	response, err := extservices.FetchAIInsight(payload)
 	if err != nil {
+		log.Println(err.Error())
 		return err
 	}
 
 	var jsonResult types.AIInsightResponse
 	if err := json.Unmarshal([]byte(response), &jsonResult); err != nil {
+		log.Println(err.Error())
 		return nil
+	}
+
+	Insight := models.AIInsight{
+		UserID:            payload.User.ID,
+		HealthScore:       jsonResult.HealthScore,
+		PersonalAIInsight: jsonResult.PersonalAIInsight,
+		AIImportantNotice: jsonResult.AIImportantNotice,
+		Confidence:        jsonResult.ConfidenceLevel,
+	}
+	if err := db.Create(&Insight).Error; err != nil {
+		log.Println(err.Error())
+		return err
 	}
 
 	return nil

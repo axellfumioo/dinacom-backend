@@ -102,7 +102,7 @@ func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMe
 	userAge := helpers.CalculateAge(existingUser.Profile.DateOfBirth)
 	payload := payload.AIInsightPayload{
 		User: payload.UserAIInsight{
-			ID:            existingUser.ID,
+			ID:            userID,
 			Name:          existingUser.FullName,
 			Age:           userAge,
 			Gender:        existingUser.Profile.Gender,
