@@ -4,13 +4,14 @@ import (
 	"backend-dinakom/app/controllers"
 	"backend-dinakom/app/middlewares"
 	"backend-dinakom/app/services"
+	"backend-dinakom/configs"
 	"backend-dinakom/database"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func UserMealRoute(r fiber.Router) {
-	userMealService := services.NewUserMealService(database.GetDb())
+	userMealService := services.NewUserMealService(database.GetDb(), configs.QueueClient)
 	userMealController := controllers.NewUserMealController(userMealService)
 
 	userMeals := r.Group("usermeals")

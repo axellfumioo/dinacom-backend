@@ -1,13 +1,16 @@
 package services
 
 import (
+	"backend-dinakom/app/dto/payload"
 	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
+	"encoding/json"
 	"errors"
 	"time"
 
+	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 )
 
@@ -18,11 +21,12 @@ type UserMealService interface {
 }
 
 type userMealService struct {
-	db *gorm.DB
+	db          *gorm.DB
+	asynqClient *asynq.Client
 }
 
-func NewUserMealService(db *gorm.DB) UserMealService {
-	return &userMealService{db: db}
+func NewUserMealService(db *gorm.DB, asynqClient *asynq.Client) UserMealService {
+	return &userMealService{db: db, asynqClient: asynqClient}
 }
 
 func (s *userMealService) GetAllUserMeals(userID string, page int, pageSize int) ([]response.UserMealResponse, int64, error) {
@@ -72,7 +76,7 @@ func (s *userMealService) GetTodayUserMeals(UserID string) ([]response.UserMealR
 
 func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMealRequest) (*response.UserMealResponse, error) {
 	var existingUser models.User
-	if err := s.db.First(&existingUser, "user_id = ?", userID).Error; err != nil {
+	if err := s.db.Preload("Profile").First(&existingUser, "user_id = ?", userID).Error; err != nil {
 		return nil, errors.New("failed to find user: " + err.Error())
 	}
 
@@ -89,6 +93,36 @@ func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMe
 	if err := s.db.Create(&userMeal).Error; err != nil {
 		return nil, errors.New("failed to create usermeal: " + err.Error())
 	}
+
+	answer, err := helpers.GetQuestionnaireAnswer(s.db, userID)
+	if err != nil {
+		return nil, err
+	}
+	userAge := helpers.CalculateAge(existingUser.Profile.DateOfBirth)
+	payload := payload.AIInsightPayload{
+		User: payload.UserAIInsight{
+			ID:            existingUser.ID,
+			Name:          existingUser.FullName,
+			Age:           userAge,
+			Gender:        existingUser.Profile.Gender,
+			Smoking:       *answer.IsSmoking,
+			SleepDuration: *answer.SleepDuration,
+			SportDuration: *answer.SportDuration,
+		},
+		DailyNutritionSummary: payload.DailyNutritionSummary{
+			CaloriesKcal: userMeal.Calories,
+			Nutrition: payload.DailyNutrition{
+				CarbsG:   userMeal.Carbs,
+				ProteinG: userMeal.Protein,
+				FatG:     userMeal.Fat,
+			},
+			Vitamins: make([]string, 0),
+		},
+	}
+
+	b, _ := json.Marshal(payload)
+	task := asynq.NewTask("ai-insight:process", b)
+	s.asynqClient.Enqueue(task, asynq.MaxRetry(1))
 
 	userMealResponse := helpers.ToUserMealResponse(&userMeal)
 	return &userMealResponse, nil

@@ -16,15 +16,15 @@ type UserAIInsight struct {
 }
 
 type DailyNutritionSummary struct {
-	CaloriesKcal int            `json:"calories_kcal"`
-	Nutrition    dailyNutrition `json:"nutrition"`
+	CaloriesKcal float64            `json:"calories_kcal"`
+	Nutrition    DailyNutrition `json:"nutrition"`
 	Vitamins     []string       `json:"vitamins"`
 }
 
-type dailyNutrition struct {
-	CarbsG   int `json:"carbs_g"`
-	ProteinG int `json:"protein_g"`
-	FatG     int `json:"fat_g"`
+type DailyNutrition struct {
+	CarbsG   float64 `json:"carbs_g"`
+	ProteinG float64 `json:"protein_g"`
+	FatG     float64 `json:"fat_g"`
 }
 
 // {
