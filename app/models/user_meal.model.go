@@ -3,6 +3,8 @@ package models
 import (
 	"backend-dinakom/app/constants"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type UserMeal struct {
@@ -12,6 +14,7 @@ type UserMeal struct {
 	Protein  float64
 	Fat      float64
 	Carbs    float64
+	Vitamins pq.StringArray `gorm:"type:text[]" json:"vitamins"`
 
 	Portion int                    `json:"portion"`
 	Time    constants.UserMealTime `gorm:"type:varchar(25);not null"` // BREAKFAST, LUNCH, DINNER, SNACK

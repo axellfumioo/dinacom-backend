@@ -94,6 +94,7 @@ func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMe
 		return nil, errors.New("failed to create usermeal: " + err.Error())
 	}
 
+	// Ini untuk AI insight
 	answer, err := helpers.GetQuestionnaireAnswer(s.db, userID)
 	if err != nil {
 		return nil, err
@@ -116,7 +117,7 @@ func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMe
 				ProteinG: userMeal.Protein,
 				FatG:     userMeal.Fat,
 			},
-			Vitamins: make([]string, 0),
+			Vitamins: userMeal.Vitamins,
 		},
 	}
 
