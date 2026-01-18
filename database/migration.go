@@ -23,6 +23,7 @@ func RunMigration() {
 		&models.Family{},
 		&models.FamilyMember{},
 		&models.Questionnaire{},
+		&models.AIInsight{},
 	)
 
 	if err != nil {
