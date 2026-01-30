@@ -12,7 +12,6 @@ type JWTClaims struct {
 	UserID           string `json:"user_id"`
 	Email            string `json:"email"`
 	Role             string `json:"role"`
-	StravaIntegrated bool   `json:"strava_integrated"`
 	jwt.RegisteredClaims
 }
 
