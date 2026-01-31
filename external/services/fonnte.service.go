@@ -5,13 +5,18 @@ import (
 	"fmt"
 )
 
+type FonnteResponse struct {
+	Status  bool   `json:"status"`
+	Message string `json:"message"`
+}
+
 func FetchFonnteAPI(userName string, phoneNumber string) error {
 	restyClient := configs.RestyClient
 	var message = fmt.Sprintf("%s, Jangan sampe kelupaan!! kamu belum scan makanan hari ini😉", userName)
 
-	var result any
+	var result FonnteResponse
 	resp, err := restyClient.R().
-	SetHeader("Content-Type", "application/x-www-form-urlencoded").
+		SetHeader("Content-Type", "application/x-www-form-urlencoded").
 		SetAuthToken("suKrp5PHdeGjNev54CCa").
 		SetFormData(map[string]string{
 			"target":  phoneNumber,
@@ -25,11 +30,11 @@ func FetchFonnteAPI(userName string, phoneNumber string) error {
 	}
 
 	if resp.IsError() {
-		return fmt.Errorf(fmt.Sprintf(
+		return fmt.Errorf(
 			"failed send WA: status=%d body=%s",
 			resp.StatusCode(),
 			resp.String(),
-		))
+		)
 	}
 
 	return nil

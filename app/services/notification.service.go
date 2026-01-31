@@ -4,6 +4,7 @@ import (
 	"backend-dinakom/app/dto/response"
 	"backend-dinakom/app/helpers"
 	"backend-dinakom/app/models"
+	extservices "backend-dinakom/external/services"
 	"errors"
 	"time"
 
@@ -54,6 +55,13 @@ func (s *notificationService) DailyReminder() ([]response.UserResponse, error) {
 
 	if len(existingUsers) == 0 {
 		return nil, errors.New("failed to get users: users not found")
+	}
+
+	for _, user := range existingUsers {
+		err := extservices.FetchFonnteAPI(user.FullName, *user.PhoneNumber)	
+		if (err != nil) {
+			return nil, errors.New(err.Error())
+		}
 	}
 
 	userResponse := helpers.ToUsersResponse(existingUsers)
