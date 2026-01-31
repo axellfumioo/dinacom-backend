@@ -50,9 +50,14 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowMethods: "GET,POST,PUT,PATCH,DELETE",
+		AllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
+
+	// Ensure preflight requests always get a valid response.
+	app.Options("/*", func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusNoContent)
+	})
 	router.SetupRouter(app)
 
 	defer configs.QueueClient.Close()
