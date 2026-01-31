@@ -76,7 +76,7 @@ func (s *userMealService) GetTodayUserMeals(UserID string) ([]response.UserMealR
 
 func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMealRequest) (*response.UserMealResponse, error) {
 	var existingUser models.User
-	if err := s.db.Preload("Profile").First(&existingUser, "user_id = ?", userID).Error; err != nil {
+	if err := s.db.Preload("Profile").First(&existingUser, "id = ?", userID).Error; err != nil {
 		return nil, errors.New("failed to find user: " + err.Error())
 	}
 
