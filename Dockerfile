@@ -23,5 +23,6 @@ COPY --from=builder /app/backend-app .
 COPY --from=builder /app/.env .
 
 EXPOSE 8080
+EXPOSE 8001
 
 CMD ["./backend-app"]
