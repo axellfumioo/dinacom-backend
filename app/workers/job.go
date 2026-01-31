@@ -62,7 +62,6 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	if err := db.Create(&fsResult).Error; err != nil {
 		if err := db.Model(&fs).Update("Status", "FAILED").Error; err != nil {
 			return errors.New("error when updating foodScan status")
-
 		}
 		socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
 		return err
@@ -73,7 +72,20 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return errors.New("error when updating foodScan status")
 	}
 
+	var insight = models.AIInsight{
+		UserID:            payload.UserID,
+		HealthScore:       jsonResult.HealthScores,
+		PersonalAIInsight: jsonResult.HealthNote,
+		AIImportantNotice: "",
+		Confidence:        int(jsonResult.ConfidenceScore),
+	}
+	if err := db.Create(&insight).Error; err != nil {
+		log.Println(err.Error())
+		return err
+	}
+
 	socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
+	socket.EmitToUser(payload.UserID, "refresh:ai-insight", insight)
 	log.Printf("foodscan:process Done")
 	return nil
 }
@@ -189,6 +201,6 @@ func AIInsightProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 		return err
 	}
 
-	socket.EmitToUser(payload.User.ID, "refresh:dashboard", Insight);
+	socket.EmitToUser(payload.User.ID, "refresh:dashboard", Insight)
 	return nil
 }
