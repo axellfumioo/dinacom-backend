@@ -12,6 +12,7 @@ import (
 
 type MemberService interface {
 	GetFamilyMembers(FamilyID string) ([]models.FamilyMember, error)
+	GetAllMemberStatistics(userId string, roomId string) ([]models.User, error)
 	AddFamilyMembers(userID string, req request.AddFamilyMemberRequest) ([]models.FamilyMember, error)
 	DeleteFamilyMember(userID string, familyID string, memberID string) (*models.FamilyMember, error)
 }
@@ -44,6 +45,25 @@ func (s *memberService) AddFamilyMembers(userID string, req request.AddFamilyMem
 	}
 
 	return members, nil
+}
+
+func (s *memberService) GetAllMemberStatistics(userId string, roomId string) ([]models.User, error) {
+	var users []models.User
+
+	if err := s.db.
+		Model(&models.User{}).
+		Joins("JOIN family_members fm ON fm.user_id = users.id").
+		Where("fm.family_id = ?", roomId).
+		Where("users.id != ?", userId).
+		Preload("Profile").
+		Preload("Role").
+		Preload("MemberOf").
+		Preload("UserMeals").
+		Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (s *memberService) GetFamilyMembers(FamilyID string) ([]models.FamilyMember, error) {

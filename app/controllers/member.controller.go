@@ -10,6 +10,7 @@ import (
 
 type MemberController interface {
 	GetFamilyMembers(c *fiber.Ctx) error
+	GetAllMemberStatistics(c *fiber.Ctx) error
 	AddFamilyMembers(c *fiber.Ctx) error
 	DeleteFamilyMember(c *fiber.Ctx) error
 }
@@ -41,6 +42,16 @@ func (ctrl *memberController) GetFamilyMembers(c *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(c, "family members retrieved successfully", data)
+}
+
+func (ctrl *memberController) GetAllMemberStatistics(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+	familyID := c.Params("familyID")
+	data, err := ctrl.memberService.GetAllMemberStatistics(userID, familyID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return helpers.SuccessResponse(c, "member statistics retrieved successfully", data)
 }
 
 // AddFamilyMembers godoc
