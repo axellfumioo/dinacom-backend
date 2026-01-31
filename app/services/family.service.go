@@ -35,8 +35,16 @@ func NewFamilyService(db *gorm.DB, minioClient *minio.Client) FamilyService {
 
 func (s *familyService) GetUserFamily(UserID string) (*response.FamilyResponse, error) {
 	var family models.Family
-	if err := s.db.Preload("Member").Joins("JOIN family_members fm ON fm.family_id = families.id").Where("fm.user_id = ?", UserID).First(&family).Error; err != nil {
-		return nil, errors.New("failed to find family :" + err.Error())
+	if err := s.db.
+		Joins("JOIN family_members fm ON fm.family_id = families.id").
+		Where("fm.user_id = ?", UserID).
+		Preload("Member.User").
+		First(&family).Error; err != nil {
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("user not in any family")
+		}
+		return nil, err
 	}
 
 	familyResponse := helpers.ToFamilyResponse(&family)
@@ -67,7 +75,7 @@ func (s *familyService) CreateNewFamily(UserID string, req request.CreateFamilyR
 		return nil, errors.New("failed to get user:" + err.Error())
 	}
 
-	if existingUser.MemberOf == nil {
+	if existingUser.MemberOf != nil {
 		return nil, errors.New("failed to create family: this member already has a family")
 	}
 
