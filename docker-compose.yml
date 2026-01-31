@@ -37,33 +37,10 @@ services:
       - backend_dinacom_network
     restart: unless-stopped
     healthcheck:
-      # Healthcheck should only verify the server is accepting connections.
-      # Checking a specific database can fail on persistent volumes where the DB
-      # wasn't created in a previous run, which blocks depends_on in CI.
-      test: ["CMD-SHELL", "pg_isready -U postgres -h localhost"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d backend_dinacom"]
       interval: 5s
       timeout: 3s
       retries: 20
-      start_period: 10s
-
-  postgres-init:
-    image: postgres:15-alpine
-    container_name: backend_dinacom_postgres_init
-    environment:
-      PGPASSWORD: postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - backend_dinacom_network
-    restart: "no"
-    command: >
-      sh -c "
-      echo 'Ensuring database backend_dinacom exists...';
-      psql -h postgres -U postgres -d postgres -tAc \"SELECT 1 FROM pg_database WHERE datname='backend_dinacom'\" | grep -q 1
-        || psql -h postgres -U postgres -d postgres -c \"CREATE DATABASE backend_dinacom\";
-      echo 'Database check complete.'
-      "
 
   api:
     build:
@@ -88,8 +65,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      postgres-init:
-        condition: service_completed_successfully
     networks:
       - backend_dinacom_network
     restart: unless-stopped
