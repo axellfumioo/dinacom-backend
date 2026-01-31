@@ -1470,6 +1470,29 @@ paths:
       summary: Add new Usermeal
       tags:
       - Usermeals
+  /usermeals/latest:
+    get:
+      description: Endpoint to get latest user meal data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: GetLatestUserMeal
+      tags:
+      - Usermeals
   /usermeals/today:
     get:
       description: Endpoint to get all today user meals data

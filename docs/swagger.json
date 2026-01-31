@@ -1932,6 +1932,43 @@
                 }
             }
         },
+        "/usermeals/latest": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Endpoint to get latest user meal data",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Usermeals"
+                ],
+                "summary": "GetLatestUserMeal",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/usermeals/today": {
             "get": {
                 "security": [
