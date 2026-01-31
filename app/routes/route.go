@@ -31,6 +31,7 @@ func SetupRouter(app *fiber.App) {
 	FamilyRoute(api)
 	MemberRoute(api)
 	QuestionRoute(api)
+	NotificationRoute(api)
 
 	go workers.StartWorker(database.DB)
 }

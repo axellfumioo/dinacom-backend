@@ -30,7 +30,9 @@ func NewAuthService(db gorm.DB, restyClient *resty.Client) AuthService {
 
 func (s *authService) Register(req request.RegisterRequest) (any, error) {
 	var countUsers int64
-	s.db.Model(&models.User{}).Count(&countUsers)
+	if err := s.db.Model(&models.User{}).Count(&countUsers).Error; err != nil {
+		return nil, errors.New("failed to count users: " + err.Error())
+	}
 
 	// use value type, not pointer
 	var existingRole models.Role
@@ -38,6 +40,7 @@ func (s *authService) Register(req request.RegisterRequest) (any, error) {
 	if countUsers < 3 {
 		roleName = "ADMIN"
 	}
+	
 	if err := s.db.First(&existingRole, "role_name = ?", roleName).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errors.New("role not found")

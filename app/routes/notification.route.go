@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func NotificationRouter(r fiber.Router) {
+func NotificationRoute(r fiber.Router) {
 	notificationService := services.NewNotificationService(database.DB);
 	notificationController := controllers.NewNotificationController(notificationService);
 
