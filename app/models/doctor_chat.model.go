@@ -7,8 +7,9 @@ type DoctorChatRoom struct {
 	DoctorID string `gorm:"type:uuid;not null;index:idx_doctor_user,unique"`
 	UserID   string `gorm:"type:uuid;not null;index:idx_doctor_user,unique"`
 
-	Doctor *User `gorm:"foreignKey:DoctorID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"doctor"`
-	User   *User `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"user"`
+	Doctor   *User               `gorm:"foreignKey:DoctorID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"doctor"`
+	User     *User               `gorm:"foreignKey:UserID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"user"`
+	Messages []DoctorChatMessage `gorm:"-" json:"messages"`
 
 	CreatedAt time.Time
 }

@@ -4,11 +4,12 @@ import "time"
 
 type DoctorChatMessage struct {
 	ID           string `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
-	DoctorChatID string `gorm:"type:uuid;"`
-	SenderID     string `gorm:"type:uuid;"`
-	Message      string `gorm:"type:text;"`
+	DoctorChatID string `gorm:"type:uuid;" json:"doctor_chat_id"`
+	SenderID     string `gorm:"type:uuid;" json:"sender_id"`
+	Message      string `gorm:"type:text;" json:"message"`
 
-	CreatedAt time.Time
+	DoctorChat DoctorChatRoom `gorm:"foreignKey:DoctorChatID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	CreatedAt  time.Time
 }
 
 func (DoctorChatMessage) TableName() string {
