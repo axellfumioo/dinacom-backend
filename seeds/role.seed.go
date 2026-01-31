@@ -15,6 +15,9 @@ func SeedRole(db *gorm.DB) {
 		{
 			RoleName: "USER",
 		},
+		{
+			RoleName: "DOCTOR",
+		},
 	}
 
 	for _, role := range roles {
