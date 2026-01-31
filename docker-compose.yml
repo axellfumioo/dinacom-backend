@@ -36,6 +36,11 @@ services:
     networks:
       - backend_dinacom_network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d backend_dinacom"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   api:
     build:
@@ -58,7 +63,8 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - backend_dinacom_network
     restart: unless-stopped

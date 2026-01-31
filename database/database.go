@@ -16,6 +16,13 @@ var DB *gorm.DB
 func ConnectDatabase() {
 	cfg := configs.AppConfig.Database
 
+	loc, locErr := time.LoadLocation(cfg.Timezone)
+	if locErr != nil {
+		log.Printf("Invalid/unknown time zone %q (%v); falling back to UTC", cfg.Timezone, locErr)
+		cfg.Timezone = "UTC"
+		loc = time.UTC
+	}
+
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s TimeZone=%s",
 		cfg.Host,
@@ -35,13 +42,23 @@ func ConnectDatabase() {
 		gormLogger = logger.Default.LogMode(logger.Error)
 	}
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: gormLogger,
-		NowFunc: func() time.Time {
-			return time.Now().Local()
-		},
-	})
+	var db *gorm.DB
+	var err error
+	const maxAttempts = 30
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+			Logger: gormLogger,
+			NowFunc: func() time.Time {
+				return time.Now().In(loc)
+			},
+		})
+		if err == nil {
+			break
+		}
 
+		log.Printf("Failed to connect to database (attempt %d/%d): %v", attempt, maxAttempts, err)
+		time.Sleep(2 * time.Second)
+	}
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
