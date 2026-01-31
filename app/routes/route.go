@@ -34,6 +34,7 @@ func SetupRouter(app *fiber.App) {
 	NotificationRoute(api)
 	DoctorChatRoute(api)
 	DoctorChaMessageRoute(api)
+	AIInsightRoute(api)
 
 	go workers.StartWorker(database.DB)
 }
