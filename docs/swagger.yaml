@@ -57,6 +57,32 @@ definitions:
         - $ref: '#/definitions/constants.UserMealTime'
         description: BREAKFAST, LUNCH, DINNER, SNACK
     type: object
+  request.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      gender:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 3
+        type: string
+      password:
+        minLength: 6
+        type: string
+      phone_number:
+        maxLength: 20
+        minLength: 10
+        type: string
+      role_id:
+        type: string
+    required:
+    - email
+    - gender
+    - name
+    - password
+    - role_id
+    type: object
   request.LoginRequest:
     properties:
       email:
@@ -96,6 +122,8 @@ definitions:
         minLength: 3
         type: string
       password:
+        type: string
+      phone_number:
         type: string
     required:
     - date_of_birth
@@ -140,6 +168,19 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  request.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 3
+        type: string
+      phone_number:
+        maxLength: 20
+        minLength: 10
+        type: string
     type: object
   response.ErrorResponse:
     properties:
@@ -1345,6 +1386,27 @@ paths:
       summary: GetStravaProfile
       tags:
       - Strava
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete existing User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete existing User
+      tags:
+      - Users
   /usermeals:
     get:
       description: Endpoint to get all user meals data
@@ -1431,6 +1493,89 @@ paths:
       summary: GetTodayUserMeals
       tags:
       - Usermeals
+  /users:
+    post:
+      consumes:
+      - application/json
+      description: Add new User
+      parameters:
+      - description: User create data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add new User
+      tags:
+      - Users
+  /users/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update existing User
+      parameters:
+      - description: User update data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update existing User
+      tags:
+      - Users
+  /users/role:
+    get:
+      consumes:
+      - application/json
+      description: Get existing User
+      parameters:
+      - description: Role Name
+        in: query
+        name: role_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/response.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get existing User
+      tags:
+      - Users
   /users/session:
     get:
       description: Endpoint to get user session

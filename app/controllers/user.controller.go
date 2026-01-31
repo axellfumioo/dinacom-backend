@@ -87,6 +87,17 @@ func (ctrl *userController) GetUserByID(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "User retrieved successfully", user)
 }
 
+// CreateUser godoc
+// @Summary Add new User
+// @Description Add new User
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body request.CreateUserRequest true "User create data"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /users [post]
+// @Security BearerAuth
 func (ctrl *userController) CreateUser(c *fiber.Ctx) error {
 	var req request.CreateUserRequest
 
@@ -102,6 +113,17 @@ func (ctrl *userController) CreateUser(c *fiber.Ctx) error {
 	return helpers.CreatedResponse(c, "User created successfully", user)
 }
 
+// UpdateUser godoc
+// @Summary Update existing User
+// @Description Update existing User
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param request body request.UpdateUserRequest true "User update data"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /users/{id} [patch]
+// @Security BearerAuth
 func (ctrl *userController) UpdateUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 
@@ -118,6 +140,16 @@ func (ctrl *userController) UpdateUser(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "User updated successfully", user)
 }
 
+// DeleteUser godoc
+// @Summary Delete existing User
+// @Description Delete existing User
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /user/{id} [delete]
+// @Security BearerAuth
 func (ctrl *userController) DeleteUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if err := ctrl.userService.DeleteUser(id); err != nil {
@@ -147,6 +179,17 @@ func (ctrl *userController) ChangePassword(c *fiber.Ctx) error {
 	return helpers.SuccessResponse(c, "Password changed successfully", nil)
 }
 
+// GetUser godoc
+// @Summary Get existing User
+// @Description Get existing User
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param role_name query string true "Role Name"
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Router /users/role [get]
+// @Security BearerAuth
 func (ctrl *userController) GetUserByRoleName(c *fiber.Ctx) error {
 	roleName := c.Query("role_name")
 	users, err := ctrl.userService.GetUserByRoleName(roleName)
