@@ -13,16 +13,18 @@ type User struct {
 	// Relations
 	RoleID *string
 
-	Role           *Role           `gorm:"foreignKey:RoleID;references:ID"`
-	Profile        *UserProfile    `gorm:"foreignKey:UserID;references:ID" json:"profile"`
-	StravaToken    *StravaToken    `gorm:"-"`
-	AIChats        *AiChat         `gorm:"-" json:"ai_chats"`
-	MemberOf       *FamilyMember   `gorm:"foreignKey:UserID" json:"member_of"`
-	FoodScans      []FoodScan      `gorm:"-" json:"food_scans"`
-	UserMeals      []UserMeal      `gorm:"-" json:"user_meals"`
-	AIChatMessages []AIChatMessage `gorm:"-" json:"ai_chat_messages"`
-	Questions      []Questionnaire `gorm:"-"`
-	Insights       []AIInsight     `gorm:"-"`
+	Role               *Role               `gorm:"foreignKey:RoleID;references:ID"`
+	Profile            *UserProfile        `gorm:"foreignKey:UserID;references:ID" json:"profile"`
+	StravaToken        *StravaToken        `gorm:"-"`
+	AIChats            *AiChat             `gorm:"-" json:"ai_chats"`
+	MemberOf           *FamilyMember       `gorm:"foreignKey:UserID" json:"member_of"`
+	FoodScans          []FoodScan          `gorm:"-" json:"food_scans"`
+	UserMeals          []UserMeal          `gorm:"-" json:"user_meals"`
+	AIChatMessages     []AIChatMessage     `gorm:"-" json:"ai_chat_messages"`
+	Questions          []Questionnaire     `gorm:"-"`
+	Insights           []AIInsight         `gorm:"-"`
+	DoctorChatRooms    []DoctorChatRoom    `gorm:"-" json:"doctor_chat_rooms"`
+	DoctorChatMessages []DoctorChatMessage `gorm:"-" json:"doctor_chat_messages"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
