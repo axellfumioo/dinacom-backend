@@ -85,7 +85,7 @@ func FoodScanProcess(ctx context.Context, t asynq.Task, db *gorm.DB) error {
 	}
 
 	socket.EmitToUser(fs.UserID, "refresh:foodscan", &fs)
-	socket.EmitToUser(payload.UserID, "refresh:ai-insight", insight)
+	socket.EmitToUser(payload.UserID, "refresh:ai-insight", &insight)
 	log.Printf("foodscan:process Done")
 	return nil
 }
