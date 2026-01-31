@@ -49,9 +49,11 @@ func main() {
 	})
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
+		// Credentials-safe CORS: use explicit origins (no wildcard).
+		AllowOrigins: configs.AppConfig.App.Frontend_URL + ",http://localhost:3000,http://localhost:5173",
+		AllowCredentials: true,
 		AllowMethods: "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization, X-Requested-With",
 	}))
 
 	// Ensure preflight requests always get a valid response.

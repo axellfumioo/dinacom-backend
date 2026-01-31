@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	io "github.com/ambelovsky/gosf-socketio"
 )
@@ -33,10 +34,44 @@ func StartConnectionHandler() {
 	})
 
 	mux := http.NewServeMux()
-	mux.Handle("/socket.io/", server)
+	mux.Handle("/socket.io/", withCORS(server))
 
 	log.Println("Socket.IO running on :8001")
 	go http.ListenAndServe(":8001", mux)
+}
+
+func withCORS(next http.Handler) http.Handler {
+	allowedOrigins := map[string]struct{}{}
+	for _, origin := range []string{
+		configs.AppConfig.App.Frontend_URL,
+		"http://localhost:3000",
+		"http://localhost:5173",
+	} {
+		origin = strings.TrimSpace(origin)
+		if origin != "" {
+			allowedOrigins[origin] = struct{}{}
+		}
+	}
+
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		if origin != "" {
+			if _, ok := allowedOrigins[origin]; ok {
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+				w.Header().Set("Vary", "Origin")
+				w.Header().Set("Access-Control-Allow-Credentials", "true")
+			}
+			w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept, Authorization, X-Requested-With")
+		}
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func getUserID(c *io.Channel) string {
