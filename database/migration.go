@@ -24,6 +24,8 @@ func RunMigration() {
 		&models.FamilyMember{},
 		&models.Questionnaire{},
 		&models.AIInsight{},
+		&models.DoctorChatRoom{},
+		&models.DoctorChatMessage{},
 	)
 
 	if err != nil {
