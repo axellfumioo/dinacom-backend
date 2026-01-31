@@ -3,6 +3,7 @@ package services
 import (
 	"backend-dinakom/app/dto/request"
 	"backend-dinakom/app/models"
+	"backend-dinakom/app/socket"
 	"errors"
 
 	"gorm.io/gorm"
@@ -51,5 +52,6 @@ func (s *doctorChatMessageService) CreateNewMessage(senderID string, req request
 		return nil, errors.New("failed to create chat message: " + err.Error())
 	}
 
+	socket.EmitToConsultRoom(newMessage.DoctorChatID, "refresh:room", &newMessage)
 	return &newMessage, nil
 }

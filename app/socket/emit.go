@@ -9,3 +9,7 @@ func EmitToUser(UserID string, event string, data interface{}) {
 func EmitToRoom(RoomID string, event string, data interface{}) {
 	configs.IoServer.BroadcastTo("room:"+RoomID, event, data)
 }
+
+func EmitToConsultRoom(RoomID string, event string, data interface{}) {
+	configs.IoServer.BroadcastTo("consult-room:"+RoomID, event, data)
+}

@@ -32,6 +32,11 @@ func StartConnectionHandler() {
 		fmt.Println("Success to join room:" + roomID)
 	})
 
+	server.On("join:consult-room", func(c *io.Channel, roomID string) {
+		c.Join("consult-room:" + roomID)
+		fmt.Println("Success to join consult room:" + roomID)
+	})
+
 	mux := http.NewServeMux()
 	mux.Handle("/socket.io/", server)
 
