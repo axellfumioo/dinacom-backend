@@ -23,7 +23,7 @@ func SeedDoctor(db *gorm.DB) {
 
 	doctors := []models.User{
 		{
-			Email:    "doctor1@dinakom.com",
+			Email:    "andijaya@gmail.com",
 			Password: &password,
 			FullName: "Dr. Andi Wijaya",
 			PhoneNumber: func() *string {
@@ -33,7 +33,7 @@ func SeedDoctor(db *gorm.DB) {
 			RoleID: &doctorRole.ID,
 		},
 		{
-			Email:    "doctor2@dinakom.com",
+			Email:    "ahmadharani@gmail.com",
 			Password: &password,
 			FullName: "Dr. Ahmad Maharani",
 			PhoneNumber: func() *string {
