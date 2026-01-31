@@ -19,4 +19,5 @@ func UserMealRoute(r fiber.Router) {
 	userMeals.Post("/", userMealController.CreateUserMeal)
 	userMeals.Get("/", userMealController.GetAllUserMeals)
 	userMeals.Get("/today", userMealController.GetTodayUserMeals)
+	userMeals.Get("/latest", userMealController.GetLatestUserMeal)
 }

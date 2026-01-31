@@ -12,6 +12,7 @@ import (
 type UserMealController interface {
 	GetAllUserMeals(c *fiber.Ctx) error
 	GetTodayUserMeals(c *fiber.Ctx) error
+	GetLatestUserMeal(c *fiber.Ctx) error
 	CreateUserMeal(c *fiber.Ctx) error
 }
 
@@ -46,6 +47,25 @@ func (ctrl *userMealController) GetAllUserMeals(c *fiber.Ctx) error {
 	}
 
 	return helpers.PaginationResponse(c, "usermeals data retrieved successfully", userMeals, page, pageSize, totalRows)
+}
+
+// GetLatestUserMeal godoc
+// @Summary GetLatestUserMeal
+// @Description Endpoint to get latest user meal data
+// @Tags Usermeals
+// @Produce  json
+// @Success 200 {object} response.SuccessResponse
+// @Failure 400 {object} response.ErrorResponse
+// @Failure 404 {object} response.ErrorResponse
+// @Router /usermeals/latest [get]
+// @Security BearerAuth
+func (ctrl *userMealController) GetLatestUserMeal(c *fiber.Ctx) error {
+	userID := c.Locals("user_id").(string)
+	userMeal, err := ctrl.userMealService.GetLatestUserMeal(userID)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+	return helpers.SuccessResponse(c, "latest user meal retrieved successfully", userMeal)
 }
 
 // GetTodayUserMeals godoc

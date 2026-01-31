@@ -17,6 +17,7 @@ import (
 type UserMealService interface {
 	GetAllUserMeals(userID string, page int, pageSize int) ([]response.UserMealResponse, int64, error)
 	GetTodayUserMeals(userID string) ([]response.UserMealResponse, error)
+	GetLatestUserMeal(userID string) (*response.UserMealResponse, error)
 	CreateUserMeal(userID string, req request.CreateUserMealRequest) (*response.UserMealResponse, error)
 }
 
@@ -72,6 +73,15 @@ func (s *userMealService) GetTodayUserMeals(UserID string) ([]response.UserMealR
 
 	userMealsResponse := helpers.ToUserMealsResponse(userMeals)
 	return userMealsResponse, nil
+}
+
+func (s *userMealService) GetLatestUserMeal(userID string) (*response.UserMealResponse, error) {
+	var userMeal models.UserMeal
+	if err := s.db.Where("user_id = ?", userID).Order("created_at DESC").First(&userMeal).Error; err != nil {
+		return nil, errors.New("failed to get latest user meal: " + err.Error())
+	}
+	userMealResponse := helpers.ToUserMealResponse(&userMeal)
+	return &userMealResponse, nil
 }
 
 func (s *userMealService) CreateUserMeal(userID string, req request.CreateUserMealRequest) (*response.UserMealResponse, error) {
