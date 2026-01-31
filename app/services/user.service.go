@@ -93,6 +93,10 @@ func (s *userService) CreateUser(req request.CreateUserRequest) (*response.UserR
 		Email:       req.Email,
 		Password:    &hashedPassword,
 		PhoneNumber: &req.PhoneNumber,
+		RoleID:      &req.RoleID,
+		Profile: &models.UserProfile{
+			Gender: req.Gender,
+		},
 	}
 
 	if err := s.db.Create(&user).Error; err != nil {
@@ -144,7 +148,7 @@ func (s *userService) UpdateUser(Id string, req request.UpdateUserRequest) (*res
 
 func (s *userService) DeleteUser(userID string) error {
 	var user *models.User
-	if err := s.db.First(&user, "id = ?" , userID).Error; err != nil {
+	if err := s.db.First(&user, "id = ?", userID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return errors.New("user not found")
 		}
